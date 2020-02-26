@@ -1,0 +1,55 @@
+{
+    "menu": [{
+            "url": "/",
+            "name": "Dashboard",
+            "slug": "dashboard",
+            "badgeClass": "badge badge-warning badge-pill float-right mr-2",
+            "icon": "feather icon-home"
+        },
+        {
+            "url": "",
+            "navheader": "Warehouse",
+            "icon": ""
+        },
+        {
+            "url": "hangtrongkho",
+            "name": "Hàng trong kho",
+            "icon": "feather icon-layers"
+        },
+        {
+            "url": "danhmuchh",
+            "name": "Danh mục hàng",
+            "icon": "feather icon-clipboard"
+        },
+        {
+            "url": "nhapkho",
+            "name": "Nhập kho",
+            "icon": "feather icon-download"
+        },
+        {
+            "url": "xuatkho",
+            "name": "Xuất kho",
+            "icon": "feather icon-upload"
+        },
+        {
+            "url": "danhsachkho",
+            "name": "Danh sách kho",
+            "icon": "feather icon-grid"
+        },
+        {
+            "url": "",
+            "navheader": "USER",
+            "icon": ""
+        },
+        {
+            "url": "danhsachuser",
+            "name": "Danh sách User",
+            "icon": "feather icon-list"
+        },
+        {
+            "url": "",
+            "name": "Thêm người dùng",
+            "icon": "feather icon-user-plus"
+        }
+    ]
+}
