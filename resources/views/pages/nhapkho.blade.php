@@ -48,7 +48,7 @@ function product_price($priceFloat) {
                     {{-- <th>MÃ HÀNG HÓA</th> --}}
                     <th>ĐƠN GIÁ</th>
                     <th>SỐ LƯỢNG</th>
-                    <th>GIÁ TRỊ</th>
+                    <th>KHO</th>
                     <th>HẠN SỬ DỤNG</th>
                     <th></th>
                     <th>Created_at</th>
@@ -65,7 +65,7 @@ function product_price($priceFloat) {
                     <td>{{ $product["tenhang"] }}</td>
                     <td>{{ product_price($product["dongia"]) }}</td>
                     <td>{{ $product["soluong"] }}</td>
-                    <td>{{ product_price($giatri) }}</td>
+                    <td>{{ $product["tenkho"] }}</td>
                     <td>{{ $product["hansudung"] }}</td>
                     <td class="product-action">
                         <a href="{{ url('lichsunhap/') }}/{{ $product["id"] }}">Chi tiết</a>
@@ -111,6 +111,18 @@ function product_price($priceFloat) {
                                 </select>
                             </fieldset>
                         </div>
+                        <div class="col-sm-12 data-field-col">
+                            <fieldset class="form-group tenhanghoa">
+                                <label for="data-name">Kho nhập <code>(*)</code></label>
+                                <select class="select2 form-control" id="kho">
+                                    <option value="-1">Chọn kho nhập</option>
+                                    @foreach ($warehouses as $warehouse)
+                                        <option value="{{ $warehouse['id'] }}">{{ $warehouse['tenkho'] }}</option>
+                                    @endforeach
+                                </select>
+                            </fieldset>
+                        </div>
+
                     </div>
                     <div class="row">
                         <div class="col-lg-6 col-sm-12 data-field-col">
@@ -281,6 +293,7 @@ function product_price($priceFloat) {
             text: "<i class='feather icon-plus'></i> Nhập kho",
             action: function() {
                 $('#thh').val(-1).trigger('change.select2');
+                $('#kho').val(-1).trigger('change.select2');
                 $('.is-invalid').removeClass('is-invalid');
             },
             className: "btn btn-outline-primary",
@@ -303,6 +316,14 @@ function product_price($priceFloat) {
         }, 50);
     });
 
+    $('form').on('focus', 'input[type=number]', function (e) {
+        $(this).on('wheel.disableScroll', function (e) {
+            e.preventDefault()
+        })
+    })
+    $('form').on('blur', 'input[type=number]', function (e) {
+        $(this).off('wheel.disableScroll')
+    })
 
     $('#btn-xacnhan').click(function(){
 
@@ -347,6 +368,10 @@ function product_price($priceFloat) {
             $('fieldset.mahanghoa>input').removeClass('is-invalid');
         }
 
+        if($('#kho').val() == -1){
+            check = false;
+        }
+
         if(check){
 
             Swal.fire({
@@ -370,6 +395,7 @@ function product_price($priceFloat) {
                     },
                     data: {
                         'mahang': $('#thh').val(),
+                        'kho' : $('#kho').val(),
                         'tenchuongtrinh' : $('fieldset.tenchuongtrinh>input').val(),
                         'soluong' : $('fieldset.soluong>input').val(),
                         'ngaynhap' : $('fieldset.ngaynhapkho>input').val(),
@@ -380,6 +406,7 @@ function product_price($priceFloat) {
                     success: function(data) {
                         if(data.status){
                             $('#thh').val(-1).trigger('change.select2');
+                            $('#kho').val(-1).trigger('change.select2');
                             $('#form-modal').trigger('reset');
                             $('#backdrop').modal('hide');
                             var newRow = dataListView.row.add([
@@ -387,7 +414,7 @@ function product_price($priceFloat) {
                                 data.data.tenhang,
                                 number_format(data.data.dongia,0,'','.') + ' đ',
                                 data.data.soluong,
-                                number_format(data.data.dongia * data.data.soluong,0,'','.') + ' đ',
+                                data.data.tenkho,
                                 data.data.hansudung,
                                 `<a href="{{ url('lichsunhap') }}`+ data.data.id +`">Chi tiết</a>`,
                                 data.data.created_at
@@ -411,6 +438,7 @@ function product_price($priceFloat) {
 
     $('button[data-dismiss="modal"]').click(function(){
         $('#thh').val(-1).trigger('change.select2');
+        $('#kho').val(-1).trigger('change.select2');
         $('#form-modal').trigger('reset');
     })
 
