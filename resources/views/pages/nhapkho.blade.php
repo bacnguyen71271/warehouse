@@ -416,7 +416,7 @@ function product_price($priceFloat) {
                                 data.data.soluong,
                                 data.data.tenkho,
                                 data.data.hansudung,
-                                `<a href="{{ url('lichsunhap') }}`+ data.data.id +`">Chi tiết</a>`,
+                                `<a href="{{ url('lichsunhap') }}/`+ data.data.id +`">Chi tiết</a>`,
                                 data.data.created_at
                             ]).draw().node();
 

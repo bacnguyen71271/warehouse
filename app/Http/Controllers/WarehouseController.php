@@ -94,6 +94,30 @@ class WarehouseController extends Controller
             'thoigian' => $ngaynhap,
         ]);
 
+        
+        $quantity_old = 0;
+        //Kiểm tra hàng này đã được tạo chưa
+        $warehouse_goods = DB::table('warehouse_goods')
+        ->where('warehouseid','=',$kho)
+        ->where('danhmucid','=',$mahang)
+        ->first();
+        
+        if(count($warehouse_goods) <=0){
+            DB::table('warehouse_goods')->insert([
+                'warehouseid' => $kho,
+                'danhmucid' => $mahang
+            ]);
+        }else{
+            $quantity_old = $warehouse->soluong;
+        }
+
+        //Cập nhật số lượng trong kho
+        DB::table('warehouse_goods')
+        ->where('warehouseid','=',$kho)
+        ->where('danhmucid','=',$mahang)
+        ->update([ 'soluong' => $quantity_old + $soluong]);
+
+
         $wh_history_temp = DB::table('warehouse_histories')
         ->join('danhmucs','warehouse_histories.danhmucId','danhmucs.id')
         ->join('warehouses','warehouse_histories.warehouseId','=','warehouses.id')
@@ -211,7 +235,6 @@ class WarehouseController extends Controller
         $array_kho = array();
         $kho = DB::table('warehouses')->get();
         $danhmuchang = DB::table('danhmuchang');
-
 
         $hangnhap = DB::table('warehouse_histories')
         ->join('danhmucs','warehouse_histories.danhmucId','=','danhmucs.id')
