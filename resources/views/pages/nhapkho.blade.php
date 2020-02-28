@@ -255,9 +255,6 @@ function product_price($priceFloat) {
     // init list view datatable
     var dataListView = $(".data-list-view").DataTable({
         responsive: false,
-        select: {
-            style: 'single'
-        },
         aoColumnDefs: [
             {
                 "bVisible": false,
@@ -281,9 +278,6 @@ function product_price($priceFloat) {
             [4, 10, 15, 20],
             [4, 10, 15, 20]
         ],
-        select: {
-            style: "multi"
-        },
         order: [
             [7, "desc"]
         ],

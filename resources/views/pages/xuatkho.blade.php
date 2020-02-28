@@ -303,9 +303,6 @@ return $price.$symbol;
     // init list view datatable
     var dataListView = $(".data-list-view").DataTable({
         responsive: false,
-        select: {
-            style: 'single'
-        },
         aoColumnDefs: [
             {
                 "bVisible": false,
@@ -329,9 +326,6 @@ return $price.$symbol;
             [4, 10, 15, 20],
             [4, 10, 15, 20]
         ],
-        select: {
-            style: "multi"
-        },
         order: [
             [7, "desc"]
         ],

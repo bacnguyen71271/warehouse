@@ -50,6 +50,16 @@
             "url": "",
             "name": "Thêm người dùng",
             "icon": "feather icon-user-plus"
+        },
+        {
+            "url": "",
+            "navheader": "BÁO CÁO",
+            "icon": ""
+        },
+        {
+            "url": "system-history",
+            "name": "Lịch sử hệ thống",
+            "icon": "feather icon-file-text"
         }
     ]
 }

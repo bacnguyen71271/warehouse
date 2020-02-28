@@ -102,13 +102,14 @@ class WarehouseController extends Controller
         ->where('danhmucid','=',$mahang)
         ->first();
         
-        if(count($warehouse_goods) <=0){
+        if(!$warehouse_goods){
             DB::table('warehouse_goods')->insert([
                 'warehouseid' => $kho,
-                'danhmucid' => $mahang
+                'danhmucid' => $mahang,
+                'soluong' => 0
             ]);
         }else{
-            $quantity_old = $warehouse->soluong;
+            $quantity_old = $warehouse_goods->soluong;
         }
 
         //Cập nhật số lượng trong kho
@@ -125,6 +126,8 @@ class WarehouseController extends Controller
         ->select('warehouses.tenkho','warehouse_histories.tenchuongtrinh','danhmucs.tenhang','danhmucs.dongia','warehouse_histories.soluong','warehouse_histories.hansudung','warehouse_histories.created_at','warehouse_histories.id')
         ->first();
         
+        StaticController::LogHistory('Nhập kho',Auth::id(),$wh_history_temp->id);
+
         return [
             'status' => true,
             'msg' => 'Nhập kho thành công',
@@ -177,10 +180,29 @@ class WarehouseController extends Controller
         ->select('warehouses.tenkho','warehouse_histories.tenchuongtrinh','danhmucs.tenhang','danhmucs.dongia','warehouse_histories.soluong','warehouse_histories.hansudung','warehouse_histories.created_at','warehouse_histories.id')
         ->first();
         
+        StaticController::LogHistory('Xuất kho',Auth::id(),$wh_history_temp->id);
+
         return [
             'status' => true,
             'msg' => 'Tạo phiếu order thành công',
             'data' => $wh_history_temp
+        ];
+    }
+
+    public function comfirmXuatKho(Request $request)
+    {
+        $idorder = $request->input('id_order');
+        DB::table('warehouse_histories')
+        ->where('id',$idorder)->update([
+            'status' => true
+        ]);
+
+        StaticController::LogHistory('Xác nhận đơn hàng',Auth::id(),$idorder);
+
+        return [
+            'status' => true,
+            'msg' => 'Xác nhận thành công',
+            'data' => ''
         ];
     }
 
@@ -231,31 +253,12 @@ class WarehouseController extends Controller
 
     public function hangtrongkho(Request $request)
     {
-        
-        $array_kho = array();
-        $kho = DB::table('warehouses')->get();
-        $danhmuchang = DB::table('danhmuchang');
-
-        $hangnhap = DB::table('warehouse_histories')
-        ->join('danhmucs','warehouse_histories.danhmucId','=','danhmucs.id')
-        ->join('warehouses','warehouse_histories.warehouseId','=','warehouses.id')
-        ->where('warehouse_histories.type',0)
-        ->select('danhmucs.tenhang','warehouses.tenkho','warehouse_histories.soluong')
+        $hangtrongkho = DB::table('warehouse_goods')
+        ->join('danhmucs','warehouse_goods.danhmucid','=','danhmucs.id')
+        ->join('warehouses','warehouse_goods.warehouseid','=','warehouses.id')
+        ->select('danhmucs.tenhang','danhmucs.mahang','warehouses.tenkho','warehouse_goods.soluong')
         ->get();
-        $hangxuat = DB::table('warehouse_histories')->where('type',1)->where('status',1)->get();
-
-        print_r($hangnhap);
-        die();
-        $hangnhap = (array)$hangnhap;
-        $hangxuat = (array)$hangxuat;
-        for ($i=0; $i < count($hangnhap); $i++) { 
-            for ($j=0; $j < count($hangxuat); $j++) { 
-                //if($hangnhap[$i])
-            }
-        }
-
-        // array_push($hangtrongkho,[])
-
+        
         $pageConfigs = [
             // 'pageHeader' => false,
             'navbarType' => 'sticky',
@@ -263,7 +266,7 @@ class WarehouseController extends Controller
         
         return view('/pages/hangtrongkho', [
             'pageConfigs' => $pageConfigs,
-            'warehouse' => (array)$wh_history_temp
+            'hangtrongkhos' => json_decode(json_encode($hangtrongkho),true)
         ]);
     }
 

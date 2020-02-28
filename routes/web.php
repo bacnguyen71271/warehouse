@@ -30,6 +30,8 @@ Route::get('/xuatkho', 'WarehouseController@xuatKhoIndex');
 Route::post('/xuatkho', 'WarehouseController@xuatkho');
 Route::get('/lichsuxuat/{id}', 'WarehouseController@chitietxuatkho');
 Route::post('/createfiledata', 'WarehouseController@createFileData');
+Route::post('/comfirm-xuatkho', 'WarehouseController@comfirmXuatKho');
+
 
 //Hàng trong kho
 Route::get('/hangtrongkho', 'WarehouseController@hangtrongkho');

@@ -45,6 +45,7 @@ function product_price($priceFloat) {
                                     <div class="chip-text">Pending</div>
                                 </div>
                             </div>
+                            <button type="button" order_id="{{ $whhistorytemp["id"] }}" class="btn-approved btn btn-sm btn-outline-success waves-effect waves-light">-> Approved</button>
                         @else
                             <div class="chip chip-success">
                                 <div class="chip-body">
@@ -110,4 +111,41 @@ function product_price($priceFloat) {
 @endsection
 
 @section('vendor-script')
+
+<script>
+  $('.btn-approved').click(function(){
+    Swal.fire({
+                title: 'Bạn muốn xác nhận đơn hàng này ?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Vâng, tôi xác nhận!',
+                cancelButtonText: 'Hủy',
+                confirmButtonClass: 'btn btn-primary',
+                cancelButtonClass: 'btn btn-danger ml-1',
+                buttonsStyling: false,
+            }).then(function(result) {
+                if (result.value) {
+                  $.ajax({
+                    type: "POST",
+                    url: "{{ url('/comfirm-xuatkho')}}",
+                    headers: {
+                        'X-CSRF-TOKEN': '{!! csrf_token() !!}'
+                    },
+                    data: {
+                      'id_order' : $('.btn-approved').attr('order_id')
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                      $.toast(data.msg);
+                      var delay = 1000; 
+                      setTimeout(function(){ location.reload(); }, delay);
+                    }
+                  })
+                }
+            });
+  })
+</script>
+
 @endsection

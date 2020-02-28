@@ -11,7 +11,6 @@
 @section('content')
 <!-- Analytics card section start -->
 <section id="analytics-card">
-
     <div class="modal fade text-left modal-background" id="backdrop" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel4" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -66,7 +65,13 @@
                                 <div class="series-info d-flex align-items-center">
                                     <i class="feather icon-layers font-medium-2 text-primary"></i>
                                     <span class="text-bold-600 mx-50">Hàng trong kho</span>
-                                    <span> - <div class="badge badge badge-primary badge-pill">0</div></span>
+                                    <span> - 
+                                        <div class="badge badge badge-primary badge-pill">
+                                            @php
+                                                 echo App\Http\Controllers\StaticController::getWarehouseInfo($warehouse['id'])["hangtrongkho"];
+                                            @endphp
+                                        </div>
+                                    </span>
                                 </div>
                             </div>
                             <div class="chart-info d-flex justify-content-between mb-1">
