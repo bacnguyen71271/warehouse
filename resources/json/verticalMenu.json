@@ -12,6 +12,11 @@
             "icon": ""
         },
         {
+            "url": "delivery",
+            "name": "Delivery",
+            "icon": "feather icon-truck"
+        },
+        {
             "url": "hangtrongkho",
             "name": "Hàng trong kho",
             "icon": "feather icon-layers"

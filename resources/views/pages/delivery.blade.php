@@ -1,6 +1,6 @@
 @extends('layouts/contentLayoutMaster')
 
-@section('title', 'Danh sách xuất kho')
+@section('title', 'Delivery')
 
 @section('vendor-style')
 {{-- vendor files --}}
@@ -79,172 +79,65 @@ return $price.$symbol;
             </div>
         </div>
     </div>
-
     {{-- DataTable starts --}}
     <div class="table-responsive">
         <table class="table data-list-view">
             <thead>
                 <tr>
                     <th>TÊN CHƯƠNG TRÌNH</th>
-                    {{-- <th>LOẠI HÀNG</th> --}}
                     <th>TÊN HÀNG</th>
-                    {{-- <th>MÃ HÀNG HÓA</th> --}}
                     <th>ĐƠN GIÁ</th>
                     <th>SỐ LƯỢNG</th>
                     <th>KHO</th>
                     <th>TRẠNG THÁI</th>
-                    <th></th>
-                    <th>Created_at</th>
+                    <th>NGƯỜI GIAO</th>
+                    <th>HÀNH ĐỘNG</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($products as $product)
+                @foreach ($deliverys as $delivery)
                 <tr>
-                    <td>{{ $product["tenchuongtrinh"] }}</td>
-                    <td>{{ $product["tenhang"] }}</td>
-                    <td>{{ product_price($product["dongia"]) }}</td>
-                    <td>{{ $product["soluong"] }}</td>
-                    <td>{{ $product["tenkho"] }}</td>
+                    <td>{{ $delivery["tenchuongtrinh"] }}</td>
+                    <td>{{ $delivery["tenhang"] }}</td>
+                    <td>{{ product_price($delivery["dongia"]) }}</td>
+                    <td>{{ $delivery["soluong"] }}</td>
+                    <td>{{ $delivery["tenkho"] }}</td>
                     <td>
-                        @if (!$product["status"])
+                        @if ($delivery["status"] == 1)
                         <div class="chip chip-warning">
                             <div class="chip-body">
-                                <div class="chip-text">Pending</div>
+                                <div class="chip-text">On-going</div>
                             </div>
                         </div>
-                        @else
+                        @elseif ($delivery["status"] == 2)
                         <div class="chip chip-success">
                             <div class="chip-body">
-                                <div class="chip-text">Approved</div>
+                                <div class="chip-text">Done</div>
                             </div>
                         </div>
                         @endif
                     </td>
-                    <td class="product-action">
-                        <a href="{{ url('xuatkho/') }}/{{ $product["id"] }}">Chi tiết</a>
+                    <td>@if ($delivery["userid"] == -1)
+                        Chưa nhận
+                        @else
+                        {{ $delivery["name"] }}
+                        @endif
                     </td>
-                    <td>{{ $product["created_at"] }}</td>
-
+                    <td class="product-action">
+                        @if ($delivery["status"] == 0)
+                        <button type="button" status="{{ $delivery["status"] }}" deliveryId="{{ $delivery["orderid"] }}" class="btn-comfirm btn bg-gradient-success mr-1 mb-1 waves-effect waves-light">Giao hàng</button>
+                        @elseif ($delivery["status"] == 1)
+                       <button type="button" status="{{ $delivery["status"] }}" deliveryId="{{ $delivery["orderid"] }}" class="btn-comfirm btn bg-gradient-success mr-1 mb-1 waves-effect waves-light">Đã giao</button>
+                        @endif
+                    </td>
+                    <td>{{ $delivery["created_at"] }}</td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
     {{-- DataTable ends --}}
-    <div class="modal fade text-left modal-background" id="backdrop" tabindex="-1" role="dialog"
-        aria-labelledby="myModalLabel4" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel4">Phiếu order xuất kho</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="form-modal">
-                        <div class="row">
-                            <div class="col-sm-12 col-xl-12 data-field-col">
-                                <fieldset class="form-group tenchuongtrinh">
-                                    <label for="data-name">Tên chương trình <code>(*)</code></label>
-                                    <input type="text" class="form-control" id="tenchuongtrinh">
-                                    <span class="invalid-feedback" role="alert"></span>
-                                </fieldset>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12 data-field-col">
-                                <fieldset class="form-group tenhanghoa">
-                                    <label for="data-name">Tên hàng hóa <code>(*)</code></label>
-                                    <select class="select2 form-control" id="thh">
-                                        <option value="-1">Chọn hàng hóa</option>
-                                        @foreach ($categorys as $category)
-                                        <option value="{{ $category['id'] }}">{{ $category['tenhang'] }}</option>
-                                        @endforeach
-                                    </select>
-                                </fieldset>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6 col-sm-12 data-field-col">
-                                <fieldset class="form-group mahanghoa">
-                                    <label>Mã hàng</label>
-                                    <input type="text" class="form-control" readonly="readonly">
-                                    <span class="invalid-feedback" role="alert"></span>
-                                </fieldset>
-                            </div>
-                            <div class="col-lg-6 col-sm-12 data-field-col">
-                                <fieldset class="form-group dongia">
-                                    <label for="giatrihang">Đơn giá</label>
-                                    <input type="text" class="form-control" readonly="readonly">
-                                </fieldset>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6 col-sm-12 data-field-col">
-                                <fieldset class="form-group soluong">
-                                    <label>Số lượng <code>(*)</code></label>
-                                    <input type="number" class="form-control">
-                                    <span class="invalid-feedback" role="alert"></span>
-                                    <span class="soluongtrongkho">Trong kho: <p>0</p></span>
-                                </fieldset>
-                            </div>
-                            <div class="col-lg-6 col-sm-12 data-field-col">
-                                <fieldset class="form-group giatri">
-                                    <label for="giatri">Giá trị</label>
-                                    <input type="text" class="form-control" readonly="readonly">
-                                </fieldset>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6 col-sm-12 data-field-col">
-                                <fieldset class="form-group ngaynhapkho">
-                                    <label>Ngày xuất <code>(*)</code></label>
-                                    <input type='text' value="{{ date("Y-m-d") }}"
-                                        class="form-control pickadate-months-year" />
-                                    <span class="invalid-feedback" role="alert"></span>
-                                </fieldset>
-                            </div>
-                            <div class="col-lg-6 col-sm-12 data-field-col">
-                                <fieldset class="form-group tenhanghoa">
-                                    <label for="data-name">Kho xuất <code>(*)</code></label>
-                                    <select class="select2 form-control" id="kho">
-                                        <option value="-1">Chọn kho xuất</option>
-                                        @foreach ($warehouses as $warehouse)
-                                        <option value="{{ $warehouse['id'] }}">{{ $warehouse['tenkho'] }}</option>
-                                        @endforeach
-                                    </select>
-                                </fieldset>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <fieldset class="form-group">
-                                    <label>File tài liệu đính kèm</label>
-                                    <div action="#" class="dropzone dropzone-area" id="dp-accept-files">
-                                        <div class="dz-message">Drop Files Here To Upload</div>
-                                    </div>
-                                </fieldset>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <fieldset class="form-group">
-                                    <label>Ghi chú</label>
-                                    <textarea class="form-control" id="basicTextarea" rows="3"
-                                        placeholder="Ghi chú"></textarea>
-                                </fieldset>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="btn-xacnhan" class="btn btn-primary">Xác nhận</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+   
 </section>
 {{-- Data list view end --}}
 @endsection
@@ -267,9 +160,64 @@ return $price.$symbol;
 @section('page-script')
 <script>
     var soluongtronkho = 0;
-    Dropzone.autoDiscover = false;
     $(document).ready(function() {
     "use strict"
+
+    $('.btn-comfirm').click(function(){
+        var title;
+        var deleveryid = $(this).attr('deliveryId');
+        var status = $(this).attr('status');
+        if(status == 0){
+            title = 'Bạn nhận giao đơn hàng này ?';
+        }else{
+            title = 'Bạn đã giao xong đơn hàng này ?';
+        }
+
+        Swal.fire({
+            title: title,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Vâng!',
+            cancelButtonText: 'Không',
+            confirmButtonClass: 'btn btn-primary',
+            cancelButtonClass: 'btn btn-danger ml-1',
+            buttonsStyling: false,
+        }).then(function(result) {
+            if (result.value) {
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ url('delivery') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': '{!! csrf_token() !!}'
+                    },
+                    data: {
+                        'madon': deleveryid,
+                        'trangthai' : status,
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if(data.status){  
+                            location.reload();
+                        }else{
+                             Swal.fire({
+                                title: data.msg,
+                                type: 'warning',
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Okey!',
+                                confirmButtonClass: 'btn btn-primary',
+                                cancelButtonClass: 'btn btn-danger ml-1',
+                                buttonsStyling: false,
+                            })  
+                        }
+                    }    
+                })
+            }
+        })
+    }
+    )
 
     function number_format (number, decimals, dec_point, thousands_sep) {
         // Strip all characters but numerical ones.
@@ -302,14 +250,6 @@ return $price.$symbol;
         width: '100%'
     });
 
-    $('.pickadate-months-year').pickadate({
-        weekdaysShort: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
-        monthsFull: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
-        selectYears: true,
-        selectMonths: true,
-        formatSubmit: 'yyyy-mm-dd',
-        format: 'yyyy-mm-dd',
-    });
     
     let editElement;
     // init list view datatable
@@ -318,7 +258,7 @@ return $price.$symbol;
         aoColumnDefs: [
             {
                 "bVisible": false,
-                "aTargets": [7]
+                "aTargets": [8]
             },
             // {
             //     orderable: true,
@@ -339,26 +279,11 @@ return $price.$symbol;
             [4, 10, 15, 20]
         ],
         order: [
-            [7, "desc"]
+            [8, "desc"]
         ],
         bInfo: false,
         pageLength: 10,
-        buttons: [{
-            text: "<i class='feather icon-plus'></i> Xuất kho",
-            action: function() {
-                $('#thh').val(-1).trigger('change.select2');
-                $('#kho').val(-1).trigger('change.select2');
-                soluongtronkho = 0;
-                $('.soluongtrongkho p').html('');
-                $('.is-invalid').removeClass('is-invalid');
-            },
-            className: "btn btn-outline-primary",
-            attr:  {
-                "data-toggle":"modal",
-                "data-backdrop":"false",
-                "data-target":"#backdrop"
-            }
-        }],
+       
         initComplete: function(settings, json) {
             $(".dt-buttons .btn").removeClass("btn-secondary")
         }

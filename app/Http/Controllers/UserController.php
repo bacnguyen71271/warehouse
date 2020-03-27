@@ -20,14 +20,14 @@ class UserController extends Controller
     {
         $user = DB::table('users')
         ->where('email',$id)
-        ->select('users.email','users.name','users.permission','users.active','users.created_at')
+        ->select('users.email','users.name','users.id','users.permission','users.active','users.created_at')
         ->first();
 
         //Check permission
         $permission = DB::table('users')
         ->join('permissions','permissions.user_id','users.id')
         ->join('warehouses','warehouses.id','permissions.warehouse_id')
-        ->where('users.id',Auth::id())
+        ->where('users.id',$user->id)
         ->select('permissions.permission','permissions.warehouse_id','warehouses.tenkho')
         ->get();
 
@@ -81,16 +81,11 @@ class UserController extends Controller
     {
         $user = DB::table('users')
         ->where('email',$id)
-        ->select('users.email','users.name','users.permission','users.active','users.created_at')
+        ->select('users.email','users.id','users.name','users.permission','users.active','users.created_at')
         ->first();
 
         //Check permission
-        $permission = DB::table('users')
-        ->join('permissions','permissions.user_id','users.id')
-        ->join('warehouses','warehouses.id','permissions.warehouse_id')
-        ->where('users.id',Auth::id())
-        ->select('permissions.permission','permissions.warehouse_id')
-        ->get();
+        
 
         // print_r($permission);
 
@@ -107,9 +102,18 @@ class UserController extends Controller
             'verticalMenuNavbarType' => 'floating'
         ];
 
+        $permission = DB::table('users')
+            ->join('permissions','permissions.user_id','users.id')
+            ->join('warehouses','warehouses.id','permissions.warehouse_id')
+            ->where('users.id',$user->id)
+            ->select('permissions.permission','permissions.warehouse_id')
+            ->get();
+
         //Tìm quyền
         $user = DB::table('users')->where('id',Auth::id())->first();
         if($user->permission == 0){
+            
+            
             return view('/pages/admin-user-edit', [
                 'pageConfigs' => $pageConfigs,
                 'user' => (array)$user,

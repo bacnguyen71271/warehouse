@@ -72,90 +72,6 @@
             </tbody>
         </table>
     </div>
-    {{-- DataTable ends --}}
-    <div class="modal fade text-left modal-background" id="backdrop" tabindex="-1" role="dialog"
-        aria-labelledby="myModalLabel4" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel4">Nhập hàng</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="form-modal">
-                    <div class="row">
-                        <div class="col-sm-12 col-xl-12 data-field-col">
-                            <fieldset class="form-group tenchuongtrinh">
-                                <label for="data-name">Tên chương trình <code>(*)</code></label>
-                                <input type="text" class="form-control" id="tenchuongtrinh">
-                                <span class="invalid-feedback" role="alert"></span>
-                            </fieldset>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6 col-sm-12 data-field-col">
-                            <fieldset class="form-group mahanghoa">
-                                <label>Mã hàng</label>
-                                <input type="text" class="form-control" readonly="readonly">
-                                <span class="invalid-feedback" role="alert"></span>
-                            </fieldset>
-                        </div>
-                        <div class="col-lg-6 col-sm-12 data-field-col">
-                            <fieldset class="form-group dongia">
-                                <label for="giatrihang">Đơn giá</label>
-                                <input type="text" class="form-control" readonly="readonly">
-                            </fieldset>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6 col-sm-12 data-field-col">
-                            <fieldset class="form-group soluong">
-                                <label>Số lượng <code>(*)</code></label>
-                                <input type="number" class="form-control">
-                                <span class="invalid-feedback" role="alert"></span>
-                            </fieldset>
-                        </div>
-                        <div class="col-lg-6 col-sm-12 data-field-col">
-                            <fieldset class="form-group giatri">
-                                <label for="giatri">Giá trị</label>
-                                <input type="text" class="form-control"readonly="readonly">
-                            </fieldset>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6 col-sm-12 data-field-col">
-                            <fieldset class="form-group ngaynhapkho">
-                                <label>Ngày nhập kho <code>(*)</code></label>
-                                <input type='text' value="{{ date("Y-m-d") }}" class="form-control pickadate-months-year"/>
-                                <span class="invalid-feedback" role="alert"></span>
-                            </fieldset>
-                        </div>
-                        <div class="col-lg-6 col-sm-12 data-field-col">
-                            <fieldset class="form-group ngayhethan">
-                                <label>Ngày hết hạn <code>(*)</code></label>
-                                <input type='text' value="{{ date("Y-m-d") }}" class="form-control pickadate-months-year" />
-                                <span class="invalid-feedback" role="alert"></span>
-                            </fieldset>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <fieldset class="form-group">
-                                <label>Ghi chú</label>
-                                <textarea class="form-control" id="basicTextarea" rows="3" placeholder="Ghi chú"></textarea>
-                            </fieldset>
-                        </div>
-                    </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="btn-xacnhan" class="btn btn-primary">Xác nhận</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
 </section>
 {{-- Data list view end --}}
@@ -194,19 +110,6 @@
         ],
         bInfo: false,
         pageLength: 10,
-        buttons: [{
-            text: "<i class='feather icon-plus'></i> Nhập kho",
-            action: function() {
-                $('#thh').val(-1).trigger('change.select2');
-                $('.is-invalid').removeClass('is-invalid');
-            },
-            className: "btn btn-outline-primary",
-            attr:  {
-                "data-toggle":"modal",
-                "data-backdrop":"false",
-                "data-target":"#backdrop"
-            }
-        }],
         initComplete: function(settings, json) {
             $(".dt-buttons .btn").removeClass("btn-secondary")
         }

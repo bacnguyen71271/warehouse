@@ -35,6 +35,9 @@ class HomeController extends Controller
         //Thống kê users
         $users = DB::table('users')->count();
 
+        //Thống kê đơn đã giao
+        $delivery = DB::table('delivery_history')->where('status',2)->count();       
+
         //Thống kê đơn xác nhận
         $order = DB::table('warehouse_histories')
         ->where('type','1')
@@ -59,7 +62,8 @@ class HomeController extends Controller
             'hangtrongkho' => $hangtrongkho,
             'nguoidung' => $users,
             'historys' => json_decode(json_encode($systemHistorys),true),
-            'order' => $order
+            'order' => $order,
+            'deliveryed' => $delivery
         ]);
     }
 }

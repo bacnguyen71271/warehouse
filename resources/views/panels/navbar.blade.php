@@ -139,11 +139,11 @@
                     src="{{asset('images/portrait/small/avatar-default.png') }}" alt="avatar" height="40"
                     width="40" /></span>
               </a>
-              <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="page-user-profile"><i
-                    class="feather icon-user"></i> Edit Profile</a><a class="dropdown-item" href="app-email"><i
-                    class="feather icon-mail"></i> My
-                  Inbox</a><a class="dropdown-item" href="app-todo"><i class="feather icon-check-square"></i> Task</a><a
-                  class="dropdown-item" href="app-chat"><i class="feather icon-message-square"></i> Chats</a>
+              <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="{{ url('/user-edit') }}/{{ Auth::user()->email }}"><i class="feather icon-user"></i> Edit Profile</a>
+                {{-- <a class="dropdown-item" href="app-email"><i class="feather icon-mail"></i> My Inbox</a>
+                <a class="dropdown-item" href="app-todo"><i class="feather icon-check-square"></i> Task</a>
+                <a class="dropdown-item" href="app-chat"><i class="feather icon-message-square"></i> Chats</a> --}}
                 <div class="dropdown-divider"></div>
 
                     <a class="dropdown-item" href="{{ route('logout') }}"

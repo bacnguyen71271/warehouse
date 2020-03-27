@@ -34,8 +34,18 @@ function product_price($priceFloat) {
     <div class="row">
         <div class="col-md-12 col-12 ">
             <div class="card">
+            <div class="card-header">
+              <div class="card-title mb-2">Thông tin chi tiết order xuất kho</div>
+              @if($whhistorytemp["status"] == 0)
+              <div class="heading-elements">
+                <ul class="list-inline mb-0">
+                  <li><a class="btn mb-1 p-1  btn-primary waves-effect waves-light" href="{{ url('xuatkho/suaphieu/') }}/{{ $whhistorytemp['id'] }}" data-action="reload">Sửa phiếu</a></li>
+                </ul>
+              </div>
+              @endif
+            </div>
               <div class="card-body">
-                <div class="card-title mb-2">Thông tin chi tiết order xuất kho</div>
+                
                 <table class="w-100">
                     <tr>
                         <td class="font-weight-bold">Trạng thái</td>
@@ -79,7 +89,11 @@ function product_price($priceFloat) {
                     <td>{{ product_price($whhistorytemp['dongia'] * $whhistorytemp['soluong']) }}</td>
                   </tr>
                   <tr>
-                    <td class="font-weight-bold">Ngày nhập kho</td>
+                    <td class="font-weight-bold">Kho xuất</td>
+                    <td>{{ $whhistorytemp['tenkho'] }}</td>
+                  </tr>
+                  <tr>
+                    <td class="font-weight-bold">Ngày xuất kho</td>
                     <td>{{ $whhistorytemp['thoigian'] }}</td>
                   </tr>
                   <tr>
@@ -90,7 +104,7 @@ function product_price($priceFloat) {
                     <td class="font-weight-bold">File đính kèm</td>
                     <td>
                         @foreach ($files as $file)
-                        <a target="_blank" href="{{ url('viewfile')}}/{{ $file['filename'] }}"><div class="badge badge-success mr-1 mb-1">
+                        <a target="_blank" class="attackfile" href="{{ url('uploads')}}/{{ $file['filename'] }}"><div class="badge badge-success mr-1 mb-1">
                             <i class="feather icon-file"></i>
                             <span> {{ $file['name_old'] }}</span>
                             </div>
@@ -113,6 +127,13 @@ function product_price($priceFloat) {
 @section('vendor-script')
 
 <script>
+
+  {{-- $('.attackfile').click(function(e){
+     e.preventDefault();
+     $link = $(this).attr('href');
+     var newwindow=window.open($link,"window2","");
+  }); --}}
+
   $('.btn-approved').click(function(){
     Swal.fire({
                 title: 'Bạn muốn xác nhận đơn hàng này ?',

@@ -42,6 +42,7 @@
         </div>
           <div class="col-lg-3 col-md-6 col-12">
             <div class="card">
+            <a href="{{ url('/hangtrongkho') }}">
               <div class="card-header d-flex align-items-start pb-0">
                 <div>
                   <h2 class="text-bold-700 mb-0">{{ $hangtrongkho }}</h2>
@@ -53,6 +54,7 @@
                     </div>
                 </div>
               </div>
+              </a>
             </div>
           </div>
           <div class="col-lg-3 col-md-6 col-12">
@@ -72,9 +74,10 @@
           </div>
           <div class="col-lg-3 col-md-6 col-12">
             <div class="card">
+            <a href="{{ url('/delivery') }}">
               <div class="card-header d-flex align-items-start pb-0">
                 <div>
-                    <h2 class="text-bold-700 mb-0">0</h2>
+                    <h2 class="text-bold-700 mb-0">{{ $deliveryed }}</h2>
                     <p>Đơn đã giao</p>
                 </div>
                 <div class="avatar bg-rgba-success p-50 m-0">
@@ -83,21 +86,24 @@
                     </div>
                 </div>
               </div>
+              </a>
             </div>
             </div>
             <div class="col-lg-3 col-md-6 col-12">
               <div class="card">
+              <a href="{{ url('/xuatkho') }}">
                 <div class="card-header d-flex align-items-start pb-0">
-                  <div>
-                      <h2 class="text-bold-700 mb-0">{{ $order }}</h2>
-                      <p>Đơn chờ xác nhận</p>
-                  </div>
-                  <div class="avatar bg-rgba-warning p-50 m-0">
-                      <div class="avatar-content">
-                          <i class="feather icon-edit text-warning font-medium-5"></i>
-                      </div>
-                  </div>
+                    <div>
+                        <h2 class="text-bold-700 mb-0">{{ $order }}</h2>
+                        <p>Đơn chờ xác nhận</p>
+                    </div>
+                    <div class="avatar bg-rgba-warning p-50 m-0">
+                        <div class="avatar-content">
+                            <i class="feather icon-edit text-warning font-medium-5"></i>
+                        </div>
+                    </div>
                 </div>
+                 </a>
               </div>
               </div>
           </div>

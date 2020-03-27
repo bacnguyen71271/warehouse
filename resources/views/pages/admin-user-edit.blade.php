@@ -102,10 +102,11 @@
                                                     $per = $value['permission'];
                                                 }
                                             }
+                                            echo $per;
                                         @endphp
                                         <td>
                                             <select class="form-control" name="quyenkho" perid="{{ $warehouse['id'] }}">
-                                                <option @if($per == '') selected @endif value="Không cấp quyền" selected>Không cấp quyền</option>
+                                                <option value="Không cấp quyền" selected>Không cấp quyền</option>
                                                 <option @if($per == 'User') selected @endif value="User">User</option>
                                                 <option @if($per == 'Delivery') selected @endif value="Delivery">Delivery</option>
                                                 <option @if($per == 'Approved') selected @endif value="Approved">Approved</option>

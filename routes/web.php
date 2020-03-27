@@ -20,6 +20,8 @@
 Route::get('/token-update', 'ApiTokenController@update')->name('home');
 Route::get('/', 'HomeController@index');
 
+Route::get('/viewfile/{id}', 'WarehouseController@viewfile');
+
 //Nhập kho
 Route::get('/nhapkho', 'WarehouseController@nhapKhoIndex');
 Route::get('/lichsunhap/{id}', 'WarehouseController@chitietnhapkho');
@@ -28,9 +30,17 @@ Route::post('/nhapkho', 'WarehouseController@nhapkho');
 //Xuất kho
 Route::get('/xuatkho', 'WarehouseController@xuatKhoIndex');
 Route::post('/xuatkho', 'WarehouseController@xuatkho');
-Route::get('/lichsuxuat/{id}', 'WarehouseController@chitietxuatkho');
+Route::get('/xuatkho/{id}', 'WarehouseController@chitietxuatkho');
+Route::get('/xuatkho/suaphieu/{id}', 'WarehouseController@suaphieuxuat');
+Route::post('/xuatkho/suaphieu/{id}', 'WarehouseController@luuphieuxuat');
 Route::post('/createfiledata', 'WarehouseController@createFileData');
 Route::post('/comfirm-xuatkho', 'WarehouseController@comfirmXuatKho');
+Route::get('/hangton', 'WarehouseController@gethangton');
+
+
+//delivery
+Route::get('/delivery', 'WarehouseController@delivery');
+Route::post('/delivery', 'WarehouseController@deliveryUpdate');
 
 
 //Hàng trong kho
