@@ -39,13 +39,15 @@ function product_price($priceFloat) {
               @if($whhistorytemp["status"] == 0)
               <div class="heading-elements">
                 <ul class="list-inline mb-0">
+                    @if(\App\Http\Controllers\StaticController::checkNutXacnhan( $whhistorytemp['warehouseId'] ))
                   <li><a class="btn mb-1 p-1  btn-primary waves-effect waves-light" href="{{ url('xuatkho/suaphieu/') }}/{{ $whhistorytemp['id'] }}" data-action="reload">Sửa phiếu</a></li>
+                    @endif
                 </ul>
               </div>
               @endif
             </div>
               <div class="card-body">
-                
+
                 <table class="w-100">
                     <tr>
                         <td class="font-weight-bold">Trạng thái</td>
@@ -55,7 +57,9 @@ function product_price($priceFloat) {
                                     <div class="chip-text">Pending</div>
                                 </div>
                             </div>
+                            @if(\App\Http\Controllers\StaticController::checkNutXacnhan( $whhistorytemp['warehouseId'] ))
                             <button type="button" order_id="{{ $whhistorytemp["id"] }}" class="btn-approved btn btn-sm btn-outline-success waves-effect waves-light">-> Approved</button>
+                                @endif
                         @else
                             <div class="chip chip-success">
                                 <div class="chip-body">
@@ -109,7 +113,7 @@ function product_price($priceFloat) {
                             <span> {{ $file['name_old'] }}</span>
                             </div>
                         </a>
-                        @endforeach    
+                        @endforeach
                     </td>
                   </tr>
                   <tr>
@@ -160,7 +164,7 @@ function product_price($priceFloat) {
                     dataType: 'json',
                     success: function(data) {
                       $.toast(data.msg);
-                      var delay = 1000; 
+                      var delay = 1000;
                       setTimeout(function(){ location.reload(); }, delay);
                     }
                   })

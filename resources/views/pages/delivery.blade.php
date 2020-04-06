@@ -1,3 +1,7 @@
+<?php
+use App\Http\Controllers\StaticController;
+?>
+
 @extends('layouts/contentLayoutMaster')
 
 @section('title', 'Delivery')
@@ -124,10 +128,12 @@ return $price.$symbol;
                         @endif
                     </td>
                     <td class="product-action">
-                        @if ($delivery["status"] == 0)
-                        <button type="button" status="{{ $delivery["status"] }}" deliveryId="{{ $delivery["orderid"] }}" class="btn-comfirm btn bg-gradient-success mr-1 mb-1 waves-effect waves-light">Giao hàng</button>
-                        @elseif ($delivery["status"] == 1)
-                       <button type="button" status="{{ $delivery["status"] }}" deliveryId="{{ $delivery["orderid"] }}" class="btn-comfirm btn bg-gradient-success mr-1 mb-1 waves-effect waves-light">Đã giao</button>
+                        @if(\App\Http\Controllers\StaticController::Checknutgiaohang($delivery['warehouseId']))
+                            @if ($delivery["status"] == 0)
+                            <button type="button" status="{{ $delivery["status"] }}" deliveryId="{{ $delivery["orderid"] }}" class="btn-comfirm btn bg-gradient-success mr-1 mb-1 waves-effect waves-light">Giao hàng</button>
+                            @elseif ($delivery["status"] == 1)
+                           <button type="button" status="{{ $delivery["status"] }}" deliveryId="{{ $delivery["orderid"] }}" class="btn-comfirm btn bg-gradient-success mr-1 mb-1 waves-effect waves-light">Đã giao</button>
+                            @endif
                         @endif
                     </td>
                     <td>{{ $delivery["created_at"] }}</td>
@@ -137,7 +143,7 @@ return $price.$symbol;
         </table>
     </div>
     {{-- DataTable ends --}}
-   
+
 </section>
 {{-- Data list view end --}}
 @endsection
@@ -198,7 +204,7 @@ return $price.$symbol;
                     },
                     dataType: 'json',
                     success: function(data) {
-                        if(data.status){  
+                        if(data.status){
                             location.reload();
                         }else{
                              Swal.fire({
@@ -210,9 +216,9 @@ return $price.$symbol;
                                 confirmButtonClass: 'btn btn-primary',
                                 cancelButtonClass: 'btn btn-danger ml-1',
                                 buttonsStyling: false,
-                            })  
+                            })
                         }
-                    }    
+                    }
                 })
             }
         })
@@ -250,7 +256,7 @@ return $price.$symbol;
         width: '100%'
     });
 
-    
+
     let editElement;
     // init list view datatable
     var dataListView = $(".data-list-view").DataTable({
@@ -283,7 +289,7 @@ return $price.$symbol;
         ],
         bInfo: false,
         pageLength: 10,
-       
+
         initComplete: function(settings, json) {
             $(".dt-buttons .btn").removeClass("btn-secondary")
         }
@@ -344,7 +350,7 @@ return $price.$symbol;
             if($('#kho').val() != -1){
                 checkhangton();
             }
-            
+
 
             $.ajax({
                 type: 'POST',
@@ -370,13 +376,13 @@ return $price.$symbol;
                 }
             });
         }
-        
+
     })
-    
+
 
     $('fieldset.soluong>input').keyup(function(){
-        if($('fieldset.soluong>input').val() != '' || 
-        $('fieldset.soluong>input').val() <= 0 && 
+        if($('fieldset.soluong>input').val() != '' ||
+        $('fieldset.soluong>input').val() <= 0 &&
         $('fieldset.dongia>input').val() != ''){
             $('fieldset.soluong>input').val( )
 
@@ -401,7 +407,7 @@ return $price.$symbol;
     $('form').on('blur', 'input[type=number]', function (e) {
         $(this).off('wheel.disableScroll')
     })
-    
+
 function commitFinish(formResponse,myDropzone){
     $('#thh').val(-1).trigger('change.select2');
                 $('#kho').val(-1).trigger('change.select2');

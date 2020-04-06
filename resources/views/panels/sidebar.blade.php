@@ -43,7 +43,16 @@ $configData = Helper::applClasses();
       if(isset($menu->i18n)){
       $translation = $menu->i18n;
       }
+
       @endphp
+      @if(\App\Http\Controllers\StaticController::QuenUser() == 0
+         ||
+        (\App\Http\Controllers\StaticController::QuenUser() == 2
+        &&
+        ( (strpos($menu->per,'ser') && \App\Http\Controllers\StaticController::checkMotQuyen('user'))
+         || (strpos($menu->per,'pproved') && \App\Http\Controllers\StaticController::checkMotQuyen('approved'))
+          || (strpos($menu->per,'ll')))
+        ))
       <li class="nav-item {{ (request()->is($menu->url)) ? 'active' : '' }} {{ $custom_classes }}">
         <a href="{{ $menu->url }}">
           <i class="{{ $menu->icon }}"></i>
@@ -58,6 +67,7 @@ $configData = Helper::applClasses();
         @include('panels/submenu', ['menu' => $menu->submenu])
         @endif
       </li>
+                    @endif
       @endif
       @endforeach
       @endif
