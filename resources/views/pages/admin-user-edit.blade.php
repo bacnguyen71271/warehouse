@@ -30,7 +30,7 @@
                                 </tr>
                                 <tr>
                                     <td class="font-weight-bold">Email</td>
-                                    <td>{{ $user['email']}}</td>
+                                    <td>{{ $user['email'] }}</td>
                                 </tr>
                                 <tr>
                                     <td class="font-weight-bold">Phone</td>
@@ -162,7 +162,7 @@
                         },
                         data:{
                             'permission' : per,
-                            'email' : '{{ $user['email']}}'
+                            'email' : '{{ $user['email'] }}'
                         },
                         dataType: 'json',
                         success: function(data){

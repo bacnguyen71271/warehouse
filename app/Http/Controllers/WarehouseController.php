@@ -17,6 +17,10 @@ class WarehouseController extends Controller
 
 
     public function delivery(){
+
+        //Kiểm tra quyền
+
+
         $pageConfigs = [
             // 'pageHeader' => false,
             'navbarType' => 'sticky',

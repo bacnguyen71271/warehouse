@@ -317,7 +317,25 @@ function product_price($priceFloat) {
     })
     $('form').on('blur', 'input[type=number]', function (e) {
         $(this).off('wheel.disableScroll')
+    });
+
+    $('fieldset.ngayhethan>input').change(()=>{
+        if($('fieldset.ngayhethan>input').val() == ''){
+            $('fieldset.ngayhethan>span').html('Hãy nhập ngày hết hạn');
+            $('fieldset.ngayhethan>input').addClass('is-invalid');
+        }else{
+            var date = new Date($('fieldset.ngayhethan>input').val());
+            date = date.setDate(date.getDay() - 180);
+            var date2 = new Date();
+            if(date < date2.getTime()){
+                $('fieldset.ngayhethan>span').html('Hạn sử dụng nhỏ hơn 6 tháng');
+                $('fieldset.ngayhethan>input').addClass('is-invalid');
+            }else{
+                $('fieldset.ngayhethan>input').removeClass('is-invalid');
+            }
+        }
     })
+
 
     $('#btn-xacnhan').click(function(){
 
@@ -351,7 +369,16 @@ function product_price($priceFloat) {
             $('fieldset.ngayhethan>span').html('Hãy nhập ngày hết hạn');
             $('fieldset.ngayhethan>input').addClass('is-invalid');
         }else{
-            $('fieldset.ngayhethan>input').removeClass('is-invalid');
+            var date = new Date($('fieldset.ngayhethan>input').val());
+            date = date.setDate(date.getDay() - 180);
+            var date2 = new Date();
+            if(date < date2.getTime()){
+                $('fieldset.ngayhethan>span').html('Hạn sử dụng nhỏ hơn 6 tháng');
+                $('fieldset.ngayhethan>input').addClass('is-invalid');
+                check = false;
+            }else{
+                $('fieldset.ngayhethan>input').removeClass('is-invalid');
+            }
         }
 
         if($('fieldset.mahanghoa>input').val() == ""){

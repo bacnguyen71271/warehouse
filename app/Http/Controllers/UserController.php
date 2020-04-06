@@ -59,6 +59,8 @@ class UserController extends Controller
         //Xóa per cũ
         DB::table('permissions')->where('user_id',$userInfo->id)->delete();
 
+
+        $duocphanquyen = 0;
         //Thêm lại các permission
         foreach ($perArray as $key => $value) {
             if($value !== 'Không cấp quyền'){
@@ -67,7 +69,22 @@ class UserController extends Controller
                     'warehouse_id' => $key,
                     'permission' => $value
                 ]);
+                $duocphanquyen += 1;
             }
+        }
+
+        if($duocphanquyen == 0){
+            DB::table('users')
+                ->where('id',$userInfo->id)
+                ->update([
+                    'permission' => -1
+                ]);
+        }else{
+            DB::table('users')
+                ->where('id',$userInfo->id)
+                ->update([
+                    'permission' => 2
+                ]);
         }
 
         return [
@@ -109,26 +126,27 @@ class UserController extends Controller
             ->select('permissions.permission','permissions.warehouse_id')
             ->get();
 
+
         //Tìm quyền
-        $user = DB::table('users')->where('id',Auth::id())->first();
-        if($user->permission == 0){
-            
-            
+        $users = DB::table('users')->where('id',Auth::id())->first();
+        if($users->permission == 0){
             return view('/pages/admin-user-edit', [
                 'pageConfigs' => $pageConfigs,
                 'user' => (array)$user,
                 'warehouses' => json_decode(json_encode($warehouses), true),
                 'permissions' => json_decode(json_encode($permission), true),
             ]);
+        }else{
+            if($id == $users->email){
+                return view('/pages/user-edit', [
+                    'pageConfigs' => $pageConfigs,
+                    'user' => (array)$user,
+                    'warehouses' => json_decode(json_encode($warehouses), true),
+                    'permissions' => json_decode(json_encode($permission), true),
+                ]);
+            }
         }
-        if($id == $user->email){
-            return view('/pages/user-edit', [
-                'pageConfigs' => $pageConfigs,
-                'user' => (array)$user,
-                'warehouses' => json_decode(json_encode($warehouses), true),
-                'permissions' => json_decode(json_encode($permission), true),
-            ]);
-        }
+
         
         return view('/pages/not-auth', [
             'pageConfigs' => $pageConfigs2,

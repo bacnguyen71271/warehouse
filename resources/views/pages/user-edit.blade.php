@@ -75,44 +75,44 @@
 
         <!-- social links end -->
         <!-- permissions start -->
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <h6 class="border-bottom py-1 mx-1 mb-0 font-medium-2"><i
-                                class="feather icon-lock mr-50 "></i>Phân quyền
-                        </h6>
-                        <table class="table table-borderless">
-                            <thead>
-                                <tr>
-                                    <th>Kho</th>
-                                    <th>Quyền truy cập</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($permissions as $permission)
-                                    <tr>
-                                        <td>{{ $permission['tenkho'] }}</td>
-                                        <td>
-                                            {{ $permission['permission'] }}
-                                        </td>
-                                    </tr>
-                                @endforeach
+{{--        <div class="col-12">--}}
+{{--            <div class="card">--}}
+{{--                <div class="card-body">--}}
+{{--                    <div class="table-responsive">--}}
+{{--                        <h6 class="border-bottom py-1 mx-1 mb-0 font-medium-2"><i--}}
+{{--                                class="feather icon-lock mr-50 "></i>Phân quyền--}}
+{{--                        </h6>--}}
+{{--                        <table class="table table-borderless">--}}
+{{--                            <thead>--}}
+{{--                                <tr>--}}
+{{--                                    <th>Kho</th>--}}
+{{--                                    <th>Quyền truy cập</th>--}}
+{{--                                </tr>--}}
+{{--                            </thead>--}}
+{{--                            <tbody>--}}
+{{--                                @foreach ($permissions as $permission)--}}
+{{--                                    <tr>--}}
+{{--                                        <td>{{ $permission['tenkho'] }}</td>--}}
+{{--                                        <td>--}}
+{{--                                            {{ $permission['permission'] }}--}}
+{{--                                        </td>--}}
+{{--                                    </tr>--}}
+{{--                                @endforeach--}}
 
-                                @if (count($permissions) <= 0)
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                        Chưa được phân quyền
-                                    </td>
-                                </tr>
-                                @endif
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+{{--                                @if (count($permissions) <= 0)--}}
+{{--                                <tr>--}}
+{{--                                    <td></td>--}}
+{{--                                    <td>--}}
+{{--                                        Chưa được phân quyền--}}
+{{--                                    </td>--}}
+{{--                                </tr>--}}
+{{--                                @endif--}}
+{{--                            </tbody>--}}
+{{--                        </table>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
         <!-- permissions end -->
     </div>
 </section>
