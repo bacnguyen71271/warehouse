@@ -12,6 +12,16 @@
 @section('page-style')
 {{-- Page css files --}}
 <link rel="stylesheet" href="{{ asset(mix('css/pages/data-list-view.css')) }}">
+
+    <style>
+        table .picker {
+            position: unset;
+        }
+
+        .error {
+            border: 1px solid #ff0000;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -78,7 +88,7 @@ function product_price($priceFloat) {
         </table>
     </div>
     {{-- DataTable ends --}}
-    <div class="modal fade text-left modal-background" id="backdrop" tabindex="-1" role="dialog"
+    <div class="modal modal-single fade text-left modal-background" id="backdrop" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel4" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -187,6 +197,73 @@ function product_price($priceFloat) {
         </div>
     </div>
 
+    <div class="modal fade text-left modal-background " id="modalnhapnhieu" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel4" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel4">Nhập hàng</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="min-height: 400px">
+                    <div class="table-responsive">
+                        <table class="table-nhaphang table table-striped mb-2">
+                            <thead>
+                            <tr>
+                                <th>Tên chương trình</th>
+                                <th>Tên hàng hóa</th>
+                                <th>Kho nhập</th>
+                                <th width="120px"></th>
+                                <th width="90px">Số lượng</th>
+                                <th width="120px">Giá trị</th>
+                                <th width="150px">Ngày nhập/Ngày hết hạn</th>
+                                <th>Ghi chú</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="nhapkho-data tr_clone">
+                                <th><input type="text" class="tenchuongtrinh form-control"> </th>
+                                <th class="nhapnhieu-tenhanghoa-th">
+                                    <select class="nhapnhieu-tenhanghoa form-control">
+                                        <option value="-1">Chọn hàng hóa</option>
+                                        @foreach ($categorys as $category)
+                                            <option value="{{ $category['id'] }}">{{ $category['tenhang'] }}</option>
+                                        @endforeach
+                                    </select>
+                                </th>
+                                <th class="nhapnhieu-kho-th">
+                                    <select class="nhapnhieu-kho form-control">
+                                        <option value="-1">Chọn kho nhập</option>
+                                        @foreach ($warehouses as $warehouse)
+                                            <option value="{{ $warehouse['id'] }}">{{ $warehouse['tenkho'] }}</option>
+                                        @endforeach
+                                    </select>
+                                </th>
+                                <th><span class="nhapnhieu-mahang"></span> <span class="nhapnhieu-dongia"></span> </th>
+                                <th><input type="number" class="nhapnhieu-soluong form-control"> </th>
+                                <th><span class="nhapnhieu-giatri"></span> </th>
+                                <th><input type='date' value="{{ date("Y-m-d") }}" class="nhapnhieu-ngaynhap form-control"/><input type='date' value="{{ date("Y-m-d") }}" class="nhapnhieu-hethan form-control"/></th>
+                                <th><textarea clas="nhapnhieu-ghichu"></textarea></th>
+                                <th>
+                                    <span class="action-edit" data-toggle="tooltip" data-placement="top" title="" data-original-title="Copy dòng này"><i class="feather icon-copy"></i></span>
+                                    <span class="action-delete" data-toggle="tooltip" data-placement="top" title="" data-original-title="Xóa dòng này"><i class="feather icon-trash"></i></span>
+                                </th>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center"><button class="themdongmoi">Thêm dòng mới</button></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btn-xacnhan-nhapnhieu" class="btn btn-primary">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 {{-- Data list view end --}}
 @endsection
@@ -210,6 +287,202 @@ function product_price($priceFloat) {
     $(document).ready(function() {
     "use strict"
 
+        $('tbody').delegate(".action-edit", "click",function () {
+            var $tr    = $(this).closest('.nhapkho-data');
+            var $clone = $tr.clone();
+            $clone.removeClass('tr_clone');
+            $tr.after($clone);
+
+            $('.tooltip').remove();
+        });
+
+        $('tbody').delegate(".action-delete", "click",function () {
+            if($('.nhapkho-data').length > 1){
+                $(this).closest('.nhapkho-data').remove();
+            }
+            $('.tooltip').remove();
+        });
+
+    $('.themdongmoi').click(function () {
+        var $tr    = $('.tr_clone');
+        var $clone = $tr.clone();
+        $clone.removeClass('tr_clone');
+        $clone.find(':text').val('');
+        $tr.after($clone);
+    })
+
+        $('#btn-xacnhan-nhapnhieu').click(function () {
+            var flag = 0;
+            var date2 = new Date();
+            //Check dữ liệu
+            $.each($('.nhapkho-data'), function (el) {
+                if($(this).find('.tenchuongtrinh').val() == ''){
+                    $(this).find('.tenchuongtrinh').addClass('error');
+                    flag = 1;
+                }else{
+                    $(this).find('.tenchuongtrinh').removeClass('error')
+                }
+
+                if($(this).find('.nhapnhieu-tenhanghoa').val() == -1){
+                    $(this).find('.nhapnhieu-tenhanghoa-th>select').addClass('error')
+                    flag = 1;
+                }else{
+                    $(this).find('.nhapnhieu-tenhanghoa-th>select').removeClass('error')
+                }
+
+                if($(this).find('.nhapnhieu-kho') .val() == -1){
+                    $(this).find('.nhapnhieu-kho-th>select').addClass('error')
+                    flag = 1;
+                }else{
+                    $(this).find('.nhapnhieu-kho-th>select').removeClass('error')
+                }
+
+                if($(this).find('.nhapnhieu-soluong').val() == ''){
+                    $(this).find('.nhapnhieu-soluong').addClass('error')
+                    flag = 1;
+                }else{
+                    $(this).find('.nhapnhieu-soluong').removeClass('error')
+                }
+
+                var date = new Date($(this).find('.nhapnhieu-hethan').val());
+                date = date.setDate(date.getDay() - 180);
+                if(date < date2.getTime()){
+                    $(this).find('.nhapnhieu-hethan').addClass('error')
+                    flag = 1;
+                }else{
+                    $(this).find('.nhapnhieu-hethan').removeClass('error')
+                }
+            })
+
+            if(flag == 1){
+                Swal.fire({
+                    title: 'Dữ liệu nhập vào không hợp lệ, hãy xem lại những trường đánh dấu đỏ',
+                    type: 'error',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Okey !',
+                    confirmButtonClass: 'btn btn-primary',
+                    cancelButtonClass: 'btn btn-danger ml-1',
+                    buttonsStyling: false,
+                })
+            }else{
+                Swal.fire({
+                    title: 'Bạn có chắc chắn nhập kho với thông tin đã cung cấp ?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Vâng, nhập kho!',
+                    cancelButtonText: 'Hủy',
+                    confirmButtonClass: 'btn btn-primary',
+                    cancelButtonClass: 'btn btn-danger ml-1',
+                    buttonsStyling: false,
+                }).then(function(result) {
+                    if (result.value) {
+                        $.each($('.nhapkho-data'), function (el) {
+                            var self2 = $(this);
+                            $.ajax({
+                                type: 'POST',
+                                url: '{{ url('nhapkho') }}',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{!! csrf_token() !!}'
+                                },
+                                data: {
+                                    'mahang': $(this).find('.nhapnhieu-tenhanghoa').val(),
+                                    'kho' : $(this).find('.nhapnhieu-kho').val(),
+                                    'tenchuongtrinh' : $(this).find('.tenchuongtrinh').val(),
+                                    'soluong' : $(this).find('.nhapnhieu-soluong').val(),
+                                    'ngaynhap' : $(this).find('.nhapnhieu-ngaynhap').val(),
+                                    'hansudung' : $(this).find('.nhapnhieu-hethan').val(),
+                                    'ghichu' : $(this).find('.nhapnhieu-ghichu').val(),
+                                },
+                                dataType: 'json',
+                                success: function(data) {
+                                    if(data.status){
+                                        if($('.nhapkho-data').length > 1){
+                                            self2.remove();
+                                        }
+                                        var newRow = dataListView.row.add([
+                                            data.data.tenchuongtrinh,
+                                            data.data.tenhang,
+                                            number_format(data.data.dongia,0,'','.') + ' đ',
+                                            data.data.soluong,
+                                            data.data.tenkho,
+                                            data.data.hansudung,
+                                            `<a href="{{ url('lichsunhap') }}/`+ data.data.id +`">Chi tiết</a>`,
+                                            data.data.created_at
+                                        ]).draw().node();
+                                        $(newRow)
+                                            .css('color', '#00861d')
+                                            .animate({
+                                                color: 'black'
+                                            })
+                                        $.toast(data.msg);
+                                    }else{
+                                        $.toast(data.msg);
+                                    }
+                                }
+                            });
+                            $('#modalnhapnhieu').modal('hide');
+                        })
+                    }
+                });
+            }
+
+        })
+
+
+        $('tbody').delegate(".nhapnhieu-soluong", "keyup" ,function(el){
+
+            var dongia = $(this).parents('.nhapkho-data').find('.nhapnhieu-dongia').html();
+            if($(this).val() != "" ||
+                $(this).val() <= 0 &&
+                $(this).parents('.nhapkho-data').find('.nhapnhieu-dongia').html() != ""){
+
+                var dongia = $(this).parents('.nhapkho-data').find('.nhapnhieu-dongia').html().match(/\d/g);
+                dongia = dongia.join('');
+                dongia = parseInt(dongia);
+                var giatri = dongia * parseInt($(this).parents('.nhapkho-data').find('.nhapnhieu-dongia').html());
+                $(this).parents('.nhapkho-data').find('.nhapnhieu-giatri').html(number_format(giatri,0,'','.') + 'đ');
+            }else{
+                $(this).parents('.nhapkho-data').find('.nhapnhieu-giatri').html('');
+            }
+        })
+
+        $('tbody').delegate(".nhapnhieu-tenhanghoa", "change" ,function(el){
+            var self = $(this);
+            if($(this).val() == -1){
+                $(this).parents('.nhapkho-data').find('.nhapnhieu-mahang').html('');
+                $(this).parents('.nhapkho-data').find('.nhapnhieu-dongia').html('');
+                $(this).parents('.nhapkho-data').find('.nhapnhieu-giatri').html('');
+            }else{
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url('categoryinfo') }}',
+                    headers: {
+                        'X-CSRF-TOKEN': '{!! csrf_token() !!}'
+                    },
+                    data: {
+                        'iddanhmuc': self.val(),
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if(data.status){
+                            self.parents('.nhapkho-data').find('.nhapnhieu-mahang').html(data.data.mahang);
+                            self.parents('.nhapkho-data').find('.nhapnhieu-dongia').html(number_format(data.data.dongia,0,'','.') + 'đ');
+
+                            if(self.parents('.nhapkho-data').find('.nhapnhieu-soluong').val() != '' || self.parents('.nhapkho-data').find('.nhapnhieu-soluong').val() <= 0 ){
+                                var giatri = data.data.dongia * parseInt(self.parents('.nhapkho-data').find('.nhapnhieu-soluong').val());
+                                self.parents('.nhapkho-data').find('.nhapnhieu-giatri').html(number_format(giatri,0,'','.') + 'đ');
+                            }else{
+                                self.parents('.nhapkho-data').find('.nhapnhieu-giatri').html('');
+                            }
+                        }
+                    }
+                });
+            }
+
+        })
 
     function number_format (number, decimals, dec_point, thousands_sep) {
         // Strip all characters but numerical ones.
@@ -284,7 +557,7 @@ function product_price($priceFloat) {
         bInfo: false,
         pageLength: 10,
         buttons: [{
-            text: "<i class='feather icon-plus'></i> Nhập kho",
+            text: "<i class='feather icon-plus'></i> Nhập một",
             action: function() {
                 $('#thh').val(-1).trigger('change.select2');
                 $('#kho').val(-1).trigger('change.select2');
@@ -296,7 +569,18 @@ function product_price($priceFloat) {
                 "data-backdrop":"false",
                 "data-target":"#backdrop"
             }
-        }],
+        },
+            {
+                text: "<i class='feather icon-plus'></i> Nhập nhiều",
+                action: function() {
+                },
+                className: "btn btn-outline-primary",
+                attr:  {
+                    "data-toggle":"modal",
+                    "data-backdrop":"false",
+                    "data-target":"#modalnhapnhieu"
+                }
+            }],
         initComplete: function(settings, json) {
             $(".dt-buttons .btn").removeClass("btn-secondary")
         }
