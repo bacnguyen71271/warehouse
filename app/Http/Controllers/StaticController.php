@@ -18,39 +18,73 @@ class StaticController extends Controller
         foreach ($hangtrongkho as $key => $value) {
             $soluonghangtrongkho += $value->soluong;
         }
-        
+
         return [
             'hangtrongkho' => $soluonghangtrongkho
         ];
     }
 
-    public static function CheckPermission($page){
-        //
-        $user = DB::table('users')
-            ->where('id','=',Auth::id())->first();
+    public static function checkMotQuyen($quyen){
 
-        if($user->permission == 0){
-            return 'Administrator';
-        }
+        $q = 0;
+        $permission = DB::table('permissions')->where('user_id',Auth::id())->get();
 
-        if($user->permission == -1){
-            return 'Không cấp quyền';
-        }
 
-        if($user->permission == 2){
-            //Check quyền
-            $permission = DB::table('permissions')
-                ->where('id','=',Auth::id())->first();
-
-            switch ($page){
-                case 'delivery' :
-
-                default:
-                    return 'Không cấp quyền';
+//        echo $quyen;
+        foreach ($permission as $key => $value){
+            if($quyen == "delivery" && $value->permission == 'Delivery'){
+                $q +=1;
             }
+
+            if($quyen == "user" && $value->permission == 'User'){
+//                echo '1231';
+                $q +=1;
+            }
+            if($quyen == "approved" && $value->permission == 'Approved'){
+                $q +=1;
+            }
+        }
+        if($q > 0) return true; else return false;
+    }
+
+    public static function QuenUser(){
+        $user = DB::table('users')->where('id',Auth::id())->first();
+
+        return $user->permission;
+    }
+
+    public static function Checknutgiaohang($warehouse){
+
+        $permission = DB::table('permissions')
+            ->where('user_id',Auth::id())
+            ->where('warehouse_id',$warehouse)
+            ->where('permission','Delivery')
+            ->first();
+
+
+        if($permission){
+            return true;
+        }else{
+            return false;
         }
     }
 
+
+    public static function checkNutXacnhan($warehouse){
+
+        $permission = DB::table('permissions')
+            ->where('user_id',Auth::id())
+            ->where('warehouse_id',$warehouse)
+            ->where('permission','Approved')
+            ->orWhere('permission',' Administrator')
+            ->first();
+
+        if($permission){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     public static function LogHistory($hanhdong,$tacnhan,$thongtin)
     {

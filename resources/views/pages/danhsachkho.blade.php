@@ -11,6 +11,7 @@
 @section('content')
 <!-- Analytics card section start -->
 <section id="analytics-card">
+    @if($users->permission == 0)
     <div class="modal fade text-left modal-background" id="backdrop" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel4" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -40,7 +41,9 @@
         </div>
     </div>
 </div>
+    @endif
     <div class="row danhsachkho">
+        @if($users->permission == 0)
         <div class="col-lg-4 col-12">
             <div class="card btn btn-themkho">
                 <div class="card-content">
@@ -53,6 +56,7 @@
                 </div>
             </div>
         </div>
+        @endif
         @foreach ($warehouses as $warehouse)
             <div class="col-lg-4 col-12">
                 <div class="card">
@@ -65,7 +69,7 @@
                                 <div class="series-info d-flex align-items-center">
                                     <i class="feather icon-layers font-medium-2 text-primary"></i>
                                     <span class="text-bold-600 mx-50">Hàng trong kho</span>
-                                    <span> - 
+                                    <span> -
                                         <div class="badge badge badge-primary badge-pill">
                                             @php
                                                  echo App\Http\Controllers\StaticController::getWarehouseInfo($warehouse['id'])["hangtrongkho"];
@@ -87,7 +91,7 @@
             </div>
         @endforeach
 
-        
+
     </div>
 </section>
 <!-- Analytics Card section end-->
@@ -129,7 +133,7 @@
                             'X-CSRF-TOKEN': '{!! csrf_token() !!}'
                         },
                         data: {
-                            'tenkho' : $('.tenkho>input').val() 
+                            'tenkho' : $('.tenkho>input').val()
                         },
                         dataType: 'json',
                         success: function(data){

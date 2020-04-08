@@ -4,67 +4,80 @@
             "name": "Dashboard",
             "slug": "dashboard",
             "badgeClass": "badge badge-warning badge-pill float-right mr-2",
-            "icon": "feather icon-home"
+            "icon": "feather icon-home",
+            "per" : "all"
         },
         {
             "url": "",
             "navheader": "Warehouse",
-            "icon": ""
+            "icon": "",
+            "per" : "all"
         },
         {
             "url": "delivery",
             "name": "Delivery",
-            "icon": "feather icon-truck"
+            "icon": "feather icon-truck",
+            "per" : "delivery,admin,approved"
         },
         {
             "url": "hangtrongkho",
             "name": "Hàng trong kho",
-            "icon": "feather icon-layers"
+            "icon": "feather icon-layers",
+            "per" : "all"
         },
         {
             "url": "danhmuchh",
             "name": "Danh mục hàng",
-            "icon": "feather icon-clipboard"
+            "icon": "feather icon-clipboard",
+            "per" : "all"
         },
         {
             "url": "nhapkho",
             "name": "Nhập kho",
-            "icon": "feather icon-download"
+            "icon": "feather icon-download",
+            "per" : "admin,approved,superad"
         },
         {
             "url": "xuatkho",
             "name": "Xuất kho",
-            "icon": "feather icon-upload"
+            "icon": "feather icon-upload",
+            "per" : "user,admin,approved"
         },
         {
             "url": "danhsachkho",
             "name": "Danh sách kho",
-            "icon": "feather icon-grid"
+            "icon": "feather icon-grid",
+            "per" : "all"
         },
         {
             "url": "",
             "navheader": "USER",
-            "icon": ""
+            "icon": "",
+            "per" : "superad"
         },
         {
             "url": "danhsachuser",
             "name": "Danh sách User",
-            "icon": "feather icon-list"
+            "icon": "feather icon-list",
+            "per" : "superad"
         },
         {
             "url": "",
             "name": "Thêm người dùng",
-            "icon": "feather icon-user-plus"
+            "icon": "feather icon-user-plus",
+            "per" : "superad"
         },
         {
             "url": "",
             "navheader": "BÁO CÁO",
-            "icon": ""
+            "icon": "",
+            "per" : "user,admin,approved"
         },
         {
             "url": "system-history",
             "name": "Lịch sử hệ thống",
-            "icon": "feather icon-file-text"
+            "icon": "feather icon-file-text",
+            "per" : "superad"
         }
     ]
 }
