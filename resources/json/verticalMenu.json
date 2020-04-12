@@ -74,10 +74,10 @@
             "per" : "user,admin,approved"
         },
         {
-            "url": "system-history",
-            "name": "Lịch sử hệ thống",
+            "url": "baocaokho",
+            "name": "Báo cáo kho",
             "icon": "feather icon-file-text",
-            "per" : "superad"
+            "per" : "all"
         }
     ]
 }

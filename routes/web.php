@@ -69,6 +69,9 @@ Route::post('/deletecategory','DanhmucController@deleteCategory');
 Route::post('file-upload', 'FileUploadController@fileUploadPost')->name('file.upload.post');
 
 
+//Báo cáo
+Route::get('/baocaokho', 'BaocaoController@baocaokho');
+
 Route::get('user/activation/{token}', 'Auth\RegisterController@activateUser')->name('user.activate');
 
   // Auth Routes...
