@@ -5,13 +5,13 @@
             "slug": "dashboard",
             "badgeClass": "badge badge-warning badge-pill float-right mr-2",
             "icon": "feather icon-home",
-            "per" : "all"
+            "per" : "delivery,user,admin,approved"
         },
         {
             "url": "",
             "navheader": "Warehouse",
             "icon": "",
-            "per" : "all"
+            "per" : "delivery,user,admin,approved"
         },
         {
             "url": "delivery",
@@ -23,13 +23,13 @@
             "url": "hangtrongkho",
             "name": "Hàng trong kho",
             "icon": "feather icon-layers",
-            "per" : "all"
+            "per" : "delivery,user,admin,approved"
         },
         {
             "url": "danhmuchh",
             "name": "Danh mục hàng",
             "icon": "feather icon-clipboard",
-            "per" : "all"
+            "per" : "admin,approved"
         },
         {
             "url": "nhapkho",
@@ -41,13 +41,13 @@
             "url": "xuatkho",
             "name": "Xuất kho",
             "icon": "feather icon-upload",
-            "per" : "user,admin,approved"
+            "per" : "delivery,user,admin,approved"
         },
         {
             "url": "danhsachkho",
             "name": "Danh sách kho",
             "icon": "feather icon-grid",
-            "per" : "all"
+            "per" : "delivery,user,admin,approved"
         },
         {
             "url": "",
@@ -77,7 +77,7 @@
             "url": "baocaokho",
             "name": "Báo cáo kho",
             "icon": "feather icon-file-text",
-            "per" : "all"
+            "per" : "user,admin,approved"
         }
     ]
 }

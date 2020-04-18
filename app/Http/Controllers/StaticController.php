@@ -29,9 +29,10 @@ class StaticController extends Controller
         $q = 0;
         $permission = DB::table('permissions')->where('user_id',Auth::id())->get();
 
-
 //        echo $quyen;
         foreach ($permission as $key => $value){
+//            echo $value->permission;
+//            echo $quyen;
             if($quyen == "delivery" && $value->permission == 'Delivery'){
                 $q +=1;
             }
@@ -44,6 +45,7 @@ class StaticController extends Controller
                 $q +=1;
             }
         }
+//        echo $q; die;
         if($q > 0) return true; else return false;
     }
 
