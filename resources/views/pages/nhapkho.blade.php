@@ -28,9 +28,9 @@
     @php
         function product_price($priceFloat) {
             $symbol = '';
-            $symbol_thousand = ',';
+            $symbol_thousand = '.';
             $decimal_place = 3;
-            $price = number_format($priceFloat, $decimal_place, '.', $symbol_thousand);
+            $price = number_format($priceFloat, $decimal_place, ',', $symbol_thousand);
             return $price.$symbol;
         }
     @endphp
@@ -467,7 +467,7 @@
                     dongia = parseInt(dongia);
                     var giatri = dongia * parseInt($(this).parents('.nhapkho-data').find('.nhapnhieu-soluong').val());
                     giatri = giatri.toString().substring(0,giatri.toString().length - 3) + '.' + giatri.toString().substring(giatri.toString().length - 3, giatri.toString().length);
-                    giatri = number_format(giatri, 3, '.', ',');
+                    giatri = number_format(giatri, 3, ',', '.');
                     $(this).parents('.nhapkho-data').find('.nhapnhieu-giatri').html(giatri);
                 } else {
                     $(this).parents('.nhapkho-data').find('.nhapnhieu-giatri').html('');
@@ -494,11 +494,11 @@
                         success: function (data) {
                             if (data.status) {
                                 self.parents('.nhapkho-data').find('.nhapnhieu-mahang').html(data.data.mahang);
-                                self.parents('.nhapkho-data').find('.nhapnhieu-dongia').html(number_format(data.data.dongia, 3, '.', ','));
+                                self.parents('.nhapkho-data').find('.nhapnhieu-dongia').html(number_format(data.data.dongia, 3, ',', '.'));
 
                                 if (self.parents('.nhapkho-data').find('.nhapnhieu-soluong').val() != '' || self.parents('.nhapkho-data').find('.nhapnhieu-soluong').val() <= 0) {
                                     var giatri = data.data.dongia * parseInt(self.parents('.nhapkho-data').find('.nhapnhieu-soluong').val());
-                                    self.parents('.nhapkho-data').find('.nhapnhieu-giatri').html(number_format(giatri, 3, '.', ',')
+                                    self.parents('.nhapkho-data').find('.nhapnhieu-giatri').html(number_format(giatri, 3, ',', '.')
                                     );
                                 } else {
                                     self.parents('.nhapkho-data').find('.nhapnhieu-giatri').html('');
@@ -746,7 +746,7 @@
                                         var newRow = dataListView.row.add([
                                             data.data.tenchuongtrinh,
                                             data.data.tenhang,
-                                            number_format(data.data.dongia, 3, '.', ','),
+                                            number_format(data.data.dongia, 3, ',', '.'),
                                             data.data.soluong,
                                             data.data.tenkho,
                                             data.data.hansudung,
@@ -795,11 +795,11 @@
                         success: function (data) {
                             if (data.status) {
                                 $('fieldset.mahanghoa>input').val(data.data.mahang);
-                                $('fieldset.dongia>input').val(number_format(data.data.dongia, 3, '.', ','));
+                                $('fieldset.dongia>input').val(number_format(data.data.dongia, 3, ',', '.'));
                                 if ($('fieldset.soluong>input').val() != '' || $('fieldset.soluong>input').val() <= 0) {
                                     var giatri = data.data.dongia * parseInt($('fieldset.soluong>input').val());
                                     giatri = giatri.toString().substring(0,giatri.toString().length - 3) + '.' + giatri.toString().substring(giatri.toString().length - 3, giatri.toString().length);
-                                    $('fieldset.giatri>input').val(number_format(giatri, 3, '.', ','));
+                                    $('fieldset.giatri>input').val(number_format(giatri, 3, ',', '.'));
                                 } else {
                                     $('fieldset.giatri>input').val('');
                                 }
@@ -820,7 +820,7 @@
                     dongia = dongia.join("");
                     var giatri = dongia * parseInt($('fieldset.soluong>input').val());
                     giatri = giatri.toString().substring(0,giatri.toString().length - 3) + '.' + giatri.toString().substring(giatri.toString().length - 3, giatri.toString().length);
-                    $('fieldset.giatri>input').val(number_format(giatri, 3, '.', ',') );
+                    $('fieldset.giatri>input').val(number_format(giatri, 3, ',', '.') );
                 } else {
                     $('fieldset.giatri>input').val('');
                 }

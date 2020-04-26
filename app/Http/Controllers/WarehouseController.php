@@ -87,6 +87,11 @@ class WarehouseController extends Controller
                 ->update([
                     'status' => $trangthai + 1
                 ]);
+                return [
+                    'status' => true,
+                    'msg' => 'Thành công',
+                    'data' => ''
+                ];
             }else{
                 return [
                     'status' => false,

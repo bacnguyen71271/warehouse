@@ -18,7 +18,7 @@
 
 {{-- Data list view starts --}}
 <section id="data-list-view" class="data-list-view-header">
-   
+
     {{-- DataTable starts --}}
     <div class="table-responsive">
         <table class="table data-list-view">
@@ -245,7 +245,7 @@
         formatSubmit: 'yyyy-mm-dd',
         format: 'yyyy-mm-dd',
     });
-    
+
     let editElement;
     // init list view datatable
     var dataListView = $(".data-list-view").DataTable({
@@ -401,7 +401,7 @@
                             var newRow = dataListView.row.add([
                                 data.data.tenchuongtrinh,
                                 data.data.tenhang,
-                                number_format(data.data.dongia,3,'.',','),
+                                number_format(data.data.dongia,3,',','.'),
                                 data.data.soluong,
                                 data.data.tenkho,
                                 data.data.hansudung,
@@ -450,11 +450,11 @@
                 success: function(data) {
                     if(data.status){
                         $('fieldset.mahanghoa>input').val(data.data.mahang);
-                        $('fieldset.dongia>input').val(number_format(data.data.dongia,3,'.',','));
+                        $('fieldset.dongia>input').val(number_format(data.data.dongia,3,',','.'));
                         if($('fieldset.soluong>input').val() != '' || $('fieldset.soluong>input').val() <= 0 ){
                             var giatri = data.data.dongia * parseInt($('fieldset.soluong>input').val());
                             giatri = giatri.toString().substring(0,giatri.toString().length - 3) + '.' + giatri.toString().substring(giatri.toString().length - 3, giatri.toString().length);
-                            $('fieldset.giatri>input').val(number_format(giatri,3,'.',','));
+                            $('fieldset.giatri>input').val(number_format(giatri,3,',','.'));
                         }else{
                             $('fieldset.giatri>input').val('');
                         }
@@ -462,20 +462,20 @@
                 }
             });
         }
-        
+
     })
-    
+
 
     $('fieldset.soluong>input').keyup(function(){
-        if($('fieldset.soluong>input').val() != '' || 
-        $('fieldset.soluong>input').val() <= 0 && 
+        if($('fieldset.soluong>input').val() != '' ||
+        $('fieldset.soluong>input').val() <= 0 &&
         $('fieldset.dongia>input').val() != ''){
 
             var dongia = $('fieldset.dongia>input').val().match(/\d/g);
             dongia = dongia.join("");
             var giatri = dongia * parseInt($('fieldset.soluong>input').val());
             giatri = giatri.toString().substring(0,giatri.toString().length - 3) + '.' + giatri.toString().substring(giatri.toString().length - 3, giatri.toString().length);
-            $('fieldset.giatri>input').val(number_format(giatri,3,'.',','));
+            $('fieldset.giatri>input').val(number_format(giatri,3,',','.'));
         }else{
             $('fieldset.giatri>input').val('');
         }

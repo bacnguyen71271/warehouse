@@ -36,9 +36,9 @@
 @php
 function product_price($priceFloat) {
     $symbol = '';
-    $symbol_thousand = ',';
+    $symbol_thousand = '.';
     $decimal_place = 3;
-    $price = number_format($priceFloat, $decimal_place, '.', $symbol_thousand);
+    $price = number_format($priceFloat, $decimal_place, ',', $symbol_thousand);
     return $price.$symbol;
 }
 @endphp
@@ -165,7 +165,7 @@ function product_price($priceFloat) {
                             <span> {{ $file['name_old'] }}</span>
                             </div>
                         </a>
-                        @endforeach    
+                        @endforeach
                     </td>
                   </tr>
                   <tr>
@@ -208,7 +208,7 @@ checkhangton();
             if($('#kho').val() != -1){
                 checkhangton();
             }
-            
+
 
             $.ajax({
                 type: 'POST',
@@ -223,11 +223,11 @@ checkhangton();
                 success: function(data) {
                     if(data.status){
                         $('fieldset.mahanghoa>input').val(data.data.mahang);
-                        $('fieldset.dongia>input').val(number_format(data.data.dongia,3,'.',','));
+                        $('fieldset.dongia>input').val(number_format(data.data.dongia,3,',','.'));
                         if($('fieldset.soluong>input').val() != '' || $('fieldset.soluong>input').val() <= 0 ){
                             var giatri = data.data.dongia * parseInt($('fieldset.soluong>input').val());
                             giatri = giatri.toString().substring(0,giatri.toString().length - 3) + '.' + giatri.toString().substring(giatri.toString().length - 3, giatri.toString().length);
-                            $('fieldset.giatri>input').val(number_format(giatri,3,'.',','));
+                            $('fieldset.giatri>input').val(number_format(giatri,3,',','.'));
                         }else{
                             $('fieldset.giatri>input').val('');
                         }
@@ -235,7 +235,7 @@ checkhangton();
                 }
             });
         }
-        
+
     })
 
     $(".btn-xacnhan").click(function(e){
@@ -329,11 +329,11 @@ checkhangton();
                 });
             }
         });
-    
+
 
     $('fieldset.soluong>input').keyup(function(){
-        if($('fieldset.soluong>input').val() != '' || 
-        $('fieldset.soluong>input').val() <= 0 && 
+        if($('fieldset.soluong>input').val() != '' ||
+        $('fieldset.soluong>input').val() <= 0 &&
         $('fieldset.dongia>input').val() != ''){
             $('fieldset.soluong>input').val( )
 
@@ -344,12 +344,12 @@ checkhangton();
             var dongia = $('fieldset.dongia>input').val().match(/\d/g);
             dongia = dongia.join("");
             var giatri = dongia * parseInt($('fieldset.soluong>input').val());
-            $('fieldset.giatri>input').val(number_format(giatri,3,'.',','));
+            $('fieldset.giatri>input').val(number_format(giatri,3,',','.'));
         }else{
             $('fieldset.giatri>input').val('');
         }
     });
-  
+
   function checkhangton(){
         var idkho = $('#kho').val();
         var idhang = $('#thh').val();
@@ -400,7 +400,7 @@ checkhangton();
                     dataType: 'json',
                     success: function(data) {
                       $.toast(data.msg);
-                      var delay = 1000; 
+                      var delay = 1000;
                       setTimeout(function(){ location.reload(); }, delay);
                     }
                   })

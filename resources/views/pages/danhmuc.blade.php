@@ -16,9 +16,9 @@
 @php
 function product_price($priceFloat) {
 $symbol = ' đ';
-$symbol_thousand = ',';
+$symbol_thousand = '.';
 $decimal_place = 3;
-$price = number_format($priceFloat, $decimal_place, '.', $symbol_thousand);
+$price = number_format($priceFloat, $decimal_place, ',', $symbol_thousand);
 return $price.$symbol;
 }
 @endphp
