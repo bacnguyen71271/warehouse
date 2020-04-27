@@ -17,7 +17,7 @@
             "url": "delivery",
             "name": "Delivery",
             "icon": "feather icon-truck",
-            "per" : "delivery,admin,approved"
+            "per" : "delivery,user,admin,approved"
         },
         {
             "url": "hangtrongkho",
@@ -35,7 +35,7 @@
             "url": "nhapkho",
             "name": "Nhập kho",
             "icon": "feather icon-download",
-            "per" : "admin,approved,superad"
+            "per" : "admin,user,approved,superad"
         },
         {
             "url": "xuatkho",
