@@ -48,7 +48,7 @@ function product_price($priceFloat) {
             <div class="card">
             <div class="card-header">
               <div class="card-title mb-2">Sửa phiếu xuất</div>
-              @if($whhistorytemp["status"] == 0)
+              @if($whhistorytemp["status"] == 0 || $whhistorytemp["userid"] == Auth::id())
               <div class="heading-elements">
                 <ul class="list-inline mb-0">
                   <li><button class="btn mb-1 btn-primary waves-effect waves-light btn-xacnhan" >Lưu thay đổi</button></li>

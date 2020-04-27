@@ -39,7 +39,7 @@ function product_price($priceFloat) {
               @if($whhistorytemp["status"] == 0)
               <div class="heading-elements">
                 <ul class="list-inline mb-0">
-                    @if(\App\Http\Controllers\StaticController::checkNutXacnhan( $whhistorytemp['warehouseId'] ))
+                    @if(\App\Http\Controllers\StaticController::checkNutXacnhan( $whhistorytemp['warehouseId'] ) || $whhistorytemp["userid"] == Auth::id())
                   <li><a class="btn mb-1 p-1  btn-primary waves-effect waves-light" href="{{ url('xuatkho/suaphieu/') }}/{{ $whhistorytemp['id'] }}" data-action="reload">Sửa phiếu</a></li>
                     @endif
                 </ul>

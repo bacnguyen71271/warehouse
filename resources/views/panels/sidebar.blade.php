@@ -50,6 +50,7 @@
                           &&
                           (
                                 (strpos($menu->per,'user') > -1 && \App\Http\Controllers\StaticController::checkMotQuyen('user'))
+							||	(strpos($menu->per,'admin') > -1 && \App\Http\Controllers\StaticController::checkMotQuyen('admin'))
                             ||  (strpos($menu->per,'approved') > -1 && \App\Http\Controllers\StaticController::checkMotQuyen('approved'))
                             ||  (strpos($menu->per,'delivery') > -1 && \App\Http\Controllers\StaticController::checkMotQuyen('delivery'))
                             ||  (strpos($menu->per,'all'))

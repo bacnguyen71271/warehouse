@@ -44,6 +44,10 @@ class StaticController extends Controller
             if($quyen == "approved" && $value->permission == 'Approved'){
                 $q +=1;
             }
+			
+			if($quyen == "admin" && $value->permission == 'Administrator'){
+                $q +=1;
+            }
         }
 //        echo $q; die;
         if($q > 0) return true; else return false;
@@ -73,7 +77,7 @@ class StaticController extends Controller
 
 
     public static function checkNutXacnhan($warehouse){
-
+		$users = DB::table('users')->where('id',Auth::id())->first();
         $permission = DB::table('permissions')
             ->where('user_id',Auth::id())
             ->where('warehouse_id',$warehouse)
@@ -81,7 +85,7 @@ class StaticController extends Controller
             ->orWhere('permission',' Administrator')
             ->first();
 
-        if($permission){
+        if($permission || $users->permission == 0){
             return true;
         }else{
             return false;
