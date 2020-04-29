@@ -61,9 +61,9 @@
 @php
 function product_price($priceFloat) {
 $symbol = '';
-$symbol_thousand = '.';
-$decimal_place = 3;
-$price = number_format($priceFloat, $decimal_place, ',', $symbol_thousand);
+$symbol_thousand = ',';
+$decimal_place = 0;
+$price = number_format($priceFloat, $decimal_place, '', $symbol_thousand);
 return $price.$symbol;
 }
 @endphp
@@ -434,10 +434,10 @@ return $price.$symbol;
                 success: function(data) {
                     if(data.status){
                         $('fieldset.mahanghoa>input').val(data.data.mahang);
-                        $('fieldset.dongia>input').val(number_format(data.data.dongia,3,',','.'));
+                        $('fieldset.dongia>input').val(number_format(data.data.dongia,0,',',','));
                         if($('fieldset.soluong>input').val() != '' || $('fieldset.soluong>input').val() <= 0 ){
                             var giatri = data.data.dongia * parseInt($('fieldset.soluong>input').val());
-                            $('fieldset.giatri>input').val(number_format(giatri,3,',','.'));
+                            $('fieldset.giatri>input').val(number_format(giatri,0,',',','));
                         }else{
                             $('fieldset.giatri>input').val('');
                         }
@@ -462,7 +462,7 @@ return $price.$symbol;
             var dongia = $('fieldset.dongia>input').val().match(/\d/g);
             dongia = dongia.join("");
             var giatri = dongia * parseInt($('fieldset.soluong>input').val());
-            $('fieldset.giatri>input').val(number_format(giatri,3,',','.'));
+            $('fieldset.giatri>input').val(number_format(giatri,0,',',','));
         }else{
             $('fieldset.giatri>input').val('');
         }
@@ -487,7 +487,7 @@ function commitFinish(formResponse,myDropzone){
                 var newRow = dataListView.row.add([
                     formResponse.tenchuongtrinh,
                     formResponse.tenhang,
-                    number_format(formResponse.dongia,3,',','.'),
+                    number_format(formResponse.dongia,0,',',','),
                     formResponse.soluong,
                     formResponse.tenkho,
                     `<div class="chip chip-warning">

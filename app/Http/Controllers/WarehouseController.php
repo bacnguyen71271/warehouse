@@ -53,7 +53,6 @@ class WarehouseController extends Controller
         }
 
         $wh_history = $wh_history->get();
-
         return view('/pages/delivery', [
             'pageConfigs' => $pageConfigs,
             'deliverys' => json_decode(json_encode($wh_history), true),
@@ -394,6 +393,11 @@ class WarehouseController extends Controller
                 'status' => true
             ]);
 
+            DB::table('delivery_history')->insert([
+                'orderid' => $idorder,
+                'userid' => -1,
+                'status' => 0
+            ]);
 
             $slHienTai = DB::table('warehouse_goods')
             ->where('warehouseid',$order->warehouseId)

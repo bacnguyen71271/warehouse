@@ -401,7 +401,7 @@
                             var newRow = dataListView.row.add([
                                 data.data.tenchuongtrinh,
                                 data.data.tenhang,
-                                number_format(data.data.dongia,3,',','.'),
+                                number_format(data.data.dongia,0,',',','),
                                 data.data.soluong,
                                 data.data.tenkho,
                                 data.data.hansudung,
@@ -450,11 +450,11 @@
                 success: function(data) {
                     if(data.status){
                         $('fieldset.mahanghoa>input').val(data.data.mahang);
-                        $('fieldset.dongia>input').val(number_format(data.data.dongia,3,',','.'));
+                        $('fieldset.dongia>input').val(number_format(data.data.dongia,0,',',','));
                         if($('fieldset.soluong>input').val() != '' || $('fieldset.soluong>input').val() <= 0 ){
                             var giatri = data.data.dongia * parseInt($('fieldset.soluong>input').val());
                             giatri = giatri.toString().substring(0,giatri.toString().length - 3) + '.' + giatri.toString().substring(giatri.toString().length - 3, giatri.toString().length);
-                            $('fieldset.giatri>input').val(number_format(giatri,3,',','.'));
+                            $('fieldset.giatri>input').val(number_format(giatri,0,',',','));
                         }else{
                             $('fieldset.giatri>input').val('');
                         }
@@ -475,7 +475,7 @@
             dongia = dongia.join("");
             var giatri = dongia * parseInt($('fieldset.soluong>input').val());
             giatri = giatri.toString().substring(0,giatri.toString().length - 3) + '.' + giatri.toString().substring(giatri.toString().length - 3, giatri.toString().length);
-            $('fieldset.giatri>input').val(number_format(giatri,3,',','.'));
+            $('fieldset.giatri>input').val(number_format(giatri,0,',',','));
         }else{
             $('fieldset.giatri>input').val('');
         }
