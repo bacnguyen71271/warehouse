@@ -17,6 +17,10 @@
             margin: 0px !important;
         }
 
+        .error{
+            border: 1px solid red;
+        }
+
         span.nhapnhieu-dongia {
             display: flex;
         }
@@ -93,13 +97,10 @@
             <table class="table data-list-view">
                 <thead>
                 <tr>
+                    <th>#</th>
                     <th>TÊN CHƯƠNG TRÌNH</th>
-                    {{-- <th>LOẠI HÀNG</th> --}}
-                    <th>TÊN HÀNG</th>
-                    {{-- <th>MÃ HÀNG HÓA</th> --}}
-                    <th>ĐƠN GIÁ</th>
+                    <th>TỔNG GIÁ TRỊ</th>
                     <th>SỐ LƯỢNG</th>
-                    <th>KHO</th>
                     <th>TRẠNG THÁI</th>
                     <th></th>
                     <th>Created_at</th>
@@ -108,11 +109,10 @@
                 <tbody>
                 @foreach ($products as $product)
                     <tr>
+                        <td>{{ $product["id"] }}</td>
                         <td>{{ $product["tenchuongtrinh"] }}</td>
-                        <td>{{ $product["tenhang"] }}</td>
                         <td>{{ product_price($product["dongia"]) }}</td>
                         <td>{{ $product["soluong"] }}</td>
-                        <td>{{ $product["tenkho"] }}</td>
                         <td>
                             @if (!$product["status"])
                                 <div class="chip chip-warning">
@@ -138,121 +138,6 @@
                 </tbody>
             </table>
         </div>
-        {{-- DataTable ends --}}
-        {{--        <div class="modal fade text-left modal-background" id="backdrop" tabindex="-1" role="dialog"--}}
-        {{--             aria-labelledby="myModalLabel4" aria-hidden="true">--}}
-        {{--            <div class="modal-dialog" role="document">--}}
-        {{--                <div class="modal-content">--}}
-        {{--                    <div class="modal-header">--}}
-        {{--                        <h4 class="modal-title" id="myModalLabel4">Phiếu order xuất kho</h4>--}}
-        {{--                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
-        {{--                            <span aria-hidden="true">&times;</span>--}}
-        {{--                        </button>--}}
-        {{--                    </div>--}}
-        {{--                    <div class="modal-body">--}}
-        {{--                        <form id="form-modal">--}}
-        {{--                            <div class="row">--}}
-        {{--                                <div class="col-sm-12 col-xl-12 data-field-col">--}}
-        {{--                                    <fieldset class="form-group tenchuongtrinh">--}}
-        {{--                                        <label for="data-name">Tên chương trình <code>(*)</code></label>--}}
-        {{--                                        <input type="text" class="form-control" id="tenchuongtrinh">--}}
-        {{--                                        <span class="invalid-feedback" role="alert"></span>--}}
-        {{--                                    </fieldset>--}}
-        {{--                                </div>--}}
-        {{--                            </div>--}}
-        {{--                            <div class="row">--}}
-        {{--                                <div class="col-sm-12 data-field-col">--}}
-        {{--                                    <fieldset class="form-group tenhanghoa">--}}
-        {{--                                        <label for="data-name">Tên hàng hóa <code>(*)</code></label>--}}
-        {{--                                        <select class="select2 form-control" id="thh">--}}
-        {{--                                            <option value="-1">Chọn hàng hóa</option>--}}
-        {{--                                            @foreach ($categorys as $category)--}}
-        {{--                                                <option value="{{ $category['id'] }}">{{ $category['tenhang'] }}</option>--}}
-        {{--                                            @endforeach--}}
-        {{--                                        </select>--}}
-        {{--                                    </fieldset>--}}
-        {{--                                </div>--}}
-        {{--                            </div>--}}
-        {{--                            <div class="row">--}}
-        {{--                                <div class="col-lg-6 col-sm-12 data-field-col">--}}
-        {{--                                    <fieldset class="form-group mahanghoa">--}}
-        {{--                                        <label>Mã hàng</label>--}}
-        {{--                                        <input type="text" class="form-control" readonly="readonly">--}}
-        {{--                                        <span class="invalid-feedback" role="alert"></span>--}}
-        {{--                                    </fieldset>--}}
-        {{--                                </div>--}}
-        {{--                                <div class="col-lg-6 col-sm-12 data-field-col">--}}
-        {{--                                    <fieldset class="form-group dongia">--}}
-        {{--                                        <label for="giatrihang">Đơn giá</label>--}}
-        {{--                                        <input type="text" class="form-control" readonly="readonly">--}}
-        {{--                                    </fieldset>--}}
-        {{--                                </div>--}}
-        {{--                            </div>--}}
-        {{--                            <div class="row">--}}
-        {{--                                <div class="col-lg-6 col-sm-12 data-field-col">--}}
-        {{--                                    <fieldset class="form-group soluong">--}}
-        {{--                                        <label>Số lượng <code>(*)</code></label>--}}
-        {{--                                        <input type="number" class="form-control">--}}
-        {{--                                        <span class="invalid-feedback" role="alert"></span>--}}
-        {{--                                        <span class="soluongtrongkho">Trong kho: <p>0</p></span>--}}
-        {{--                                    </fieldset>--}}
-        {{--                                </div>--}}
-        {{--                                <div class="col-lg-6 col-sm-12 data-field-col">--}}
-        {{--                                    <fieldset class="form-group giatri">--}}
-        {{--                                        <label for="giatri">Giá trị</label>--}}
-        {{--                                        <input type="text" class="form-control" readonly="readonly">--}}
-        {{--                                    </fieldset>--}}
-        {{--                                </div>--}}
-        {{--                            </div>--}}
-        {{--                            <div class="row">--}}
-        {{--                                <div class="col-lg-6 col-sm-12 data-field-col">--}}
-        {{--                                    <fieldset class="form-group ngaynhapkho">--}}
-        {{--                                        <label>Ngày xuất <code>(*)</code></label>--}}
-        {{--                                        <input type='text' value="{{ date("Y-m-d") }}"--}}
-        {{--                                               class="form-control pickadate-months-year"/>--}}
-        {{--                                        <span class="invalid-feedback" role="alert"></span>--}}
-        {{--                                    </fieldset>--}}
-        {{--                                </div>--}}
-        {{--                                <div class="col-lg-6 col-sm-12 data-field-col">--}}
-        {{--                                    <fieldset class="form-group tenhanghoa">--}}
-        {{--                                        <label for="data-name">Kho xuất <code>(*)</code></label>--}}
-        {{--                                        <select class="select2 form-control" id="kho">--}}
-        {{--                                            <option value="-1">Chọn kho xuất</option>--}}
-        {{--                                            @foreach ($warehouses as $warehouse)--}}
-        {{--                                                <option value="{{ $warehouse['id'] }}">{{ $warehouse['tenkho'] }}</option>--}}
-        {{--                                            @endforeach--}}
-        {{--                                        </select>--}}
-        {{--                                    </fieldset>--}}
-        {{--                                </div>--}}
-        {{--                            </div>--}}
-        {{--                            <div class="row">--}}
-        {{--                                <div class="col-12">--}}
-        {{--                                    <fieldset class="form-group">--}}
-        {{--                                        <label>File tài liệu đính kèm</label>--}}
-        {{--                                        <div action="#" class="dropzone dropzone-area" id="dp-accept-files">--}}
-        {{--                                            <div class="dz-message">Drop Files Here To Upload</div>--}}
-        {{--                                        </div>--}}
-        {{--                                    </fieldset>--}}
-        {{--                                </div>--}}
-        {{--                            </div>--}}
-        {{--                            <div class="row">--}}
-        {{--                                <div class="col-12">--}}
-        {{--                                    <fieldset class="form-group">--}}
-        {{--                                        <label>Ghi chú</label>--}}
-        {{--                                        <textarea class="form-control" id="basicTextarea" rows="3"--}}
-        {{--                                                  placeholder="Ghi chú"></textarea>--}}
-        {{--                                    </fieldset>--}}
-        {{--                                </div>--}}
-        {{--                            </div>--}}
-        {{--                        </form>--}}
-        {{--                    </div>--}}
-        {{--                    <div class="modal-footer">--}}
-        {{--                        <button type="button" id="btn-xacnhan" class="btn btn-primary">Xác nhận</button>--}}
-        {{--                    </div>--}}
-        {{--                </div>--}}
-        {{--            </div>--}}
-        {{--        </div>--}}
-
         <div class="modal fade text-left modal-background " id="modalnhapnhieu" tabindex="-1" role="dialog"
              aria-labelledby="myModalLabel4" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
@@ -514,7 +399,7 @@
                 aoColumnDefs: [
                     {
                         "bVisible": false,
-                        "aTargets": [7]
+                        "aTargets": [6]
                     },
                     // {
                     //     orderable: true,
@@ -535,7 +420,7 @@
                     [4, 10, 15, 20]
                 ],
                 order: [
-                    [7, "desc"]
+                    [6, "desc"]
                 ],
                 bInfo: false,
                 pageLength: 10,
@@ -790,42 +675,43 @@
                         e.preventDefault();
                         e.stopPropagation();
                         let check = true;
-                        if ($('fieldset.tenchuongtrinh>input').val() == '') {
+                        if ($('.tenchuongtrinh').val() == '') {
                             check = false;
-                            $('fieldset.tenchuongtrinh>span').html('Hãy nhập tên chương trình');
-                            $('fieldset.tenchuongtrinh>input').addClass('is-invalid');
+                            $('.tenchuongtrinh').addClass('error');
                         } else {
-                            $('fieldset.tenchuongtrinh>input').removeClass('is-invalid');
+                            $('.tenchuongtrinh').removeClass('error');
                         }
 
-                        if ($('fieldset.soluong>input').val() == '' || $('fieldset.soluong>input').val() <= 0) {
+                        if ($('.nhapnhieu-kho').val() == -1) {
                             check = false;
-                            $('fieldset.soluong>span').html('Số lượng không hợp lệ');
-                            $('fieldset.soluong>input').addClass('is-invalid');
+                            $('.nhapnhieu-kho').addClass('error');
                         } else {
-                            $('fieldset.soluong>input').removeClass('is-invalid');
+                            $('.nhapnhieu-kho').removeClass('error');
                         }
 
-                        if ($('fieldset.ngaynhapkho>input').val() == '') {
+                        if ($('.nhapnhieu-ngayxuat').val() == '') {
                             check = false;
-                            $('fieldset.ngaynhapkho>span').html('Hãy nhập ngày xuất kho');
-                            $('fieldset.ngaynhapkho>input').addClass('is-invalid');
+                            $('.nhapnhieu-ngayxuat').addClass('error');
                         } else {
-                            $('fieldset.ngaynhapkho>input').removeClass('is-invalid');
+                            $('.nhapnhieu-ngayxuat').removeClass('error');
                         }
 
+                        $('.nhapkho-data').each(function(row){
+                            if ($(this).find('.nhapnhieu-tenhanghoa').val() == -1) {
+                                check = false;
+                                $(this).find('.nhapnhieu-tenhanghoa').addClass('error');
+                            } else {
+                                $(this).find('.nhapnhieu-tenhanghoa').removeClass('error');
+                            }
 
-                        if ($('fieldset.mahanghoa>input').val() == "") {
-                            check = false;
-                            $('fieldset.mahanghoa>span').html('Hãy chọn một loại hàng');
-                            $('fieldset.mahanghoa>input').addClass('is-invalid');
-                        } else {
-                            $('fieldset.mahanghoa>input').removeClass('is-invalid');
-                        }
+                            if ($(this).find('.nhapnhieu-soluong').val() == '' || $(this).find('.nhapnhieu-soluong').val() == 0) {
+                                check = false;
+                                $(this).find('.nhapnhieu-soluong').addClass('error');
+                            } else {
+                                $(this).find('.nhapnhieu-soluong').removeClass('error');
+                            }
+                        })
 
-                        if ($('#kho').val() == -1) {
-                            check = false;
-                        }
 
                         if (check) {
                             Swal.fire({
@@ -840,6 +726,15 @@
                                 cancelButtonClass: 'btn btn-danger ml-1',
                                 buttonsStyling: false,
                             }).then(function (result) {
+
+                                var data = [];
+                                $('.nhapkho-data').each(function(row){
+                                    data.push({
+                                        tenhang: $(this).find('.nhapnhieu-tenhanghoa').val(),
+                                        soluong: $(this).find('.nhapnhieu-soluong').val()
+                                    })
+                                })
+
                                 if (result.value) {
                                     $.ajax({
                                         type: 'POST',
@@ -848,12 +743,11 @@
                                             'X-CSRF-TOKEN': '{!! csrf_token() !!}'
                                         },
                                         data: {
-                                            'mahang': $('#thh').val(),
-                                            'kho': $('#kho').val(),
-                                            'tenchuongtrinh': $('fieldset.tenchuongtrinh>input').val(),
-                                            'soluong': $('fieldset.soluong>input').val(),
-                                            'ngayxuat': $('fieldset.ngaynhapkho>input').val(),
-                                            'ghichu': $('#basicTextarea').val()
+                                            'kho': $('.nhapnhieu-kho').val(),
+                                            'tenchuongtrinh': $('.tenchuongtrinh').val(),
+                                            'ngayxuat': $('.nhapnhieu-ngayxuat').val(),
+                                            'ghichu': $('.nhapnhieu-ghichu').val(),
+                                            'data' : data
                                         },
                                         dataType: 'json',
                                         success: function (data) {
@@ -862,6 +756,7 @@
                                                 myDropzone.processQueue();
                                                 if (myDropzone.getQueuedFiles().length <= 0) {
                                                     //
+                                                    location.reload();
                                                     commitFinish(data.data, myDropzone);
                                                 }
                                             } else {

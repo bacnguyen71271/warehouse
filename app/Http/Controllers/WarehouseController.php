@@ -17,10 +17,11 @@ class WarehouseController extends Controller
     }
 
 
-    public function delivery(){
+    public function delivery()
+    {
 
         //Lay thong tin user
-        $user = DB::table('users')->where('id',Auth::id())->first();
+        $user = DB::table('users')->where('id', Auth::id())->first();
 
         $pageConfigs = [
             // 'pageHeader' => false,
@@ -28,25 +29,25 @@ class WarehouseController extends Controller
         ];
 
         $wh_history = DB::table('warehouse_histories')
-        ->join('danhmucs','warehouse_histories.danhmucId','=','danhmucs.id')
-        ->join('warehouses','warehouse_histories.warehouseId','=','warehouses.id')
-        ->leftJoin('delivery_history','warehouse_histories.id','delivery_history.orderid')
-        ->leftJoin('users','users.id','delivery_history.userid')
-        ->where('warehouse_histories.type',1)
-        ->where('warehouse_histories.status',1)
-        ->select('users.name','delivery_history.userid','delivery_history.orderid','danhmucs.loaihang','warehouses.tenkho','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia','warehouse_histories.tenchuongtrinh','delivery_history.status','warehouse_histories.soluong','warehouse_histories.warehouseId','warehouse_histories.created_at');
+            ->join('danhmucs', 'warehouse_histories.danhmucId', '=', 'danhmucs.id')
+            ->join('warehouses', 'warehouse_histories.warehouseId', '=', 'warehouses.id')
+            ->leftJoin('delivery_history', 'warehouse_histories.id', 'delivery_history.orderid')
+            ->leftJoin('users', 'users.id', 'delivery_history.userid')
+            ->where('warehouse_histories.type', 1)
+            ->where('warehouse_histories.status', 1)
+            ->select('users.name', 'delivery_history.userid', 'delivery_history.orderid', 'danhmucs.loaihang', 'warehouses.tenkho', 'danhmucs.tenhang', 'danhmucs.mahang', 'danhmucs.dongia', 'warehouse_histories.tenchuongtrinh', 'delivery_history.status', 'warehouse_histories.soluong', 'warehouse_histories.warehouseId', 'warehouse_histories.created_at');
 
-        if($user->permission != 0){
+        if ($user->permission != 0) {
 
             //Kiểm tra quyền
-            $wh_history->where(function($query){
+            $wh_history->where(function ($query) {
 
                 $permission = DB::table('permissions')
-                    ->where('user_id',Auth::id())->get();
+                    ->where('user_id', Auth::id())->get();
 
-                $query->where('warehouses.id',-1);
-                foreach ($permission as $key => $value){
-                    $query->orWhere('warehouses.id',$value->warehouse_id);
+                $query->where('warehouses.id', -1);
+                foreach ($permission as $key => $value) {
+                    $query->orWhere('warehouses.id', $value->warehouse_id);
                 }
             });
 
@@ -59,39 +60,40 @@ class WarehouseController extends Controller
         ]);
     }
 
-    public function deliveryUpdate(Request $request){
+    public function deliveryUpdate(Request $request)
+    {
         $madon = $request->input('madon');
         $trangthai = $request->input('trangthai');
 
         $order = DB::table('delivery_history')
-        ->where('orderid',$madon)
-        ->first();
+            ->where('orderid', $madon)
+            ->first();
         // print_r($order);
-        if($order->userid == -1){
+        if ($order->userid == -1) {
             DB::table('delivery_history')
-            ->where('orderid',$madon)
-            ->update([
-                'status' => $trangthai + 1,
-                'userid' => Auth::id()
-            ]);
+                ->where('orderid', $madon)
+                ->update([
+                    'status' => $trangthai + 1,
+                    'userid' => Auth::id()
+                ]);
             return [
                 'status' => true,
                 'msg' => '',
                 'data' => ''
             ];
-        }else{
-            if($order->userid == Auth::id()){
+        } else {
+            if ($order->userid == Auth::id()) {
                 DB::table('delivery_history')
-                ->where('orderid',$madon)
-                ->update([
-                    'status' => $trangthai + 1
-                ]);
+                    ->where('orderid', $madon)
+                    ->update([
+                        'status' => $trangthai + 1
+                    ]);
                 return [
                     'status' => true,
                     'msg' => 'Thành công',
                     'data' => ''
                 ];
-            }else{
+            } else {
                 return [
                     'status' => false,
                     'msg' => 'Đơn hàng này không phải bạn giao',
@@ -103,7 +105,7 @@ class WarehouseController extends Controller
 
     public function xuatKhoIndex()
     {
-        $user = DB::table('users')->where('id',Auth::id())->first();
+        $user = DB::table('users')->where('id', Auth::id())->first();
         $pageConfigs = [
             // 'pageHeader' => false,
             'navbarType' => 'sticky',
@@ -112,35 +114,37 @@ class WarehouseController extends Controller
         //type = 0 - Nhập
         //type = 1 - Xuất
         $wh_history = DB::table('warehouse_histories')
-        ->join('danhmucs','warehouse_histories.danhmucId','=','danhmucs.id')
-        ->join('warehouses','warehouse_histories.warehouseId','=','warehouses.id')
-        ->where('warehouse_histories.type',1)
-        ->select('danhmucs.loaihang','warehouses.tenkho','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia','warehouse_histories.tenchuongtrinh','warehouse_histories.status','warehouse_histories.soluong','warehouse_histories.id','warehouse_histories.hansudung','warehouse_histories.ghichu','warehouse_histories.created_at');
-
+            ->join('donxuats', 'warehouse_histories.id', '=', 'donxuats.id_history')
+            ->join('danhmucs', 'donxuats.danhmucId', '=', 'danhmucs.id')
+            ->join('warehouses', 'warehouse_histories.warehouseId', '=', 'warehouses.id')
+            ->where('warehouse_histories.type', 1)
+//            ->select('danhmucs.loaihang', 'warehouses.tenkho', 'danhmucs.tenhang', 'danhmucs.mahang', 'danhmucs.dongia', 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'donxuats.soluong', 'warehouse_histories.id', 'warehouse_histories.hansudung', 'warehouse_histories.ghichu', 'warehouse_histories.created_at')
+            ->select(DB::raw('sum(`donxuats`.`soluong`) as `soluong`'), DB::raw('sum(`donxuats`.`soluong` * `danhmucs`.`dongia`) as `dongia`'),'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'warehouse_histories.id', 'warehouse_histories.hansudung', 'warehouse_histories.ghichu', 'warehouse_histories.created_at' )
+            ->groupBy('warehouse_histories.id');
 
         $warehouses = DB::table('warehouses');
-        if($user->permission != 0){
+        if ($user->permission != 0) {
             //Lay danh sach kho theo quyen
-            $warehouses->where(function ($query){
+            $warehouses->where(function ($query) {
                 $permission = DB::table('permissions')
-                    ->where('user_id',Auth::id())->get();
-                $query->where('id',-1);
-                foreach ($permission as $key => $value){
-                    if($value->permission != 'Delivery'){
-                        $query->orWhere('id',$value->warehouse_id);
+                    ->where('user_id', Auth::id())->get();
+                $query->where('id', -1);
+                foreach ($permission as $key => $value) {
+                    if ($value->permission != 'Delivery') {
+                        $query->orWhere('id', $value->warehouse_id);
                     }
                 }
             });
 
 
             //Kiểm tra quyền xem phieu xuat kho
-            $wh_history->where(function($query){
+            $wh_history->where(function ($query) {
                 $permission = DB::table('permissions')
-                    ->where('user_id',Auth::id())->get();
+                    ->where('user_id', Auth::id())->get();
 
-                $query->where('warehouses.id',-1);
-                foreach ($permission as $key => $value){
-                    $query->orWhere('warehouses.id',$value->warehouse_id);
+                $query->where('warehouses.id', -1);
+                foreach ($permission as $key => $value) {
+                    $query->orWhere('warehouses.id', $value->warehouse_id);
                 }
             });
         }
@@ -158,13 +162,14 @@ class WarehouseController extends Controller
         ]);
     }
 
-    public function viewfile($id){
+    public function viewfile($id)
+    {
         return redirect('uploads/' . $id);
     }
 
     public function nhapKhoIndex()
     {
-        $user = DB::table('users')->where('id',Auth::id())->first();
+        $user = DB::table('users')->where('id', Auth::id())->first();
         $pageConfigs = [
             // 'pageHeader' => false,
             'navbarType' => 'sticky',
@@ -173,36 +178,36 @@ class WarehouseController extends Controller
         //type = 0 - Nhập
         //type = 1 - Xuất
         $wh_history = DB::table('warehouse_histories')
-        ->join('danhmucs','warehouse_histories.danhmucId','=','danhmucs.id')
-        ->join('warehouses','warehouse_histories.warehouseId','=','warehouses.id')
-        ->where('warehouse_histories.type',0)
-        ->select('danhmucs.loaihang','danhmucs.tenhang','warehouses.tenkho','danhmucs.mahang','danhmucs.dongia','warehouse_histories.tenchuongtrinh','warehouse_histories.soluong','warehouse_histories.id','warehouse_histories.hansudung','warehouse_histories.ghichu','warehouse_histories.created_at');
+            ->join('danhmucs', 'warehouse_histories.danhmucId', '=', 'danhmucs.id')
+            ->join('warehouses', 'warehouse_histories.warehouseId', '=', 'warehouses.id')
+            ->where('warehouse_histories.type', 0)
+            ->select('danhmucs.loaihang', 'danhmucs.tenhang', 'warehouses.tenkho', 'danhmucs.mahang', 'danhmucs.dongia', 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.soluong', 'warehouse_histories.id', 'warehouse_histories.hansudung', 'warehouse_histories.ghichu', 'warehouse_histories.created_at');
 
 
         $warehouses = DB::table('warehouses');
 
 
-        if($user->permission != 0){
+        if ($user->permission != 0) {
 
             //Lay danh sach kho theo quyen
-            $warehouses->where(function ($query){
+            $warehouses->where(function ($query) {
                 $permission = DB::table('permissions')
-                    ->where('user_id',Auth::id())->get();
-                $query->where('id',-1);
-                foreach ($permission as $key => $value){
-                    if($value->permission == 'Approved' || $value->permission == 'Administrator'){
-                        $query->orWhere('id',$value->warehouse_id);
+                    ->where('user_id', Auth::id())->get();
+                $query->where('id', -1);
+                foreach ($permission as $key => $value) {
+                    if ($value->permission == 'Approved' || $value->permission == 'Administrator') {
+                        $query->orWhere('id', $value->warehouse_id);
                     }
                 }
             });
 
             //Kiểm tra quyền xem phieu xuat kho
-            $wh_history->where(function($query){
+            $wh_history->where(function ($query) {
                 $permission = DB::table('permissions')
-                    ->where('user_id',Auth::id())->get();
-                $query->where('warehouses.id',-1);
-                foreach ($permission as $key => $value){
-                    if($value->permission == 'Approved' || $value->permission == 'Administrator') {
+                    ->where('user_id', Auth::id())->get();
+                $query->where('warehouses.id', -1);
+                foreach ($permission as $key => $value) {
+                    if ($value->permission == 'Approved' || $value->permission == 'Administrator') {
                         $query->orWhere('warehouses.id', $value->warehouse_id);
                     }
                 }
@@ -222,22 +227,23 @@ class WarehouseController extends Controller
         ]);
     }
 
-    public function gethangton(Request $request){
+    public function gethangton(Request $request)
+    {
         $kho = $request->input('kho');
         $mahang = $request->input('mahang');
 
         $hangtrongkho = DB::table('warehouse_goods')
-        ->where('warehouseid','=',$kho)
-        ->where('danhmucid','=',$mahang)
-        ->first();
+            ->where('warehouseid', '=', $kho)
+            ->where('danhmucid', '=', $mahang)
+            ->first();
 
-        if($hangtrongkho){
+        if ($hangtrongkho) {
             return [
                 'status' => true,
                 'msg' => '',
                 'data' => $hangtrongkho->soluong
             ];
-        }else{
+        } else {
             return [
                 'status' => true,
                 'msg' => '',
@@ -260,9 +266,9 @@ class WarehouseController extends Controller
 
         //
         $wh_history_id = DB::table('warehouse_histories')->insertGetId([
-            'type'=> 0,
+            'type' => 0,
             'warehouseId' => $kho,
-            'tenchuongtrinh'=> $tenchuongtrinh,
+            'tenchuongtrinh' => $tenchuongtrinh,
             'userid' => Auth::id(),
             'danhmucId' => $mahang,
             'soluong' => $soluong,
@@ -275,35 +281,35 @@ class WarehouseController extends Controller
         $quantity_old = 0;
         //Kiểm tra hàng này đã được tạo chưa
         $warehouse_goods = DB::table('warehouse_goods')
-        ->where('warehouseid','=',$kho)
-        ->where('danhmucid','=',$mahang)
-        ->first();
+            ->where('warehouseid', '=', $kho)
+            ->where('danhmucid', '=', $mahang)
+            ->first();
 
-        if(!$warehouse_goods){
+        if (!$warehouse_goods) {
             DB::table('warehouse_goods')->insert([
                 'warehouseid' => $kho,
                 'danhmucid' => $mahang,
                 'soluong' => 0
             ]);
-        }else{
+        } else {
             $quantity_old = $warehouse_goods->soluong;
         }
 
         //Cập nhật số lượng trong kho
         DB::table('warehouse_goods')
-        ->where('warehouseid','=',$kho)
-        ->where('danhmucid','=',$mahang)
-        ->update([ 'soluong' => $quantity_old + $soluong]);
+            ->where('warehouseid', '=', $kho)
+            ->where('danhmucid', '=', $mahang)
+            ->update(['soluong' => $quantity_old + $soluong]);
 
 
         $wh_history_temp = DB::table('warehouse_histories')
-        ->join('danhmucs','warehouse_histories.danhmucId','danhmucs.id')
-        ->join('warehouses','warehouse_histories.warehouseId','=','warehouses.id')
-        ->where('warehouse_histories.id',$wh_history_id)
-        ->select('warehouses.tenkho','warehouse_histories.tenchuongtrinh','danhmucs.tenhang','danhmucs.dongia','warehouse_histories.soluong','warehouse_histories.hansudung','warehouse_histories.created_at','warehouse_histories.id')
-        ->first();
+            ->join('danhmucs', 'warehouse_histories.danhmucId', 'danhmucs.id')
+            ->join('warehouses', 'warehouse_histories.warehouseId', '=', 'warehouses.id')
+            ->where('warehouse_histories.id', $wh_history_id)
+            ->select('warehouses.tenkho', 'warehouse_histories.tenchuongtrinh', 'danhmucs.tenhang', 'danhmucs.dongia', 'warehouse_histories.soluong', 'warehouse_histories.hansudung', 'warehouse_histories.created_at', 'warehouse_histories.id')
+            ->first();
 
-        StaticController::LogHistory('Nhập kho',Auth::id(),$wh_history_temp->id);
+        StaticController::LogHistory('Nhập kho', Auth::id(), $wh_history_temp->id);
 
         return [
             'status' => true,
@@ -327,57 +333,80 @@ class WarehouseController extends Controller
         ];
     }
 
+
     public function xuatkho(Request $request)
     {
         //Input
         $kho = $request->input('kho');
         $tenchuongtrinh = $request->input('tenchuongtrinh');
-        $mahang = $request->input('mahang');
-        $soluong = $request->input('soluong');
         $ngayxuat = $request->input('ngayxuat');
         $ghichu = $request->input('ghichu');
+        $data = $request->input('data');
+
+        $datatemp = array();
+
+        foreach ($data as $hang) {
+            $searchFlag = 0;
+            foreach ($datatemp as $key => $a) {
+                if ($key == $hang['tenhang']) {
+                    $datatemp[$key] += $hang['soluong'];
+                    $searchFlag = 1;
+                }
+            }
+            if ($searchFlag == 0) {
+                $datatemp[$hang['tenhang']] = $hang['soluong'];
+            }
+        }
+
 
         //Check số lượng
 
-        $soluongtrongkho  = DB::table('warehouse_goods')
-        ->where('warehouseid', $kho)
-        ->where('danhmucid', $mahang)
-        ->first();
+        foreach ($datatemp as $key => $value) {
+            $soluongtrongkho = DB::table('warehouse_goods')
+                ->where('warehouseid', $kho)
+                ->where('danhmucid', $key)
+                ->first();
+            if ($soluongtrongkho->soluong < $value) {
+                return [
+                    'status' => false,
+                    'msg' => 'Số lượng hàng xuất nhiều hơn hàng trong kho, vui lòng thử lại với số lượng ít hơn',
+                    'data' => ''
+                ];
+            }
+        }
 
-        if($soluong && $soluongtrongkho->soluong >= $soluong){
-            $wh_history_id = DB::table('warehouse_histories')->insertGetId([
-                'type'=> 1,
+        $wh_history_id = DB::table('warehouse_histories')->insertGetId([
+            'type' => 1,
+            'warehouseId' => $kho,
+            'tenchuongtrinh' => $tenchuongtrinh,
+            'userid' => Auth::id(),
+            'ghichu' => $ghichu,
+            'status' => false,
+            'thoigian' => $ngayxuat,
+        ]);
+
+        foreach ($datatemp as $key => $value) {
+            DB::table('donxuats')->insertGetId([
+                'id_history' => $wh_history_id,
                 'warehouseId' => $kho,
-                'tenchuongtrinh'=> $tenchuongtrinh,
-                'userid' => Auth::id(),
-                'danhmucId' => $mahang,
-                'soluong' => $soluong,
-                'ghichu' => $ghichu,
-                'status' => false,
-                'thoigian' => $ngayxuat,
+                'danhmucId' => $key,
+                'soluong' => $value,
             ]);
+        }
 
-            $wh_history_temp = DB::table('warehouse_histories')
-            ->join('danhmucs','warehouse_histories.danhmucId','danhmucs.id')
-            ->join('warehouses','warehouse_histories.warehouseId','=','warehouses.id')
-            ->where('warehouse_histories.id',$wh_history_id)
-            ->select('warehouses.tenkho','warehouse_histories.tenchuongtrinh','danhmucs.tenhang','danhmucs.dongia','warehouse_histories.soluong','warehouse_histories.hansudung','warehouse_histories.created_at','warehouse_histories.id')
+        $wh_history_temp = DB::table('warehouse_histories')
+            ->join('warehouses', 'warehouse_histories.warehouseId', '=', 'warehouses.id')
+            ->where('warehouse_histories.id', $wh_history_id)
+            ->select('warehouses.tenkho', 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.soluong', 'warehouse_histories.hansudung', 'warehouse_histories.created_at', 'warehouse_histories.id')
             ->first();
 
-            StaticController::LogHistory('Xuất kho',Auth::id(),$wh_history_temp->id);
+        StaticController::LogHistory('Xuất kho', Auth::id(), $wh_history_temp->id);
 
-            return [
-                'status' => true,
-                'msg' => 'Tạo phiếu order thành công',
-                'data' => $wh_history_temp
-            ];
-        }else{
-            return [
-                'status' => false,
-                'msg' => 'Số lượng hàng xuất nhiều hơn hàng trong kho, vui lòng thử lại với số lượng ít hơn',
-                'data' => ''
-            ];
-        }
+        return [
+            'status' => true,
+            'msg' => 'Tạo phiếu order thành công',
+            'data' => $wh_history_temp
+        ];
     }
 
     public function comfirmXuatKho(Request $request)
@@ -385,13 +414,13 @@ class WarehouseController extends Controller
         $idorder = $request->input('id_order');
 
         $order = DB::table('warehouse_histories')
-        ->where('id',$idorder)->first();
+            ->where('id', $idorder)->first();
 
-        if($order){
+        if ($order) {
             DB::table('warehouse_histories')
-            ->where('id',$idorder)->update([
-                'status' => true
-            ]);
+                ->where('id', $idorder)->update([
+                    'status' => true
+                ]);
 
             DB::table('delivery_history')->insert([
                 'orderid' => $idorder,
@@ -400,28 +429,28 @@ class WarehouseController extends Controller
             ]);
 
             $slHienTai = DB::table('warehouse_goods')
-            ->where('warehouseid',$order->warehouseId)
-            ->where('danhmucid',$order->danhmucId)
-            ->first();
+                ->where('warehouseid', $order->warehouseId)
+                ->where('danhmucid', $order->danhmucId)
+                ->first();
 
 
             //Cap nhat so luong kho
             $soluong = $slHienTai->soluong - $order->soluong;
             DB::table('warehouse_goods')
-            ->where('warehouseid',$order->warehouseId)
-            ->where('danhmucid',$order->danhmucId)
-            ->update([
-                'soluong' => $soluong
-            ]);
+                ->where('warehouseid', $order->warehouseId)
+                ->where('danhmucid', $order->danhmucId)
+                ->update([
+                    'soluong' => $soluong
+                ]);
 
-            StaticController::LogHistory('Xác nhận đơn hàng',Auth::id(),$idorder);
+            StaticController::LogHistory('Xác nhận đơn hàng', Auth::id(), $idorder);
 
             return [
                 'status' => true,
                 'msg' => 'Xác nhận thành công',
                 'data' => ''
             ];
-        }else{
+        } else {
             return [
                 'status' => false,
                 'msg' => 'Không tìm thấy phiếu xuất',
@@ -434,11 +463,11 @@ class WarehouseController extends Controller
     public function chitietnhapkho($id)
     {
         $wh_history_temp = DB::table('warehouse_histories')
-        ->join('danhmucs','warehouse_histories.danhmucId','danhmucs.id')
-        ->join('users','warehouse_histories.userid','users.id')
-        ->where('warehouse_histories.id',$id)
-        ->select('warehouse_histories.tenchuongtrinh','warehouse_histories.thoigian','warehouse_histories.ghichu','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia','warehouse_histories.soluong','warehouse_histories.hansudung','warehouse_histories.created_at','warehouse_histories.id','users.email','users.name')
-        ->first();
+            ->join('danhmucs', 'warehouse_histories.danhmucId', 'danhmucs.id')
+            ->join('users', 'warehouse_histories.userid', 'users.id')
+            ->where('warehouse_histories.id', $id)
+            ->select('warehouse_histories.tenchuongtrinh', 'warehouse_histories.thoigian', 'warehouse_histories.ghichu', 'danhmucs.tenhang', 'danhmucs.mahang', 'danhmucs.dongia', 'warehouse_histories.soluong', 'warehouse_histories.hansudung', 'warehouse_histories.created_at', 'warehouse_histories.id', 'users.email', 'users.name')
+            ->first();
 
         $pageConfigs = [
             // 'pageHeader' => false,
@@ -452,7 +481,8 @@ class WarehouseController extends Controller
         ]);
     }
 
-    public function luuphieuxuat(Request $request, $id){
+    public function luuphieuxuat(Request $request, $id)
+    {
         $kho = $request->input('kho');
         $tenchuongtrinh = $request->input('tenchuongtrinh');
         $mahang = $request->input('mahang');
@@ -461,9 +491,9 @@ class WarehouseController extends Controller
 
         //check trang thai
         $phieuxuat = DB::table('warehouse_histories')
-        ->where('id',$id)->first();
+            ->where('id', $id)->first();
 
-        if($phieuxuat->status != 0){
+        if ($phieuxuat->status != 0) {
             return [
                 'status' => true,
                 'msg' => '',
@@ -472,26 +502,26 @@ class WarehouseController extends Controller
         }
 
         $warehouse_goods = DB::table('warehouse_goods')
-        ->where('warehouseid','=',$kho)
-        ->where('danhmucid','=',$mahang)
-        ->first();
+            ->where('warehouseid', '=', $kho)
+            ->where('danhmucid', '=', $mahang)
+            ->first();
 
-        if($warehouse_goods && $warehouse_goods->soluong >= $soluong){
+        if ($warehouse_goods && $warehouse_goods->soluong >= $soluong) {
             DB::table('warehouse_histories')
-            ->where('id',$id)
-            ->update([
-                'tenchuongtrinh' => $tenchuongtrinh,
-                'warehouseId' => $kho,
-                'danhmucId' => $mahang,
-                'soluong' => $soluong,
-                'thoigian' => $ngayxuat
-            ]);
+                ->where('id', $id)
+                ->update([
+                    'tenchuongtrinh' => $tenchuongtrinh,
+                    'warehouseId' => $kho,
+                    'danhmucId' => $mahang,
+                    'soluong' => $soluong,
+                    'thoigian' => $ngayxuat
+                ]);
             return [
                 'status' => true,
                 'msg' => '',
                 'data' => ''
             ];
-        }else{
+        } else {
             return [
                 'status' => false,
                 'msg' => 'Số lượng không phù hợp',
@@ -503,14 +533,14 @@ class WarehouseController extends Controller
     public function suaphieuxuat($id)
     {
         $wh_history_temp = DB::table('warehouse_histories')
-        ->join('danhmucs','warehouse_histories.danhmucId','danhmucs.id')
-        ->join('users','warehouse_histories.userid','users.id')
-        ->join('warehouses','warehouse_histories.warehouseId','=','warehouses.id')
-        ->where('warehouse_histories.id',$id)
-        ->select('warehouses.tenkho','warehouse_histories.warehouseId','warehouse_histories.danhmucId','warehouse_histories.tenchuongtrinh','warehouse_histories.status','warehouse_histories.thoigian','warehouse_histories.ghichu','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia','warehouse_histories.soluong','warehouse_histories.hansudung','warehouse_histories.created_at','warehouse_histories.id','users.email','users.name')
-        ->first();
+            ->join('danhmucs', 'warehouse_histories.danhmucId', 'danhmucs.id')
+            ->join('users', 'warehouse_histories.userid', 'users.id')
+            ->join('warehouses', 'warehouse_histories.warehouseId', '=', 'warehouses.id')
+            ->where('warehouse_histories.id', $id)
+            ->select('warehouses.tenkho', 'warehouse_histories.warehouseId', 'warehouse_histories.danhmucId', 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'warehouse_histories.thoigian', 'warehouse_histories.ghichu', 'danhmucs.tenhang', 'danhmucs.mahang', 'danhmucs.dongia', 'warehouse_histories.soluong', 'warehouse_histories.hansudung', 'warehouse_histories.created_at', 'warehouse_histories.id', 'users.email', 'users.name')
+            ->first();
 
-        $attachFile = DB::table('files')->where('id_order',(array)$wh_history_temp->id)->get();
+        $attachFile = DB::table('files')->where('id_order', (array)$wh_history_temp->id)->get();
 
         $pageConfigs = [
             // 'pageHeader' => false,
@@ -533,14 +563,19 @@ class WarehouseController extends Controller
     public function chitietxuatkho($id)
     {
         $wh_history_temp = DB::table('warehouse_histories')
-        ->join('danhmucs','warehouse_histories.danhmucId','danhmucs.id')
-        ->join('users','warehouse_histories.userid','users.id')
-        ->join('warehouses','warehouses.id','warehouse_histories.warehouseId')
-        ->where('warehouse_histories.id',$id)
-        ->select('warehouse_histories.warehouseId','warehouses.tenkho','warehouse_histories.tenchuongtrinh','warehouse_histories.status','warehouse_histories.thoigian','warehouse_histories.ghichu','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia','warehouse_histories.soluong','warehouse_histories.hansudung','warehouse_histories.created_at','warehouse_histories.id','users.email','users.name')
-        ->first();
+            ->join('users', 'warehouse_histories.userid', 'users.id')
+            ->join('warehouses', 'warehouses.id', 'warehouse_histories.warehouseId')
+            ->where('warehouse_histories.id', $id)
+            ->select('warehouse_histories.warehouseId', 'warehouses.tenkho', 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'warehouse_histories.thoigian', 'warehouse_histories.ghichu', 'warehouse_histories.soluong', 'warehouse_histories.hansudung', 'warehouse_histories.created_at', 'warehouse_histories.id', 'users.email', 'users.name')
+            ->first();
 
-        $attachFile = DB::table('files')->where('id_order',(array)$wh_history_temp->id)->get();
+        $listhang = DB::table('donxuats')
+            ->join('danhmucs','danhmucs.id','donxuats.danhmucId')
+            ->where('donxuats.id_history', $id)
+            ->get();
+
+
+        $attachFile = DB::table('files')->where('id_order', (array)$wh_history_temp->id)->get();
 
         $pageConfigs = [
             // 'pageHeader' => false,
@@ -550,17 +585,18 @@ class WarehouseController extends Controller
         return view('/pages/lichsuxuat', [
             'pageConfigs' => $pageConfigs,
             'files' => json_decode(json_encode($attachFile), true),
-            'whhistorytemp' => (array)$wh_history_temp
+            'whhistorytemp' => (array)$wh_history_temp,
+            'listhang' => json_decode(json_encode($listhang), true)
         ]);
     }
 
     public function hangtrongkho(Request $request)
     {
         $hangtrongkho = DB::table('warehouse_goods')
-        ->join('danhmucs','warehouse_goods.danhmucid','=','danhmucs.id')
-        ->join('warehouses','warehouse_goods.warehouseid','=','warehouses.id')
-        ->select('danhmucs.tenhang','danhmucs.mahang','warehouses.tenkho','warehouse_goods.soluong')
-        ->get();
+            ->join('danhmucs', 'warehouse_goods.danhmucid', '=', 'danhmucs.id')
+            ->join('warehouses', 'warehouse_goods.warehouseid', '=', 'warehouses.id')
+            ->select('danhmucs.tenhang', 'danhmucs.mahang', 'warehouses.tenkho', 'warehouse_goods.soluong')
+            ->get();
 
         $pageConfigs = [
             // 'pageHeader' => false,
@@ -569,7 +605,7 @@ class WarehouseController extends Controller
 
         return view('/pages/hangtrongkho', [
             'pageConfigs' => $pageConfigs,
-            'hangtrongkhos' => json_decode(json_encode($hangtrongkho),true)
+            'hangtrongkhos' => json_decode(json_encode($hangtrongkho), true)
         ]);
     }
 
@@ -595,7 +631,7 @@ class WarehouseController extends Controller
             'navbarType' => 'sticky',
         ];
 
-        $user = DB::table('users')->where('id',Auth::id())->first();
+        $user = DB::table('users')->where('id', Auth::id())->first();
 
         return view('/pages/danhsachkho', [
             'pageConfigs' => $pageConfigs,

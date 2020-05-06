@@ -12,6 +12,13 @@
         min-width: 140px;
         word-break: break-word;
     }
+    tbody table {
+        border: 1px solid #333;
+    }
+
+    tbody thead {
+        background-color: #dedede;
+    }
 
     td.font-weight-bold {
         width: 200px;
@@ -73,24 +80,30 @@ function product_price($priceFloat) {
                     <td>{{ $whhistorytemp['tenchuongtrinh'] }}</td>
                   </tr>
                   <tr>
-                    <td class="font-weight-bold">Tên hàng</td>
-                    <td>{{ $whhistorytemp['tenhang'] }}</td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-bold">Mã hàng</td>
-                    <td>{{ $whhistorytemp['mahang'] }}</td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-bold">Đơn giá</td>
-                    <td>{{ product_price($whhistorytemp['dongia']) }}</td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-bold">Số lượng</td>
-                    <td>{{ $whhistorytemp['soluong'] }}</td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-bold">Giá trị</td>
-                    <td>{{ product_price($whhistorytemp['dongia'] * $whhistorytemp['soluong']) }}</td>
+                    <td colspan="2">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Tên hàng</th>
+                                <th>Mã hàng</th>
+                                <th>Đơn giá</th>
+                                <th>Số lượng</th>
+                                <th>Tổng</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($listhang as $key => $value)
+                                <tr>
+                                    <td>{{ $value['tenhang'] }}</td>
+                                    <td>{{ $value['mahang'] }}</td>
+                                    <td>{{ $value['dongia'] }}</td>
+                                    <td>{{ $value['soluong'] }}</td>
+                                    <td>{{ $value['soluong'] * $value['dongia'] }}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </td>
                   </tr>
                   <tr>
                     <td class="font-weight-bold">Kho xuất</td>
