@@ -466,7 +466,6 @@
                     dongia = dongia.join('');
                     dongia = parseInt(dongia);
                     var giatri = dongia * parseInt($(this).parents('.nhapkho-data').find('.nhapnhieu-soluong').val());
-                    giatri = giatri.toString().substring(0,giatri.toString().length - 3) + '.' + giatri.toString().substring(giatri.toString().length - 3, giatri.toString().length);
                     giatri = number_format(giatri, 0, ',', ',');
                     $(this).parents('.nhapkho-data').find('.nhapnhieu-giatri').html(giatri);
                 } else {
@@ -582,20 +581,21 @@
                 ],
                 bInfo: false,
                 pageLength: 10,
-                buttons: [{
-                    text: "<i class='feather icon-plus'></i> Nhập một",
-                    action: function () {
-                        $('#thh').val(-1).trigger('change.select2');
-                        $('#kho').val(-1).trigger('change.select2');
-                        $('.is-invalid').removeClass('is-invalid');
+                buttons: [
+                    {
+                        text: "<i class='feather icon-plus'></i> Nhập một",
+                        action: function () {
+                            $('#thh').val(-1).trigger('change.select2');
+                            $('#kho').val(-1).trigger('change.select2');
+                            $('.is-invalid').removeClass('is-invalid');
+                        },
+                        className: "btn btn-outline-primary",
+                        attr: {
+                            "data-toggle": "modal",
+                            "data-backdrop": "false",
+                            "data-target": "#backdrop"
+                        }
                     },
-                    className: "btn btn-outline-primary",
-                    attr: {
-                        "data-toggle": "modal",
-                        "data-backdrop": "false",
-                        "data-target": "#backdrop"
-                    }
-                },
                     {
                         text: "<i class='feather icon-plus'></i> Nhập nhiều",
                         action: function () {
@@ -606,7 +606,8 @@
                             "data-backdrop": "false",
                             "data-target": "#modalnhapnhieu"
                         }
-                    }],
+                    }
+                ],
                 initComplete: function (settings, json) {
                     $(".dt-buttons .btn").removeClass("btn-secondary")
                 }
@@ -798,7 +799,7 @@
                                 $('fieldset.dongia>input').val(number_format(data.data.dongia, 0, ',', ','));
                                 if ($('fieldset.soluong>input').val() != '' || $('fieldset.soluong>input').val() <= 0) {
                                     var giatri = data.data.dongia * parseInt($('fieldset.soluong>input').val());
-                                    giatri = giatri.toString().substring(0,giatri.toString().length - 3) + '.' + giatri.toString().substring(giatri.toString().length - 3, giatri.toString().length);
+                                    giatri = giatri.toString().substring(0, giatri.toString().length - 3) + '.' + giatri.toString().substring(giatri.toString().length - 3, giatri.toString().length);
                                     $('fieldset.giatri>input').val(number_format(giatri, 0, ',', ','));
                                 } else {
                                     $('fieldset.giatri>input').val('');
@@ -819,8 +820,8 @@
                     var dongia = $('fieldset.dongia>input').val().match(/\d/g);
                     dongia = dongia.join("");
                     var giatri = dongia * parseInt($('fieldset.soluong>input').val());
-                    giatri = giatri.toString().substring(0,giatri.toString().length - 3) + '.' + giatri.toString().substring(giatri.toString().length - 3, giatri.toString().length);
-                    $('fieldset.giatri>input').val(number_format(giatri, 0, ',', ',') );
+                    giatri = giatri.toString().substring(0, giatri.toString().length - 3) + '.' + giatri.toString().substring(giatri.toString().length - 3, giatri.toString().length);
+                    $('fieldset.giatri>input').val(number_format(giatri, 0, ',', ','));
                 } else {
                     $('fieldset.giatri>input').val('');
                 }

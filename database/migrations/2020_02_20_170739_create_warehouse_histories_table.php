@@ -20,8 +20,8 @@ class CreateWarehouseHistoriesTable extends Migration
             $table->integer('warehouseId');
             $table->string('tenchuongtrinh');
             $table->integer('userid');
-            $table->integer('danhmucId');
-            $table->integer('soluong');
+            $table->integer('danhmucId')->nullable();
+            $table->integer('soluong')->nullable();
             $table->date('hansudung')->nullable();
             $table->date('thoigian')->nullable();
             $table->boolean('status')->nullable();
