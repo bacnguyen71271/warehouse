@@ -89,10 +89,8 @@ return $price.$symbol;
             <thead>
                 <tr>
                     <th>TÊN CHƯƠNG TRÌNH</th>
-                    <th>TÊN HÀNG</th>
                     <th>ĐƠN GIÁ</th>
                     <th>SỐ LƯỢNG</th>
-                    <th>KHO</th>
                     <th>TRẠNG THÁI</th>
                     <th>NGƯỜI GIAO</th>
                     <th>HÀNH ĐỘNG</th>
@@ -102,10 +100,8 @@ return $price.$symbol;
                 @foreach ($deliverys as $delivery)
                 <tr>
                     <td>{{ $delivery["tenchuongtrinh"] }}</td>
-                    <td>{{ $delivery["tenhang"] }}</td>
                     <td>{{ product_price($delivery["dongia"]) }}</td>
                     <td>{{ $delivery["soluong"] }}</td>
-                    <td>{{ $delivery["tenkho"] }}</td>
                     <td>
                         @if ($delivery["status"] == 1)
                         <div class="chip chip-warning">

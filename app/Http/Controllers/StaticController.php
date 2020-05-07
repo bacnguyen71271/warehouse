@@ -24,6 +24,16 @@ class StaticController extends Controller
         ];
     }
 
+    public static function getUserInfo($id){
+        //check hàng trong kho
+        $user = DB::table('users')
+            ->where('id','=',$id)->first();
+
+        return [
+            'user' => $user
+        ];
+    }
+
     public static function checkMotQuyen($quyen){
 
         $q = 0;
@@ -44,7 +54,7 @@ class StaticController extends Controller
             if($quyen == "approved" && $value->permission == 'Approved'){
                 $q +=1;
             }
-			
+
 			if($quyen == "admin" && $value->permission == 'Administrator'){
                 $q +=1;
             }

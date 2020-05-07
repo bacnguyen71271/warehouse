@@ -28,15 +28,29 @@ class WarehouseController extends Controller
             'navbarType' => 'sticky',
         ];
 
+//        $wh_history = DB::table('warehouse_histories')
+//            ->join('danhmucs', 'warehouse_histories.danhmucId', '=', 'danhmucs.id')
+//            ->join('warehouses', 'warehouse_histories.warehouseId', '=', 'warehouses.id')
+//            ->leftJoin('delivery_history', 'warehouse_histories.id', 'delivery_history.orderid')
+//            ->leftJoin('users', 'users.id', 'delivery_history.userid')
+//            ->where('warehouse_histories.type', 1)
+//            ->where('warehouse_histories.status', 1)
+//            ->select('users.name', 'delivery_history.userid', 'delivery_history.orderid', 'danhmucs.loaihang', 'warehouses.tenkho', 'danhmucs.tenhang', 'danhmucs.mahang', 'danhmucs.dongia', 'warehouse_histories.tenchuongtrinh', 'delivery_history.status', 'warehouse_histories.soluong', 'warehouse_histories.warehouseId', 'warehouse_histories.created_at');
+
         $wh_history = DB::table('warehouse_histories')
-            ->join('danhmucs', 'warehouse_histories.danhmucId', '=', 'danhmucs.id')
+            ->join('donxuats', 'warehouse_histories.id', '=', 'donxuats.id_history')
+            ->join('danhmucs', 'donxuats.danhmucId', '=', 'danhmucs.id')
             ->join('warehouses', 'warehouse_histories.warehouseId', '=', 'warehouses.id')
             ->leftJoin('delivery_history', 'warehouse_histories.id', 'delivery_history.orderid')
             ->leftJoin('users', 'users.id', 'delivery_history.userid')
             ->where('warehouse_histories.type', 1)
             ->where('warehouse_histories.status', 1)
-            ->select('users.name', 'delivery_history.userid', 'delivery_history.orderid', 'danhmucs.loaihang', 'warehouses.tenkho', 'danhmucs.tenhang', 'danhmucs.mahang', 'danhmucs.dongia', 'warehouse_histories.tenchuongtrinh', 'delivery_history.status', 'warehouse_histories.soluong', 'warehouse_histories.warehouseId', 'warehouse_histories.created_at');
+            ->select(DB::raw('sum(`donxuats`.`soluong`) as `soluong`'), DB::raw('sum(`donxuats`.`soluong` * `danhmucs`.`dongia`) as `dongia`'), 'delivery_history.userid', 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'warehouse_histories.id', 'warehouse_histories.hansudung', 'warehouse_histories.ghichu', 'warehouse_histories.created_at' )
+            ->groupBy('warehouse_histories.id', 'delivery_history.orderid');
 
+
+        $wh_history = $wh_history->get();
+        var_dump($wh_history);die;
         if ($user->permission != 0) {
 
             //Kiểm tra quyền
@@ -53,7 +67,6 @@ class WarehouseController extends Controller
 
         }
 
-        $wh_history = $wh_history->get();
         return view('/pages/delivery', [
             'pageConfigs' => $pageConfigs,
             'deliverys' => json_decode(json_encode($wh_history), true),
@@ -118,7 +131,6 @@ class WarehouseController extends Controller
             ->join('danhmucs', 'donxuats.danhmucId', '=', 'danhmucs.id')
             ->join('warehouses', 'warehouse_histories.warehouseId', '=', 'warehouses.id')
             ->where('warehouse_histories.type', 1)
-//            ->select('danhmucs.loaihang', 'warehouses.tenkho', 'danhmucs.tenhang', 'danhmucs.mahang', 'danhmucs.dongia', 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'donxuats.soluong', 'warehouse_histories.id', 'warehouse_histories.hansudung', 'warehouse_histories.ghichu', 'warehouse_histories.created_at')
             ->select(DB::raw('sum(`donxuats`.`soluong`) as `soluong`'), DB::raw('sum(`donxuats`.`soluong` * `danhmucs`.`dongia`) as `dongia`'),'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'warehouse_histories.id', 'warehouse_histories.hansudung', 'warehouse_histories.ghichu', 'warehouse_histories.created_at' )
             ->groupBy('warehouse_histories.id');
 
@@ -416,6 +428,9 @@ class WarehouseController extends Controller
         $order = DB::table('warehouse_histories')
             ->where('id', $idorder)->first();
 
+        $orderDetail = DB::table('donxuats')
+            ->where('id_history', $idorder)->get();
+
         if ($order) {
             DB::table('warehouse_histories')
                 ->where('id', $idorder)->update([
@@ -428,20 +443,21 @@ class WarehouseController extends Controller
                 'status' => 0
             ]);
 
-            $slHienTai = DB::table('warehouse_goods')
-                ->where('warehouseid', $order->warehouseId)
-                ->where('danhmucid', $order->danhmucId)
-                ->first();
+            foreach ($orderDetail as $detail){
+                $slHienTai = DB::table('warehouse_goods')
+                    ->where('warehouseid', $order->warehouseId)
+                    ->where('danhmucid', $detail->danhmucId)
+                    ->first();
 
-
-            //Cap nhat so luong kho
-            $soluong = $slHienTai->soluong - $order->soluong;
-            DB::table('warehouse_goods')
-                ->where('warehouseid', $order->warehouseId)
-                ->where('danhmucid', $order->danhmucId)
-                ->update([
-                    'soluong' => $soluong
-                ]);
+                //Cap nhat so luong kho
+                $soluong = $slHienTai->soluong - $detail->soluong;
+                DB::table('warehouse_goods')
+                    ->where('warehouseid', $order->warehouseId)
+                    ->where('danhmucid', $detail->danhmucId)
+                    ->update([
+                        'soluong' => $soluong
+                    ]);
+            }
 
             StaticController::LogHistory('Xác nhận đơn hàng', Auth::id(), $idorder);
 
@@ -532,16 +548,25 @@ class WarehouseController extends Controller
 
     public function suaphieuxuat($id)
     {
+//        $wh_history_temp = DB::table('warehouse_histories')
+//            ->join('danhmucs', 'warehouse_histories.danhmucId', 'danhmucs.id')
+//            ->join('users', 'warehouse_histories.userid', 'users.id')
+//            ->join('warehouses', 'warehouse_histories.warehouseId', '=', 'warehouses.id')
+//            ->where('warehouse_histories.id', $id)
+//            ->select('warehouses.tenkho', 'warehouse_histories.warehouseId', 'warehouse_histories.danhmucId', 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'warehouse_histories.thoigian', 'warehouse_histories.ghichu', 'danhmucs.tenhang', 'danhmucs.mahang', 'danhmucs.dongia', 'warehouse_histories.soluong', 'warehouse_histories.hansudung', 'warehouse_histories.created_at', 'warehouse_histories.id', 'users.email', 'users.name')
+//            ->first();
+
         $wh_history_temp = DB::table('warehouse_histories')
-            ->join('danhmucs', 'warehouse_histories.danhmucId', 'danhmucs.id')
             ->join('users', 'warehouse_histories.userid', 'users.id')
-            ->join('warehouses', 'warehouse_histories.warehouseId', '=', 'warehouses.id')
             ->where('warehouse_histories.id', $id)
-            ->select('warehouses.tenkho', 'warehouse_histories.warehouseId', 'warehouse_histories.danhmucId', 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'warehouse_histories.thoigian', 'warehouse_histories.ghichu', 'danhmucs.tenhang', 'danhmucs.mahang', 'danhmucs.dongia', 'warehouse_histories.soluong', 'warehouse_histories.hansudung', 'warehouse_histories.created_at', 'warehouse_histories.id', 'users.email', 'users.name')
             ->first();
 
-        $attachFile = DB::table('files')->where('id_order', (array)$wh_history_temp->id)->get();
+        $listhang = DB::table('donxuats')
+            ->join('danhmucs','danhmucs.id','donxuats.danhmucId')
+            ->where('donxuats.id_history', $id)
+            ->get();
 
+        $attachFile = DB::table('files')->where('id_order', $id)->get();
         $pageConfigs = [
             // 'pageHeader' => false,
             'navbarType' => 'sticky',
@@ -555,6 +580,7 @@ class WarehouseController extends Controller
             'pageConfigs' => $pageConfigs,
             'files' => json_decode(json_encode($attachFile), true),
             'whhistorytemp' => (array)$wh_history_temp,
+            'listhang' => json_decode(json_encode($listhang), true),
             'warehouses' => json_decode(json_encode($warehouses), true),
             'categorys' => json_decode(json_encode($category), true)
         ]);
