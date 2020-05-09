@@ -16,6 +16,19 @@ class WarehouseController extends Controller
         $this->middleware('auth');
     }
 
+    public function getDetailById(Request $request){
+        $id = $request->input('id');
+
+        $data = DB::table('donxuats')
+            ->join('danhmucs','donxuats.danhmucId','danhmucs.id')
+            ->where('donxuats.id_history', $id)
+            ->get();
+        return [
+            'status' => true,
+            'msg' => '',
+            'data' => $data
+        ];
+    }
 
     public function delivery()
     {
@@ -45,27 +58,26 @@ class WarehouseController extends Controller
             ->leftJoin('users', 'users.id', 'delivery_history.userid')
             ->where('warehouse_histories.type', 1)
             ->where('warehouse_histories.status', 1)
-            ->select(DB::raw('sum(`donxuats`.`soluong`) as `soluong`'), DB::raw('sum(`donxuats`.`soluong` * `danhmucs`.`dongia`) as `dongia`'), 'delivery_history.userid', 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'warehouse_histories.id', 'warehouse_histories.hansudung', 'warehouse_histories.ghichu', 'warehouse_histories.created_at' )
+            ->select(DB::raw('sum(`donxuats`.`soluong`) as `soluong`'), DB::raw('sum(`donxuats`.`soluong` * `danhmucs`.`dongia`) as `dongia`'), 'warehouse_histories.id', 'warehouse_histories.warehouseId', 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'warehouse_histories.id', 'warehouse_histories.hansudung', 'warehouse_histories.ghichu', 'warehouse_histories.created_at' )
             ->groupBy('warehouse_histories.id', 'delivery_history.orderid');
 
 
         $wh_history = $wh_history->get();
-        var_dump($wh_history);die;
-        if ($user->permission != 0) {
-
-            //Kiểm tra quyền
-            $wh_history->where(function ($query) {
-
-                $permission = DB::table('permissions')
-                    ->where('user_id', Auth::id())->get();
-
-                $query->where('warehouses.id', -1);
-                foreach ($permission as $key => $value) {
-                    $query->orWhere('warehouses.id', $value->warehouse_id);
-                }
-            });
-
-        }
+//        var_dump($wh_history);die;
+//        if ($user->permission != 0) {
+//            //Kiểm tra quyền
+//            $wh_history->where(function ($query) {
+//
+//                $permission = DB::table('permissions')
+//                    ->where('user_id', Auth::id())->get();
+//
+//                $query->where('warehouses.id', -1);
+//                foreach ($permission as $key => $value) {
+//                    $query->orWhere('warehouses.id', $value->warehouse_id);
+//                }
+//            });
+//
+//        }
 
         return view('/pages/delivery', [
             'pageConfigs' => $pageConfigs,

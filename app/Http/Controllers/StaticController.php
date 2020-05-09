@@ -24,6 +24,33 @@ class StaticController extends Controller
         ];
     }
 
+    public static function getWHById($id){
+        return DB::table('warehouses')
+            ->where('id', $id)->first();
+    }
+
+    public static function delivery($id){
+        $delivery = DB::table('delivery_history')
+            ->where('orderid', $id)->first();
+        return $delivery;
+    }
+
+    public static function getDetailById($id){
+        $data = DB::table('donxuats')
+            ->join('danhmucs','donxuats.danhmucId','danhmucs.id')
+            ->where('donxuats.id_history', $id)
+            ->get();
+        return $data;
+    }
+
+    public static function getUserInfoByIdOrder($idorder){
+        $order = DB::table('delivery_history')
+            ->join('users', 'delivery_history.userid', 'users.id')
+            ->where('delivery_history.orderid',$idorder)
+            ->first();
+        return $order;
+    }
+
     public static function getUserInfo($id){
         //check hàng trong kho
         $user = DB::table('users')

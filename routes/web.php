@@ -41,6 +41,7 @@ Route::get('/hangton', 'WarehouseController@gethangton');
 //delivery
 Route::get('/delivery', 'WarehouseController@delivery');
 Route::post('/delivery', 'WarehouseController@deliveryUpdate');
+Route::post('/getinfoorder', 'WarehouseController@getDetailById');
 
 
 //Hàng trong kho
