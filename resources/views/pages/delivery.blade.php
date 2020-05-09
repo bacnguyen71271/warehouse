@@ -106,7 +106,7 @@ use App\Http\Controllers\StaticController;
                         <td>{{ $delivery["tenchuongtrinh"] }}</td>
                         <td>{{ product_price($delivery["dongia"]) }}</td>
 {{--                        <td>{{ $delivery["soluong"] }}</td>--}}
-                        @php $history = \App\Http\Controllers\StaticController::delivery($delivery['id']); echo $history->status @endphp
+                        @php $history = \App\Http\Controllers\StaticController::delivery($delivery['id']); @endphp
                         <td>
                             @if ($history->status == 1)
                                 <div class="chip chip-warning">
