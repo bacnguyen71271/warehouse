@@ -402,6 +402,8 @@
                         buttonsStyling: false,
                     }).then(function (result) {
                         if (result.value) {
+                            var soluongnhapkho = $('.nhapkho-data').length;
+                            var soluongdanhap = 0;
                             $.each($('.nhapkho-data'), function (el) {
                                 var self2 = $(this);
                                 $.ajax({
@@ -441,12 +443,16 @@
                                                     color: 'black'
                                                 })
                                             $.toast(data.msg);
+
+                                            if(++soluongdanhap == soluongnhapkho){
+                                                $('#modalnhapnhieu').modal('hide');
+                                            }
+                                            self2.remove();
                                         } else {
                                             $.toast(data.msg);
                                         }
                                     }
                                 });
-                                $('#modalnhapnhieu').modal('hide');
                             })
                         }
                     });
