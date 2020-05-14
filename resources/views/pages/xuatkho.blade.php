@@ -632,6 +632,7 @@
                 $('#backdrop').modal('hide');
                 myDropzone.removeAllFiles();
 
+                location.reload();
                 var newRow = dataListView.row.add([
                     formResponse.tenchuongtrinh,
                     formResponse.tenhang,
