@@ -72,7 +72,7 @@
                                     <span> -
                                         <div class="badge badge badge-primary badge-pill">
                                             @php
-                                                 echo App\Http\Controllers\StaticController::getWarehouseInfo($warehouse['id'])["hangtrongkho"];
+                                                 echo App\Http\Controllers\StaticController::hangTon($warehouse['id']);
                                             @endphp
                                         </div>
                                     </span>
