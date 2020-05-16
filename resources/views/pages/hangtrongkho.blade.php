@@ -37,39 +37,41 @@
             @foreach($danhsachkho as $kho)
                 @foreach($danhmuchang as $hang)
                     @php $soluong = \App\Http\Controllers\StaticController::hangTon( $kho['id'],$hang["id"]) @endphp
-                <tr>
-                    <td>{{ $hang["tenhang"] }}</td>
-                    <td>{{ $hang["mahang"] }}</td>
-                    <td>{{ $kho['tenkho'] }}</td>
-                    <td>
-                        @if ($soluong >= 200)
-                            <div class="chip chip-success">
-                                <div class="chip-body">
-                                    <div class="chip-text">{{ $soluong }}</div>
-                                </div>
-                            </div>
-                        @endif
+                    @if($soluong > 0)
+                        <tr>
+                            <td>{{ $hang["tenhang"] }}</td>
+                            <td>{{ $hang["mahang"] }}</td>
+                            <td>{{ $kho['tenkho'] }}</td>
+                            <td>
+                                @if ($soluong >= 200)
+                                    <div class="chip chip-success">
+                                        <div class="chip-body">
+                                            <div class="chip-text">{{ $soluong }}</div>
+                                        </div>
+                                    </div>
+                                @endif
 
-                        @if ($soluong < 200 && $soluong >= 100)
-                            <div class="chip chip-warning">
-                                <div class="chip-body">
-                                    <div class="chip-text">{{ $soluong }}</div>
-                                </div>
-                            </div>
-                        @endif
+                                @if ($soluong < 200 && $soluong >= 100)
+                                    <div class="chip chip-warning">
+                                        <div class="chip-body">
+                                            <div class="chip-text">{{ $soluong }}</div>
+                                        </div>
+                                    </div>
+                                @endif
 
-                        @if ($soluong < 100)
-                            <div class="chip chip-danger">
-                                <div class="chip-body">
-                                    <div class="chip-text">{{ $soluong }}</div>
-                                </div>
-                            </div>
-                        @endif
-                    </td>
-                    <td class="product-action">
-                        {{-- <a href="">Chi tiết</a> --}}
-                    </td>
-                </tr>
+                                @if ($soluong < 100)
+                                    <div class="chip chip-danger">
+                                        <div class="chip-body">
+                                            <div class="chip-text">{{ $soluong }}</div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </td>
+                            <td class="product-action">
+                                {{-- <a href="">Chi tiết</a> --}}
+                            </td>
+                        </tr>
+                    @endif
                 @endforeach
             @endforeach
             </tbody>
