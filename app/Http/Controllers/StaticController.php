@@ -20,6 +20,41 @@ class StaticController extends Controller
         return ( $tongnhap->soluong - $tongxuat->soluong );
     }
 
+    /**
+     * @param int $id_kho
+     * @param int $id_hang
+     * @return Số lượng hàng còn trong kho
+     */
+    public static function hangTon($id_kho, $id_hang = -1){
+        if($id_hang != -1){
+            $tongnhap = DB::table('warehouse_histories')->select(DB::raw('SUM(`soluong`) as soluong'))
+                ->where('type',0)
+                ->where('danhmucId',$id_hang)
+                ->where('warehouseId',$id_kho)
+                ->first();
+            $tongxuat = DB::table('warehouse_histories')
+                ->join('donxuats','warehouse_histories.id','donxuats.id_history')
+                ->selectRaw('SUM(`donxuats`.`soluong`) as soluong')
+                ->where('warehouse_histories.danhmucId',$id_hang)
+                ->where('warehouse_histories.warehouseId',$id_kho)
+                ->where('warehouse_histories.type',1)
+                ->where('warehouse_histories.status',1)->first();
+        }else{
+            $tongnhap = DB::table('warehouse_histories')->select(DB::raw('SUM(`soluong`) as soluong'))
+                ->where('type',0)
+                ->where('warehouseId',$id_kho)
+                ->first();
+            $tongxuat = DB::table('warehouse_histories')
+                ->join('donxuats','warehouse_histories.id','donxuats.id_history')
+                ->selectRaw('SUM(`donxuats`.`soluong`) as soluong')
+                ->where('warehouse_histories.warehouseId',$id_kho)
+                ->where('warehouse_histories.type',1)
+                ->where('warehouse_histories.status',1)->first();
+        }
+
+        return ( $tongnhap->soluong - $tongxuat->soluong );
+    }
+
     public static function getWarehouseInfo($id){
         //check hàng trong kho
         $hangtrongkho = DB::table('warehouse_goods')

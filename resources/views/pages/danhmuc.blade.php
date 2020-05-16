@@ -60,8 +60,8 @@ return $price.$symbol;
                     <td class="product-action">
                         <span idcategory="{{ $product["id"] }}" class="action-edit"><i
                                 class="feather icon-edit"></i></span>
-                        <span idcategory="{{ $product["id"] }}" class="action-delete"><i
-                                class="feather icon-trash"></i></span>
+{{--                        <span idcategory="{{ $product["id"] }}" class="action-delete"><i--}}
+{{--                                class="feather icon-trash"></i></span>--}}
                     </td>
                     <td>{{ $product["created_at"] }}</td>
                 </tr>

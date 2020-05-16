@@ -256,16 +256,13 @@ class WarehouseController extends Controller
         $kho = $request->input('kho');
         $mahang = $request->input('mahang');
 
-        $hangtrongkho = DB::table('warehouse_goods')
-            ->where('warehouseid', '=', $kho)
-            ->where('danhmucid', '=', $mahang)
-            ->first();
+        $hangtrongkho = StaticController::hangTon($kho, $mahang);
 
         if ($hangtrongkho) {
             return [
                 'status' => true,
                 'msg' => '',
-                'data' => $hangtrongkho->soluong
+                'data' => $hangtrongkho
             ];
         } else {
             return [
@@ -300,30 +297,6 @@ class WarehouseController extends Controller
             'ghichu' => $ghichu,
             'thoigian' => $ngaynhap,
         ]);
-
-
-        $quantity_old = 0;
-        //Kiểm tra hàng này đã được tạo chưa
-        $warehouse_goods = DB::table('warehouse_goods')
-            ->where('warehouseid', '=', $kho)
-            ->where('danhmucid', '=', $mahang)
-            ->first();
-
-        if (!$warehouse_goods) {
-            DB::table('warehouse_goods')->insert([
-                'warehouseid' => $kho,
-                'danhmucid' => $mahang,
-                'soluong' => 0
-            ]);
-        } else {
-            $quantity_old = $warehouse_goods->soluong;
-        }
-
-        //Cập nhật số lượng trong kho
-        DB::table('warehouse_goods')
-            ->where('warehouseid', '=', $kho)
-            ->where('danhmucid', '=', $mahang)
-            ->update(['soluong' => $quantity_old + $soluong]);
 
 
         $wh_history_temp = DB::table('warehouse_histories')
@@ -386,11 +359,8 @@ class WarehouseController extends Controller
         //Check số lượng
 
         foreach ($datatemp as $key => $value) {
-            $soluongtrongkho = DB::table('warehouse_goods')
-                ->where('warehouseid', $kho)
-                ->where('danhmucid', $key)
-                ->first();
-            if ($soluongtrongkho->soluong < $value) {
+            $soluongtrongkho = $soluongtrongkho = StaticController::hangTon($kho, $key);
+            if ($soluongtrongkho < $value) {
                 return [
                     'status' => false,
                     'msg' => 'Số lượng hàng xuất nhiều hơn hàng trong kho, vui lòng thử lại với số lượng ít hơn',
@@ -455,21 +425,6 @@ class WarehouseController extends Controller
                 'status' => 0
             ]);
 
-            foreach ($orderDetail as $detail){
-                $slHienTai = DB::table('warehouse_goods')
-                    ->where('warehouseid', $order->warehouseId)
-                    ->where('danhmucid', $detail->danhmucId)
-                    ->first();
-
-                //Cap nhat so luong kho
-                $soluong = $slHienTai->soluong - $detail->soluong;
-                DB::table('warehouse_goods')
-                    ->where('warehouseid', $order->warehouseId)
-                    ->where('danhmucid', $detail->danhmucId)
-                    ->update([
-                        'soluong' => $soluong
-                    ]);
-            }
 
             StaticController::LogHistory('Xác nhận đơn hàng', Auth::id(), $idorder);
 
@@ -630,12 +585,8 @@ class WarehouseController extends Controller
 
     public function hangtrongkho(Request $request)
     {
-        $hangtrongkho = DB::table('warehouse_goods')
-            ->join('danhmucs', 'warehouse_goods.danhmucid', '=', 'danhmucs.id')
-            ->join('warehouses', 'warehouse_goods.warehouseid', '=', 'warehouses.id')
-            ->select('danhmucs.tenhang', 'danhmucs.mahang', 'warehouses.tenkho', 'warehouse_goods.soluong')
-            ->get();
-
+        $danhmuchang = DB::table('danhmucs')->get();
+        $danhsachkho  = DB::table('warehouses')->get();
         $pageConfigs = [
             // 'pageHeader' => false,
             'navbarType' => 'sticky',
@@ -643,7 +594,8 @@ class WarehouseController extends Controller
 
         return view('/pages/hangtrongkho', [
             'pageConfigs' => $pageConfigs,
-            'hangtrongkhos' => json_decode(json_encode($hangtrongkho), true)
+            'danhsachkho' => json_decode(json_encode($danhsachkho), true),
+            'danhmuchang' => json_decode(json_encode($danhmuchang), true)
         ]);
     }
 

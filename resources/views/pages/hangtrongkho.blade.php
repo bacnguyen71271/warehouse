@@ -34,32 +34,34 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($hangtrongkhos as $hangtrongkho)
+            @foreach($danhsachkho as $kho)
+                @foreach($danhmuchang as $hang)
+                    @php $soluong = \App\Http\Controllers\StaticController::hangTon( $kho['id'],$hang["id"]) @endphp
                 <tr>
-                    <td>{{ $hangtrongkho["tenhang"] }}</td>
-                    <td>{{ $hangtrongkho["mahang"] }}</td>
-                    <td>{{ $hangtrongkho['tenkho'] }}</td>
+                    <td>{{ $hang["tenhang"] }}</td>
+                    <td>{{ $hang["mahang"] }}</td>
+                    <td>{{ $kho['tenkho'] }}</td>
                     <td>
-                        @if ($hangtrongkho['soluong'] >= 200)
+                        @if ($soluong >= 200)
                             <div class="chip chip-success">
                                 <div class="chip-body">
-                                    <div class="chip-text">{{ $hangtrongkho['soluong'] }}</div>
+                                    <div class="chip-text">{{ $soluong }}</div>
                                 </div>
                             </div>
                         @endif
 
-                        @if ($hangtrongkho['soluong'] < 200 && $hangtrongkho['soluong'] >= 100)
+                        @if ($soluong < 200 && $soluong >= 100)
                             <div class="chip chip-warning">
                                 <div class="chip-body">
-                                    <div class="chip-text">{{ $hangtrongkho['soluong'] }}</div>
+                                    <div class="chip-text">{{ $soluong }}</div>
                                 </div>
                             </div>
                         @endif
 
-                        @if ($hangtrongkho['soluong'] < 100)
+                        @if ($soluong < 100)
                             <div class="chip chip-danger">
                                 <div class="chip-body">
-                                    <div class="chip-text">{{ $hangtrongkho['soluong'] }}</div>
+                                    <div class="chip-text">{{ $soluong }}</div>
                                 </div>
                             </div>
                         @endif
@@ -69,6 +71,7 @@
                     </td>
                 </tr>
                 @endforeach
+            @endforeach
             </tbody>
         </table>
     </div>
