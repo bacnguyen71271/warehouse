@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\DB;
 class StaticController extends Controller
 {
     //
+    public static function soLuongHang(){
+        $tongnhap = DB::table('warehouse_histories')->select(DB::raw('SUM(`soluong`) as soluong'))
+            ->where('type',0)->first();
+        $tongxuat = DB::table('warehouse_histories')
+            ->join('donxuats','warehouse_histories.id','donxuats.id_history')
+            ->selectRaw('SUM(`donxuats`.`soluong`) as soluong')
+            ->where('warehouse_histories.type',1)
+            ->where('warehouse_histories.status',1)->first();
+        return ( $tongnhap->soluong - $tongxuat->soluong );
+    }
 
     public static function getWarehouseInfo($id){
         //check hàng trong kho

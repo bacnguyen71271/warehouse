@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\StaticController;
 
 class HomeController extends Controller
 {
@@ -26,11 +27,8 @@ class HomeController extends Controller
     public function index()
     {
         //Thống kê hàng trong kho
-        $hangtrongkho = 0;
-        $warehouses = DB::table('warehouse_goods')->get();
-        foreach ($warehouses as $key => $value) {
-            $hangtrongkho += $value->soluong;
-        }
+
+        $hangtrongkho = StaticController::soLuongHang();
 
         //Thống kê users
         $users = DB::table('users')->count();
