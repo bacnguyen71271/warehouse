@@ -57,10 +57,10 @@ class BaocaoController extends Controller
             }
 
             if($loaibaocao == 'nhapkho'){
-                $query->where('type',0);
+                $query->where('warehouse_histories.type',0);
             }
             if($loaibaocao == 'xuatkho'){
-                $query->where('type',1);
+                $query->where('warehouse_histories.type',1);
             }
             $result = $query->get();
         }
@@ -69,30 +69,32 @@ class BaocaoController extends Controller
             //Nhap dau ky
             $query_ndk = clone $query;
             $query_ndk->where('warehouse_histories.created_at','<=', $from.' 00:00:00' );
-            $query_ndk->where('type',0);
+            $query_ndk->where('warehouse_histories.type',0);
             $nhapdauky = $query_ndk->get();
             $nhapdauky = json_decode($nhapdauky,true);
 
             //Nhap cuoi ky
             $query_nck = clone $query;
             $query_nck->where('warehouse_histories.created_at','<=', $to.' 23:59:59' );
-            $query_nck->where('type',0);
+            $query_nck->where('warehouse_histories.type',0);
             $nhapcuoiky = $query_nck->get();
             $nhapcuoiky = json_decode($nhapcuoiky,true);
 
             //Xuat dau ky
             $query_xdk = clone $query;
             $query_xdk->where('warehouse_histories.created_at','<=', $from.' 00:00:00' );
-            $query_xdk->where('type',1);
-            $query_xdk->where('status',1);
+            $query_xdk->join('donxuats','donxuats.id_history','warehouse_histories.warehouseId' );
+            $query_xdk->where('warehouse_histories.type',1);
+            $query_xdk->where('warehouse_histories.status',1);
             $xuatdauky = $query_xdk->get();
             $xuatdauky = json_decode($xuatdauky,true);
 
             //Xuat cuoi ky
             $query_xck = clone $query;
             $query_xck->where('warehouse_histories.created_at','<=', $to.' 23:59:59' );
-            $query_xck->where('type',1);
-            $query_xck->where('status',1);
+            $query_xck->join('donxuats','donxuats.id_history','warehouse_histories.warehouseId' );
+            $query_xck->where('warehouse_histories.type',1);
+            $query_xck->where('warehouse_histories.status',1);
             $xuatcuoiky = $query_xck->get();
             $xuatcuoiky = json_decode($xuatcuoiky,true);
 

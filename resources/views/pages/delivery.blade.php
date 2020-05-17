@@ -75,6 +75,53 @@ use App\Http\Controllers\StaticController;
     @endphp
     {{-- Data list view starts --}}
     <section id="data-list-view" class="data-list-view-header">
+        <div class="card">
+            <div class="card-body">
+                <form method="GET">
+                    <div class="row">
+                        <div class="form-group mb-0 col-2">
+                            <label for="first-name-vertical">Mã đơn</label>
+                            <input type="text" value="@if($query['id'] ?? ''){{ $query['id'] }}@endif" name="id"
+                                   class="form-control"/>
+                        </div>
+                        <div class="form-group mb-0 col-2">
+                            <label for="first-name-vertical">Tên chương trình</label>
+                            <input type="text" value="@if($query['title'] ?? ''){{ $query['title'] }}@endif" name="title"
+                                   class="form-control"/>
+                        </div>
+                        <div class="form-group mb-0 col-2">
+                            <label for="first-name-vertical">Trạng thái</label>
+                            <select class="form-control" name="status">
+                                <option @if(array_key_exists('status',$query) && $query['status'] == 0) selected @endif value="0">Chưa nhận
+                                </option>
+                                <option @if(array_key_exists('status',$query) && $query['status'] == 1) selected @endif value="1">On-going
+                                </option>
+                                <option @if(array_key_exists('status',$query) && $query['status'] == 2) selected @endif value="2">Done
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-0 col-6">
+                            <label for="first-name-vertical">Thời gian tạo đơn</label>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <input name="from" class="form-control"
+                                           value="@if($query['from'] ?? ''){{ $query['from'] }}@endif" type="date">
+                                </div>
+                                đến
+                                <div class="col-md-5">
+                                    <input name="to" class="form-control" value="@if($query['to'] ?? ''){{ $query['to'] }}@endif"
+                                           type="date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-0 col-12">
+                            <label for="first-name-vertical"></label>
+                            <button type="submit" class="btn bg-gradient-primary mr-1 mb-1 mt-2 waves-effect waves-light float-right">Tìm</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
         <div class="action-btns d-none">
             <div class="mr-1 mb-1">
                 <div class="btn-group ">
@@ -90,22 +137,23 @@ use App\Http\Controllers\StaticController;
             <table class="table data-list-view">
                 <thead>
                 <tr>
+                    <th>MÃ ĐƠN</th>
                     <th>TÊN CHƯƠNG TRÌNH</th>
                     <th>GIÁ TRỊ</th>
-{{--                    <th>SỐ LƯỢNG</th>--}}
                     <th>TRẠNG THÁI</th>
                     <th>KHO</th>
                     <th>NGƯỜI GIAO</th>
                     <th>HÀNH ĐỘNG</th>
                     <th>CHI TIẾT</th>
+                    <th>NGÀY TẠO ĐƠN</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach ($deliverys as $delivery)
                     <tr>
+                        <td>{{ $delivery["id"] }}</td>
                         <td>{{ $delivery["tenchuongtrinh"] }}</td>
                         <td>{{ product_price($delivery["dongia"]) }}</td>
-{{--                        <td>{{ $delivery["soluong"] }}</td>--}}
                         @php $history = \App\Http\Controllers\StaticController::delivery($delivery['id']); @endphp
                         <td>
                             @if ($history->status == 1)
@@ -334,7 +382,7 @@ use App\Http\Controllers\StaticController;
                 aoColumnDefs: [
                     {
                         "bVisible": false,
-                        "aTargets": [7]
+                        // "aTargets": [7]
                     },
                     // {
                     //     orderable: true,
@@ -355,7 +403,7 @@ use App\Http\Controllers\StaticController;
                     [4, 10, 15, 20]
                 ],
                 order: [
-                    [7, "desc"]
+                    [8, "desc"]
                 ],
                 bInfo: false,
                 pageLength: 10,

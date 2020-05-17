@@ -26,7 +26,8 @@ Route::get('/viewfile/{id}', 'WarehouseController@viewfile');
 Route::get('/nhapkho', 'WarehouseController@nhapKhoIndex');
 Route::get('/lichsunhap/{id}', 'WarehouseController@chitietnhapkho');
 Route::post('/nhapkho', 'WarehouseController@nhapkho');
-
+Route::get('/nhapkho/suaphieu/{id}', 'WarehouseController@suaphieunhap');
+Route::post('/nhapkho/suaphieu/{id}', 'WarehouseController@luuphieunhap');
 //Xuất kho
 Route::get('/xuatkho', 'WarehouseController@xuatKhoIndex');
 Route::post('/xuatkho', 'WarehouseController@xuatkho');

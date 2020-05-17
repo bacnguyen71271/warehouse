@@ -67,7 +67,7 @@
                                         </div>
                                         đến
                                         <div class="col-md-5">
-                                            <input name="to" class="form-control" value="@if($from ?? ''){{$to}}@endif"
+                                            <input name="to" class="form-control" value="@if( $to ?? ''){{$to}}@endif"
                                                    type="date">
                                         </div>
                                     </div>

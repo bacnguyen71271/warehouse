@@ -47,7 +47,7 @@ class HomeController extends Controller
         ->join('users','users.id','=','system_histories.userid')
         ->orderBy('system_histories.created_at','desc')
         ->select('system_histories.hanhdong','system_histories.thongtin','system_histories.created_at','users.email','users.name')
-        ->limit(10)->get();
+        ->limit(20)->get();
 
         //print_r($systemHistorys);
         
