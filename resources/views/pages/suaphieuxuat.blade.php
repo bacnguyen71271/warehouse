@@ -28,6 +28,10 @@
             font-weight: 600;
             display: contents;
         }
+        table.hangnhap td {
+            padding: 5px;
+            border: 1px solid #bfbfbf;
+        }
     </style>
 @endsection
 
@@ -96,11 +100,12 @@
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                    <table>
+                                    <table class="hangnhap">
                                         <thead>
                                         <tr>
                                             <th>Tên hàng</th>
                                             <th>Mã hàng</th>
+                                            <th>Số lượng trong kho</th>
                                             <th>Đơn giá</th>
                                             <th>Số lượng</th>
                                             <th>Tổng</th>
@@ -108,11 +113,19 @@
                                         </thead>
                                         <tbody>
                                         @foreach($listhang as $key => $value)
-                                            <tr>
-                                                <td>{{ $value['tenhang'] }}</td>
+                                            <tr data-id="{{ $value['id'] }}">
+                                                <td>
+                                                    <select name="hanghoa">
+                                                        <option>--Chọn hàng hóa--</option>
+                                                        @foreach($categorys as $category)
+                                                            <option @if($category['id'] == $value['danhmucId']) selected @endif value="{{ $category['id'] }}">{{ $category['tenhang'] }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
                                                 <td>{{ $value['mahang'] }}</td>
+                                                <td><span class="soluongtrongkho"></span></td>
                                                 <td>{{ $value['dongia'] }}</td>
-                                                <td>{{ $value['soluong'] }}</td>
+                                                <td><input type="number" value="{{ $value['soluong'] }}" name="soluong"></td>
                                                 <td>{{ $value['soluong'] * $value['dongia'] }}</td>
                                             </tr>
                                         @endforeach
@@ -120,52 +133,12 @@
                                     </table>
                                 </td>
                             </tr>
-{{--                            <tr>--}}
-{{--                                <td class="font-weight-bold">Tên hàng</td>--}}
-{{--                                <td>--}}
-{{--                                    <div class="col-lg-6 col-sm-12 data-field-col pl-0">--}}
-{{--                                        <fieldset class="form-group tenhanghoa mb-0">--}}
-{{--                                            <select class="select2 form-control" id="thh">--}}
-{{--                                                <option value="-1">Chọn hàng hóa</option>--}}
-{{--                                                @foreach ($categorys as $category)--}}
-{{--                                                    <option @if($whhistorytemp['danhmucId'] == $category['id']) selected--}}
-{{--                                                            @endif value="{{ $category['id'] }}">{{ $category['tenhang'] }}</option>--}}
-{{--                                                @endforeach--}}
-{{--                                            </select>--}}
-{{--                                        </fieldset>--}}
-{{--                                    </div>--}}
-{{--                                </td>--}}
-{{--                            </tr>--}}
-{{--                            <tr>--}}
-{{--                                <td class="font-weight-bold">Mã hàng</td>--}}
-{{--                                <td class="mahanghoa">{{ $whhistorytemp['mahang'] }}</td>--}}
-{{--                            </tr>--}}
-{{--                            <tr>--}}
-{{--                                <td class="font-weight-bold">Đơn giá</td>--}}
-{{--                                <td class="dongia">{{ product_price($whhistorytemp['dongia']) }}</td>--}}
-{{--                            </tr>--}}
-{{--                            <tr>--}}
-{{--                                <td class="font-weight-bold">Số lượng</td>--}}
-{{--                                <td>--}}
-{{--                                    <div class="col-lg-6 col-sm-12 data-field-col pl-0">--}}
-{{--                                        <fieldset class="form-group soluong mb-0">--}}
-{{--                                            <input value="{{ $whhistorytemp['soluong'] }}" type="number"--}}
-{{--                                                   class="form-control">--}}
-{{--                                            <span class="invalid-feedback" role="alert"></span>--}}
-{{--                                            <span class="soluongtrongkho">Trong kho: <p>0</p></span>--}}
-{{--                                        </fieldset>--}}
-{{--                                    </div>--}}
-{{--                                </td>--}}
-{{--                            </tr>--}}
-{{--                            <tr>--}}
-{{--                                <td class="font-weight-bold">Giá trị</td>--}}
-{{--                                <td class="giatri">{{ product_price($whhistorytemp['dongia'] * $whhistorytemp['soluong']) }}</td>--}}
-{{--                            </tr>--}}
+
                             <tr>
                                 <td class="font-weight-bold">Kho xuất</td>
                                 <td>
                                     <div class="col-lg-6 col-sm-12 data-field-col pl-0">
-                                        <fieldset class="form-group tenhanghoa mb-0">
+                                        <fieldset class="form-group mb-0">
                                             <select class="select2 form-control" id="kho">
                                                 <option value="-1">Chọn kho xuất</option>
                                                 @foreach ($warehouses as $warehouse)
@@ -235,9 +208,7 @@
 
         checkhangton();
         $('#kho').change(function () {
-            if ($('#thh').val() != -1) {
-                checkhangton();
-            }
+            checkhangton();
         })
 
         $('#thh').change(function () {
@@ -290,13 +261,6 @@
                 $('fieldset.tenchuongtrinh>input').removeClass('is-invalid');
             }
 
-            // if ($('fieldset.soluong>input').val() == '' || $('fieldset.soluong>input').val() <= 0) {
-            //     check = false;
-            //     $('fieldset.soluong>span').html('Số lượng không hợp lệ');
-            //     $('fieldset.soluong>input').addClass('is-invalid');
-            // } else {
-            //     $('fieldset.soluong>input').removeClass('is-invalid');
-            // }
 
             if ($('fieldset.ngaynhapkho>input').val() == '') {
                 check = false;
@@ -305,15 +269,6 @@
             } else {
                 $('fieldset.ngaynhapkho>input').removeClass('is-invalid');
             }
-
-            //
-            // if ($('fieldset.mahanghoa>input').val() == "") {
-            //     check = false;
-            //     $('fieldset.mahanghoa>span').html('Hãy chọn một loại hàng');
-            //     $('fieldset.mahanghoa>input').addClass('is-invalid');
-            // } else {
-            //     $('fieldset.mahanghoa>input').removeClass('is-invalid');
-            // }
 
             if ($('#kho').val() == -1) {
                 check = false;
@@ -392,10 +347,10 @@
             }
         });
 
-        function checkhangton() {
+        $('select[name="hanghoa"]').change(function () {
+            var self = $(this);
             var idkho = $('#kho').val();
-            var idhang = $('#thh').val();
-
+            var idhang = $(this).val();
             $.ajax({
                 type: 'GET',
                 url: '{{ url('hangton') }}',
@@ -409,11 +364,35 @@
                 dataType: 'json',
                 success: function (data) {
                     if (data.status) {
-                        soluongtronkho = data.data;
-                        $('.soluongtrongkho p').html(data.data)
+                        self.closest('tr').find('.soluongtrongkho').html(data.data)
                     }
                 }
             });
+        })
+
+        function checkhangton() {
+            var idkho = $('#kho').val();
+            $('.hangnhap tr').each(function () {
+                var self = $(this);
+                var idhang = self.find('select[name="hanghoa"]').val();
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ url('hangton') }}',
+                    headers: {
+                        'X-CSRF-TOKEN': '{!! csrf_token() !!}'
+                    },
+                    data: {
+                        'kho': idkho,
+                        'mahang': idhang
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.status) {
+                            self.find('.soluongtrongkho').html(data.data)
+                        }
+                    }
+                });
+            })
         }
 
         $('.btn-approved').click(function () {
