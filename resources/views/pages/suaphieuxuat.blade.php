@@ -122,11 +122,11 @@
                                                         @endforeach
                                                     </select>
                                                 </td>
-                                                <td>{{ $value['mahang'] }}</td>
+                                                <td class="mahanghoa">{{ $value['mahang'] }}</td>
                                                 <td><span class="soluongtrongkho"></span></td>
-                                                <td>{{ $value['dongia'] }}</td>
+                                                <td class="dongiahang">{{ product_price($value['dongia']) }}</td>
                                                 <td><input type="number" value="{{ $value['soluong'] }}" name="soluong"></td>
-                                                <td>{{ $value['soluong'] * $value['dongia'] }}</td>
+                                                <td class="tonggiatri">{{ product_price($value['soluong'] * $value['dongia']) }}</td>
                                             </tr>
                                         @endforeach
                                         </tbody>
@@ -289,6 +289,14 @@
                     buttonsStyling: false,
                 }).then(function (result) {
                     if (result.value) {
+                        var data = [];
+                        $('table.hangnhap tbody>tr').each(function () {
+                            data.push({
+                                id : $(this).attr('data-id'),
+                                mahang : $(this).find('select[name="hanghoa"]').val(),
+                                soluong : $(this).find('input[name="soluong"]').val()
+                            })
+                        })
                         $.ajax({
                             type: 'POST',
                             url: "{{ url('xuatkho/suaphieu') }}/{{ $whhistorytemp['id'] }}",
@@ -296,10 +304,9 @@
                                 'X-CSRF-TOKEN': '{!! csrf_token() !!}'
                             },
                             data: {
-                                'mahang': $('#thh').val(),
-                                'kho': $('#kho').val(),
+                                'data' : data,
+                                'kho' : $('#kho').val(),
                                 'tenchuongtrinh': $('fieldset.tenchuongtrinh>input').val(),
-                                'soluong': $('fieldset.soluong>input').val(),
                                 'ngayxuat': $('fieldset.ngaynhapkho>input').val(),
                                 'ghichu': $('#basicTextarea').val()
                             },
@@ -347,6 +354,45 @@
             }
         });
 
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            // Strip all characters but numerical ones.
+            number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
+            var n = !isFinite(+number) ? 0 : +number,
+                prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                s = '',
+                toFixedFix = function (n, prec) {
+                    var k = Math.pow(10, prec);
+                    return '' + Math.round(n * k) / k;
+                };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1).join('0');
+            }
+            return s.join(dec);
+        }
+
+        $('input[name="soluong"]').keyup(function () {
+            var soluongtemp = $(this).closest('tr').find('.soluongtrongkho').html();
+            if($(this).val() >= parseInt(soluongtemp)){
+                $(this).val(parseInt(soluongtemp));
+            }
+            if($(this).val() == ''){
+                $(this).val(0);
+            }
+
+            var dongia = $(this).closest('tr').find('.dongiahang').html().match(/\d/g);
+            dongia = dongia.join("");
+            var soluong = $(this).val();
+            $(this).closest('tr').find('.tonggiatri').html(number_format(parseInt(dongia) * parseInt(soluong), 0, ',', ','))
+        })
+
         $('select[name="hanghoa"]').change(function () {
             var self = $(this);
             var idkho = $('#kho').val();
@@ -365,6 +411,31 @@
                 success: function (data) {
                     if (data.status) {
                         self.closest('tr').find('.soluongtrongkho').html(data.data)
+                    }
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ url('categoryinfo') }}',
+                headers: {
+                    'X-CSRF-TOKEN': '{!! csrf_token() !!}'
+                },
+                data: {
+                    'iddanhmuc': idhang,
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.status) {
+                        self.closest('tr').find('.mahanghoa').html(data.data.mahang);
+                        self.closest('tr').find('.dongiahang').html(number_format(data.data.dongia, 0, ',', ','));
+                        self.closest('tr').find('input[name="soluong"]').val()
+                        if (self.closest('tr').find('input[name="soluong"]').val() != '' || self.closest('tr').find('input[name="soluong"]').val() <= 0) {
+                            var giatri = data.data.dongia * parseInt(self.closest('tr').find('input[name="soluong"]').val());
+                            self.closest('tr').find('.tonggiatri').html(number_format(giatri, 0, ',', ','));
+                        } else {
+                            self.closest('tr').find('.tonggiatri').html('');
+                        }
                     }
                 }
             });
