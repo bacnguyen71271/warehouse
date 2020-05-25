@@ -35,8 +35,8 @@ class StaticController extends Controller
             $tongxuat = DB::table('warehouse_histories')
                 ->join('donxuats','warehouse_histories.id','donxuats.id_history')
                 ->selectRaw('SUM(`donxuats`.`soluong`) as soluong')
-                ->where('warehouse_histories.danhmucId',$id_hang)
-                ->where('warehouse_histories.warehouseId',$id_kho)
+                ->where('donxuats.danhmucId',$id_hang)
+                ->where('donxuats.warehouseId',$id_kho)
                 ->where('warehouse_histories.type',1)
                 ->where('warehouse_histories.status',1)->first();
         }else{
@@ -47,7 +47,7 @@ class StaticController extends Controller
             $tongxuat = DB::table('warehouse_histories')
                 ->join('donxuats','warehouse_histories.id','donxuats.id_history')
                 ->selectRaw('SUM(`donxuats`.`soluong`) as soluong')
-                ->where('warehouse_histories.warehouseId',$id_kho)
+                ->where('donxuats.warehouseId',$id_kho)
                 ->where('warehouse_histories.type',1)
                 ->where('warehouse_histories.status',1)->first();
         }

@@ -24,10 +24,22 @@ class WarehouseController extends Controller
             ->join('danhmucs', 'donxuats.danhmucId', 'danhmucs.id')
             ->where('donxuats.id_history', $id)
             ->get();
+
+        $xuatkho = DB::table('warehouse_histories')
+            ->join('warehouses','warehouse_histories.warehouseId','warehouses.id')
+            ->where('warehouse_histories.id', $id)
+            ->first();
+
         return [
             'status' => true,
             'msg' => '',
-            'data' => $data
+            'data' => [
+                'tenchuongtrinh' => $xuatkho->tenchuongtrinh,
+                'tenkho' => $xuatkho->tenkho,
+                'ngayxuat' => $xuatkho->thoigian,
+                'ghichu' => $xuatkho->ghichu,
+                'danhsach' => $data
+            ]
         ];
     }
 
@@ -50,7 +62,7 @@ class WarehouseController extends Controller
             ->leftJoin('users', 'users.id', 'delivery_history.userid')
             ->where('warehouse_histories.type', 1)
             ->where('warehouse_histories.status', 1)
-            ->select(DB::raw('sum(`donxuats`.`soluong`) as `soluong`'), DB::raw('sum(`donxuats`.`soluong` * `danhmucs`.`dongia`) as `dongia`'), 'warehouse_histories.id', 'warehouse_histories.warehouseId', 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'warehouse_histories.id', 'warehouse_histories.hansudung', 'warehouse_histories.ghichu', 'warehouse_histories.created_at')
+            ->select(DB::raw('sum(`donxuats`.`soluong`) as `soluong`'), DB::raw('sum(`donxuats`.`soluong` * `danhmucs`.`dongia`) as `dongia`'), 'warehouse_histories.id', 'warehouse_histories.warehouseId', 'warehouse_histories.tenchuongtrinh', 'delivery_history.status', 'warehouse_histories.id', 'warehouse_histories.hansudung', 'warehouse_histories.ghichu', 'warehouse_histories.created_at')
             ->groupBy('warehouse_histories.id', 'delivery_history.orderid');
 
         if (array_key_exists('id', $query)) {

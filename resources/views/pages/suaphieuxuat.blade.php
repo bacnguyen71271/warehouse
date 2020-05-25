@@ -494,7 +494,7 @@
                             $.toast(data.msg);
                             var delay = 1000;
                             setTimeout(function () {
-                                location.reload();
+                                window.location = "{{ url('/xuatkho') }}/{{ $whhistorytemp['id'] }}";
                             }, delay);
                         }
                     })

@@ -219,6 +219,38 @@ use App\Http\Controllers\StaticController;
                         </button>
                     </div>
                     <div class="modal-body" style="min-height: 400px">
+                        <div class="row">
+                            <div class="col-3">
+                                <p>Tên chương trình: </p>
+                            </div>
+                            <div class="col-9">
+                               <p class="tenchuongtrinh"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <p>Kho nhập: </p>
+                            </div>
+                            <div class="col-9">
+                                <p class="tenkho"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <p>Ngày xuất: </p>
+                            </div>
+                            <div class="col-9">
+                                <p class="ngayxuat"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <p>Ghi chú: </p>
+                            </div>
+                            <div class="col-9">
+                                <p class="ghichu"></p>
+                            </div>
+                        </div>
                         <div class="table-responsive">
                             <table class="table-nhaphang table table-striped mb-2">
                                 <thead>
@@ -278,8 +310,12 @@ use App\Http\Controllers\StaticController;
                     dataType: 'json',
                     success: function (data) {
                         if (data.status) {
+                            $('.tenchuongtrinh').html(data.data.tenchuongtrinh);
+                            $('.tenkho').html(data.data.tenkho);
+                            $('.ngayxuat').html(data.data.ngayxuat);
+                            $('.ghichu').html(data.data.ghichu);
                             $('.table-nhaphang tbody').html('');
-                            data.data.forEach(function (el) {
+                            data.data.danhsach.forEach(function (el) {
                                 $('.table-nhaphang tbody').append('<tr><td>' +el.tenhang+ '</td><td>' + el.mahang + '</td><td>' + el.soluong + '</td><td>'+ number_format(el.soluong*el.dongia, 0, ',', ',')+'</td></tr>')
                             })
                         }

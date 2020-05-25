@@ -314,6 +314,10 @@
             })
 
             $('tbody').delegate(".nhapnhieu-soluong", "keyup", function (el) {
+                var soluongtorngkho = parseInt($(this).parents('.nhapkho-data').find('.soluongtrongkho').html())
+                if(soluongtorngkho < parseInt($(this).val())){
+                    $(this).val(soluongtorngkho)
+                }
 
                 var dongia = $(this).parents('.nhapkho-data').find('.nhapnhieu-dongia').html();
                 if ($(this).val() != "" ||

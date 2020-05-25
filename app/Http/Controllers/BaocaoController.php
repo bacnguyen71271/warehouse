@@ -33,27 +33,54 @@ class BaocaoController extends Controller
         }
 
 
-        $query = DB::table('warehouse_histories')
-            ->join('danhmucs','warehouse_histories.danhmucId','danhmucs.id');
+        if($loaibaocao == 'nhapkho'){
+            $query = DB::table('warehouse_histories')
+                ->join('danhmucs','warehouse_histories.danhmucId','danhmucs.id');
+            if($title){
+                $query->where('warehouse_histories.tenchuongtrinh','like','%'.$title.'%');
+            }
+            if($tenhang){
+                $query->whereIn('danhmucs.mahang',$tenhang);
+            }
+            $query->where('warehouse_histories.warehouseId',$kho);
 
-        if($title){
-            $query->where('warehouse_histories.tenchuongtrinh','like','%'.$title.'%');
-        }
+            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','warehouse_histories.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia');
 
-        if($tenhang){
-            $query->whereIn('danhmucs.mahang',$tenhang);
-        }
-
-        $query->where('warehouse_histories.warehouseId',$kho);
-
-        $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','warehouse_histories.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia');
-        if($loaibaocao == 'nhapkho' || $loaibaocao == 'xuatkho'){
             if($from){
                 $query->where('warehouse_histories.created_at','>=', $from.' 00:00:00' );
             }
-
             if($to){
                 $query->where('warehouse_histories.created_at','<=', $to.' 23:59:59' );
+            }
+            if($loaibaocao == 'nhapkho'){
+                $query->where('warehouse_histories.type',0);
+            }
+            if($loaibaocao == 'xuatkho'){
+                $query->where('warehouse_histories.type',1);
+            }
+            $result = $query->get();
+        }
+
+        if($loaibaocao == 'xuatkho'){
+            $query = DB::table('warehouse_histories')
+                ->join('donxuats','donxuats.id_history','warehouse_histories.id')
+                ->join('danhmucs','donxuats.danhmucId','danhmucs.id');
+            if($title){
+                $query->where('warehouse_histories.tenchuongtrinh','like','%'.$title.'%');
+            }
+            if($tenhang){
+                $query->whereIn('danhmucs.mahang',$tenhang);
+            }
+            $query->where('warehouse_histories.warehouseId',$kho);
+
+            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','donxuats.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia');
+
+            if($from){
+                $query->where('warehouse_histories.thoigian','>=', $from );
+            }
+
+            if($to){
+                $query->where('warehouse_histories.thoigian','<=', $to );
             }
 
             if($loaibaocao == 'nhapkho'){
@@ -64,26 +91,53 @@ class BaocaoController extends Controller
             }
             $result = $query->get();
         }
+//        var_dump($result);die;
         if($loaibaocao == 'ketxuat'){
+            $query = DB::table('warehouse_histories')
+                ->join('danhmucs','warehouse_histories.danhmucId','danhmucs.id');
+            if($title){
+                $query->where('warehouse_histories.tenchuongtrinh','like','%'.$title.'%');
+            }
+            if($tenhang){
+                $query->whereIn('danhmucs.mahang',$tenhang);
+            }
+            $query->where('warehouse_histories.warehouseId',$kho);
+
+            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','warehouse_histories.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia');
+
 
             //Nhap dau ky
             $query_ndk = clone $query;
-            $query_ndk->where('warehouse_histories.created_at','<=', $from.' 00:00:00' );
+            $query_ndk->where('warehouse_histories.thoigian','<=', $from );
             $query_ndk->where('warehouse_histories.type',0);
             $nhapdauky = $query_ndk->get();
             $nhapdauky = json_decode($nhapdauky,true);
 
+
             //Nhap cuoi ky
             $query_nck = clone $query;
-            $query_nck->where('warehouse_histories.created_at','<=', $to.' 23:59:59' );
+            $query_nck->where('warehouse_histories.thoigian','<=', $to );
             $query_nck->where('warehouse_histories.type',0);
             $nhapcuoiky = $query_nck->get();
             $nhapcuoiky = json_decode($nhapcuoiky,true);
 
+
+            $query = DB::table('warehouse_histories')
+                ->join('donxuats','donxuats.id_history','warehouse_histories.id')
+                ->join('danhmucs','donxuats.danhmucId','danhmucs.id');
+            if($title){
+                $query->where('warehouse_histories.tenchuongtrinh','like','%'.$title.'%');
+            }
+            if($tenhang){
+                $query->whereIn('danhmucs.mahang',$tenhang);
+            }
+            $query->where('warehouse_histories.warehouseId',$kho);
+
+            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','donxuats.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia');
+
             //Xuat dau ky
             $query_xdk = clone $query;
-            $query_xdk->where('warehouse_histories.created_at','<=', $from.' 00:00:00' );
-            $query_xdk->join('donxuats','donxuats.id_history','warehouse_histories.warehouseId' );
+            $query_xdk->where('warehouse_histories.thoigian','<=', $from );
             $query_xdk->where('warehouse_histories.type',1);
             $query_xdk->where('warehouse_histories.status',1);
             $xuatdauky = $query_xdk->get();
@@ -91,12 +145,12 @@ class BaocaoController extends Controller
 
             //Xuat cuoi ky
             $query_xck = clone $query;
-            $query_xck->where('warehouse_histories.created_at','<=', $to.' 23:59:59' );
-            $query_xck->join('donxuats','donxuats.id_history','warehouse_histories.warehouseId' );
+            $query_xck->where('warehouse_histories.thoigian','<=', $to );
             $query_xck->where('warehouse_histories.type',1);
             $query_xck->where('warehouse_histories.status',1);
             $xuatcuoiky = $query_xck->get();
             $xuatcuoiky = json_decode($xuatcuoiky,true);
+
 
             $tongMahang = [];
             //Tong hop mang
