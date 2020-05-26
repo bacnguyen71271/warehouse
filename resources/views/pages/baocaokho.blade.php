@@ -189,6 +189,22 @@
     <script src="{{ asset(mix('vendors/js/forms/select/select2.full.min.js')) }}"></script>
     <script src="{{ asset(mix('js/scripts/forms/select/form-select2.js')) }}"></script>
     <script>
+        $("form").submit(function(e){
+            if($('select[name="report-type"]').val() == "ketxuat" && $('input[name="from"]').val() == '' && $('input[name="to"]').val() == ''){
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Báo cáo kết xuất cần phải nhập ngày bắt đầu và kết thúc ?',
+                    type: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Oke!',
+                    confirmButtonClass: 'btn btn-primary',
+                    cancelButtonClass: 'btn btn-danger ml-1',
+                    buttonsStyling: false,
+                })
+            }
+        })
+
         $('#baocaonhap').DataTable({
             dom: 'Bfrtip',
             buttons: [
