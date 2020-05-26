@@ -601,8 +601,8 @@ class WarehouseController extends Controller
             ->join('users', 'warehouse_histories.userid', 'users.id')
             ->join('danhmucs', 'danhmucs.id', 'warehouse_histories.danhmucId')
             ->where('warehouse_histories.id', $id)
+            ->select('warehouse_histories.id', 'warehouse_histories.status', 'warehouse_histories.ghichu', 'users.email', 'users.name', 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.danhmucId', 'warehouse_histories.soluong', 'warehouse_histories.warehouseId', 'warehouse_histories.thoigian', 'warehouse_histories.hansudung', 'danhmucs.mahang', 'danhmucs.dongia')
             ->first();
-
         $listhang = DB::table('donxuats')
             ->join('danhmucs', 'danhmucs.id', 'donxuats.danhmucId')
             ->where('donxuats.id_history', $id)
