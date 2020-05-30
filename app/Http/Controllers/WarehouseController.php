@@ -634,13 +634,12 @@ class WarehouseController extends Controller
             ->join('users', 'warehouse_histories.userid', 'users.id')
             ->join('warehouses', 'warehouses.id', 'warehouse_histories.warehouseId')
             ->where('warehouse_histories.id', $id)
-            ->select('warehouse_histories.warehouseId', 'warehouses.tenkho', 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'warehouse_histories.thoigian', 'warehouse_histories.ghichu', 'warehouse_histories.soluong', 'warehouse_histories.hansudung', 'warehouse_histories.created_at', 'warehouse_histories.id', 'users.email', 'users.name', 'users.id')
+            ->select('warehouse_histories.warehouseId', 'warehouses.tenkho', 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'warehouse_histories.thoigian', 'warehouse_histories.ghichu', 'warehouse_histories.soluong', 'warehouse_histories.hansudung', 'warehouse_histories.created_at', 'warehouse_histories.id', 'users.email', 'users.name', 'users.id as userid')
             ->first();
         $listhang = DB::table('donxuats')
             ->join('danhmucs', 'danhmucs.id', 'donxuats.danhmucId')
             ->where('donxuats.id_history', $id)
             ->get();
-
 
         $attachFile = DB::table('files')->where('id_order', (array)$wh_history_temp->id)->get();
 
