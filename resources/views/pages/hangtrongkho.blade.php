@@ -283,20 +283,22 @@
         // ],
         bInfo: false,
         pageLength: 10,
-        buttons: [{
-            text: "<i class='feather icon-plus'></i> Nhập kho",
-            action: function() {
-                $('#thh').val(-1).trigger('change.select2');
-                $('#kho').val(-1).trigger('change.select2');
-                $('.is-invalid').removeClass('is-invalid');
-            },
-            className: "btn btn-outline-primary",
-            attr:  {
-                "data-toggle":"modal",
-                "data-backdrop":"false",
-                "data-target":"#backdrop"
-            }
-        }],
+        buttons: [
+        //     {
+        //     text: "<i class='feather icon-plus'></i> Nhập kho",
+        //     action: function() {
+        //         $('#thh').val(-1).trigger('change.select2');
+        //         $('#kho').val(-1).trigger('change.select2');
+        //         $('.is-invalid').removeClass('is-invalid');
+        //     },
+        //     className: "btn btn-outline-primary",
+        //     attr:  {
+        //         "data-toggle":"modal",
+        //         "data-backdrop":"false",
+        //         "data-target":"#backdrop"
+        //     }
+        // }
+        ],
         initComplete: function(settings, json) {
             $(".dt-buttons .btn").removeClass("btn-secondary")
         }

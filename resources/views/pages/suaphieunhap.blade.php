@@ -242,8 +242,7 @@
                             $('.dongia').html(number_format(data.data.dongia, 0, ',', ','));
                             if ($('fieldset.soluong>input').val() != '' || $('fieldset.soluong>input').val() <= 0) {
                                 var giatri = data.data.dongia * parseInt($('fieldset.soluong>input').val());
-                                giatri = giatri.toString().substring(0, giatri.toString().length - 3) + '.' + giatri.toString().substring(giatri.toString().length - 3, giatri.toString().length);
-                                $('.giatri').html(number_format(giatri, 0, ',', ','));
+                                 $('.giatri').html(number_format(giatri, 0, ',', ','));
                             } else {
                                 $('.giatri').html('');
                             }
@@ -264,14 +263,6 @@
                 $('fieldset.tenchuongtrinh>input').removeClass('is-invalid');
             }
 
-            // if ($('fieldset.soluong>input').val() == '' || $('fieldset.soluong>input').val() <= 0) {
-            //     check = false;
-            //     $('fieldset.soluong>span').html('Số lượng không hợp lệ');
-            //     $('fieldset.soluong>input').addClass('is-invalid');
-            // } else {
-            //     $('fieldset.soluong>input').removeClass('is-invalid');
-            // }
-
             if ($('fieldset.ngaynhapkho>input').val() == '') {
                 check = false;
                 $('fieldset.ngaynhapkho>span').html('Hãy nhập ngày xuất kho');
@@ -279,15 +270,6 @@
             } else {
                 $('fieldset.ngaynhapkho>input').removeClass('is-invalid');
             }
-
-            //
-            // if ($('fieldset.mahanghoa>input').val() == "") {
-            //     check = false;
-            //     $('fieldset.mahanghoa>span').html('Hãy chọn một loại hàng');
-            //     $('fieldset.mahanghoa>input').addClass('is-invalid');
-            // } else {
-            //     $('fieldset.mahanghoa>input').removeClass('is-invalid');
-            // }
 
             if ($('#kho').val() == -1) {
                 check = false;
@@ -354,9 +336,9 @@
                 $('fieldset.dongia>input').val() != '') {
                 $('fieldset.soluong>input').val()
 
-                if ($('fieldset.soluong>input').val() > soluongtronkho) {
-                    $('fieldset.soluong>input').val(soluongtronkho);
-                }
+                // if ($('fieldset.soluong>input').val() > soluongtronkho) {
+                //     $('fieldset.soluong>input').val(soluongtronkho);
+                // }
 
                 var dongia = $('.dongia').html().match(/\d/g);
                 dongia = dongia.join("");
