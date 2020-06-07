@@ -637,7 +637,8 @@
                 myDropzone.removeAllFiles();
 
                 location.reload();
-                var newRow = dataListView.row.add([
+                /*
+				var newRow = dataListView.row.add([
                     formResponse.tenchuongtrinh,
                     formResponse.tenhang,
                     number_format(formResponse.dongia, 0, ',', ','),
@@ -657,6 +658,7 @@
                     .animate({
                         color: 'black'
                     })
+					*/
                 $.toast('Tạo phiếu order thành công');
             }
 
