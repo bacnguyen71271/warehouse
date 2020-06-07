@@ -65,7 +65,7 @@ class WarehouseController extends Controller
             ->select(DB::raw('sum(`donxuats`.`soluong`) as `soluong`'), DB::raw('sum(`donxuats`.`soluong` * `danhmucs`.`dongia`) as `dongia`'), 'warehouse_histories.id', 'warehouse_histories.warehouseId', 'warehouse_histories.tenchuongtrinh', 'delivery_history.status', 'warehouse_histories.id', 'warehouse_histories.hansudung', 'warehouse_histories.ghichu', 'warehouse_histories.created_at')
             ->groupBy('warehouse_histories.id', 'delivery_history.orderid');
 
-        if (array_key_exists('id', $query)) {
+        if (array_key_exists('id', $query)  && $query['id'] != '' ) {
             $wh_history->where('warehouse_histories.id', $query['id']);
         }
 
