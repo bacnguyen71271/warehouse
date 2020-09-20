@@ -100,6 +100,7 @@
                     <th>#</th>
                     <th>TÊN CHƯƠNG TRÌNH</th>
                     <th>TỔNG GIÁ TRỊ</th>
+                    <th>NGƯỜI TẠO ĐƠN</th>
                     <th>SỐ LƯỢNG</th>
                     <th>TRẠNG THÁI</th>
                     <th></th>
@@ -112,6 +113,7 @@
                         <td>{{ $product["id"] }}</td>
                         <td>{{ $product["tenchuongtrinh"] }}</td>
                         <td>{{ product_price($product["dongia"]) }}</td>
+                        <td>{{ $product["nguoixuat"] }}</td>
                         <td>{{ $product["soluong"] }}</td>
                         <td>
                             @if (!$product["status"])
@@ -403,7 +405,7 @@
                 aoColumnDefs: [
                     {
                         "bVisible": false,
-                        "aTargets": [6]
+                        "aTargets": [7]
                     },
                     // {
                     //     orderable: true,
@@ -424,7 +426,7 @@
                     [4, 10, 15, 20]
                 ],
                 order: [
-                    [6, "desc"]
+                    [7, "desc"]
                 ],
                 bInfo: false,
                 pageLength: 10,

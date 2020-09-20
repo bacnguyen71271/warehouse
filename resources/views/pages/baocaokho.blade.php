@@ -146,9 +146,11 @@
                                         <td class="font-weight-bold">Mã hàng</td>
                                         <td class="font-weight-bold">Đơn giá</td>
                                         <td class="font-weight-bold">Tồn đầu kỳ</td>
+                                        <td class="font-weight-bold">Nhập trong kỳ</td>
+                                        <td class="font-weight-bold">Xuất trong kỳ</td>
                                         <td class="font-weight-bold">Tồn cuối kỳ</td>
-                                        <td class="font-weight-bold">Biến động</td>
-                                        <td class="font-weight-bold">Giá trị biến động</td>
+{{--                                        <td class="font-weight-bold">Biến động</td>--}}
+                                        <td class="font-weight-bold">Thành tiền</td>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -158,8 +160,10 @@
                                             <td>{{ $result['mahang'] }}</td>
                                             <td>{{ product_price($result['dongia']) }}</td>
                                             <td>{{ $result['tondauky'] }}</td>
+                                            <td>{{ $result['nhaptrongky'] }}</td>
+                                            <td>{{ $result['xuattrongky'] }}</td>
                                             <td>{{ $result['toncuoiky'] }}</td>
-                                            <td>{{ $result['biendong'] }}</td>
+{{--                                            <td>{{ $result['biendong'] }}</td>--}}
                                             <td>{{ product_price($result['biendong'] * $result['dongia']) }}</td>
                                         </tr>
                                     @endforeach
