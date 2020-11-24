@@ -55,6 +55,84 @@ class StaticController extends Controller
         return ( $tongnhap->soluong - $tongxuat->soluong );
     }
 
+    public static function getNotification($id, $limit = 20){
+        $ntf = DB::table('notificaiton')
+        ->where('user_id',$id)
+        ->orderBy('created_at', 'desc')
+        ->limit($limit)
+        ->get();
+
+        for ($i=0; $i < count($ntf); $i++) { 
+            $ntf[$i]->time = self::time_elapsed_string($ntf[$i]->created_at);
+        }
+
+        return $ntf;
+    }
+
+    public static function time_elapsed_string($datetime, $full = false) {
+        $now = new \DateTime;
+        $ago = new \DateTime($datetime);
+        $diff = $now->diff($ago);
+    
+        $diff->w = floor($diff->d / 7);
+        $diff->d -= $diff->w * 7;
+    
+        $string = array(
+            'y' => 'năm',
+            'm' => 'tháng',
+            'w' => 'tuần',
+            'd' => 'ngày',
+            'h' => 'giờ',
+            'i' => 'phút',
+            's' => 'giây',
+        );
+        foreach ($string as $k => &$v) {
+            if ($diff->$k) {
+                $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? '' : '');
+            } else {
+                unset($string[$k]);
+            }
+        }
+    
+        if (!$full) $string = array_slice($string, 0, 1);
+        return $string ? implode(', ', $string) . ' trước' : 'vừa rồi';
+    }
+
+    public static function findUserPer ($warehouse, $per) {
+        if (isset($warehouse) && isset($per)) {
+            $perList = DB::table('permissions')
+            ->where('permission', $per)
+            ->where('warehouse_id', $warehouse)
+            ->get();
+            return $perList;
+        }
+    }
+
+    public static function sendNotification ($userid, $title, $content, $link, $type) {
+        if (isset($userid) && isset($title) && isset($content) && isset($link) && isset($type)) {
+            DB::table('notificaiton')
+            ->insert([
+                'user_id' => $userid,
+                'ntf_title' => $title,
+                'ntf_content' => $content,
+                'ntf_link' => $link,
+                'ntf_style' => $type,
+                'status' => 0
+            ]);
+            return true;
+        }
+        return false;
+    }
+
+    public static function getNotificationCount($id){
+        $ntf = DB::table('notificaiton')
+        ->select(DB::raw('SUM(`id`) as soluong'))
+        ->where('user_id', $id)
+        ->where('status', 0)
+        ->first();
+        return $ntf->soluong ? $ntf->soluong : 0 ;
+    }
+
     public static function getWarehouseInfo($id){
         //check hàng trong kho
         $hangtrongkho = DB::table('warehouse_goods')
@@ -110,6 +188,7 @@ class StaticController extends Controller
 
         $q = 0;
         $permission = DB::table('permissions')->where('user_id',Auth::id())->get();
+        // var_dump( Auth::user()->permission );die;
 
 //        echo $quyen;
         foreach ($permission as $key => $value){
@@ -130,8 +209,10 @@ class StaticController extends Controller
 			if($quyen == "admin" && $value->permission == 'Administrator'){
                 $q +=1;
             }
+
+            echo $value->permission;
         }
-//        echo $q; die;
+    //    echo $q; die;
         if($q > 0) return true; else return false;
     }
 

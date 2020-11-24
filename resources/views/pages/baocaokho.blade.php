@@ -113,6 +113,7 @@
                                         <td class="font-weight-bold">Tháng</td>
                                         <td class="font-weight-bold">Chương trình</td>
                                         <td class="font-weight-bold">Tên hàng</td>
+                                        <td class="font-weight-bold">Loại HH</td>
                                         <td class="font-weight-bold">Mã hàng</td>
                                         <td class="font-weight-bold">Đơn giá</td>
                                         <td class="font-weight-bold">Số lượng</td>
@@ -127,6 +128,7 @@
                                             <td>{{ date('m',strtotime($result['created_at']) ) }}</td>
                                             <td>{{ $result['tenchuongtrinh'] }}</td>
                                             <td>{{ $result['tenhang'] }}</td>
+                                            <td>{{ $result['loaihang'] }}</td>
                                             <td>{{ $result['mahang'] }}</td>
                                             <td>{{ product_price($result['dongia']) }}</td>
                                             <td>{{ $result['soluong'] }}</td>

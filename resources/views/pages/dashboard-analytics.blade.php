@@ -41,7 +41,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-12">
+            <div class="col-lg-4 col-md-4 col-12">
                 <div class="card">
                     <a href="{{ url('/hangtrongkho') }}">
                         <div class="card-header d-flex align-items-start pb-0">
@@ -58,22 +58,7 @@
                     </a>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-12">
-                <div class="card">
-                    <div class="card-header d-flex align-items-start pb-0">
-                        <div>
-                            <h2 class="text-bold-700 mb-0">{{ $nguoidung }}</h2>
-                            <p>Người dùng</p>
-                        </div>
-                        <div class="avatar bg-rgba-info p-50 m-0">
-                            <div class="avatar-content">
-                                <i class="feather icon-users text-info font-medium-5"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-12">
+            <div class="col-lg-4 col-md-4 col-12">
                 <div class="card">
                     <a href="{{ url('/delivery') }}">
                         <div class="card-header d-flex align-items-start pb-0">
@@ -90,7 +75,7 @@
                     </a>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-12">
+            <div class="col-lg-4 col-md-4 col-12">
                 <div class="card">
                     <a href="{{ url('/xuatkho') }}">
                         <div class="card-header d-flex align-items-start pb-0">

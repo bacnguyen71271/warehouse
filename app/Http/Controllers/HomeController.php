@@ -64,4 +64,18 @@ class HomeController extends Controller
             'deliveryed' => $delivery
         ]);
     }
+
+
+    public function updateStatusNtf (Request $request) {
+        $id = $request->input('id');
+        DB::table('notificaiton')->where('id', $id)
+        ->update([
+            'status' => 1
+        ]);
+        return [
+            'status' => true,
+            'msg' => '',
+            'data' => ''
+        ];
+    }
 }

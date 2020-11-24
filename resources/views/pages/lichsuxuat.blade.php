@@ -46,9 +46,14 @@ function product_price($priceFloat) {
               @if($whhistorytemp["status"] == 0)
               <div class="heading-elements">
                 <ul class="list-inline mb-0">
-                    @if(\App\Http\Controllers\StaticController::checkNutXacnhan( $whhistorytemp['warehouseId'] ) || $whhistorytemp["userid"] == Auth::id())
-                  <li><a class="btn mb-1 p-1  btn-primary waves-effect waves-light" href="{{ url('xuatkho/suaphieu/') }}/{{ $whhistorytemp['id'] }}" data-action="reload">Sửa phiếu</a></li>
-                    @endif
+                  @if( Auth::user()->permission == 0 && $whhistorytemp['status'] != 3)
+                    <li><button class="btn mb-1 p-1 btn-delete btn-warning waves-effect waves-light" order_id="{{ $whhistorytemp['id'] }}" data-action="reload">Xóa phiếu</button></li>
+                  @endif
+
+                  @if(\App\Http\Controllers\StaticController::checkNutXacnhan( $whhistorytemp['warehouseId'] ) || $whhistorytemp["userid"] == Auth::id() && $whhistorytemp['status'] != 3)
+                    <li><a class="btn mb-1 p-1  btn-primary waves-effect waves-light" href="{{ url('xuatkho/suaphieu/') }}/{{ $whhistorytemp['id'] }}" data-action="reload">Sửa phiếu</a></li>
+                  @endif
+                    
                 </ul>
               </div>
               @endif
@@ -67,13 +72,20 @@ function product_price($priceFloat) {
                             @if(\App\Http\Controllers\StaticController::checkNutXacnhan( $whhistorytemp['warehouseId'] ))
                             <button type="button" order_id="{{ $whhistorytemp["id"] }}" class="btn-approved btn btn-sm btn-outline-success waves-effect waves-light">-> Approved</button>
                                 @endif
-                        @else
+                        @elseif  ($whhistorytemp["status"] == 1)
                             <div class="chip chip-success">
                                 <div class="chip-body">
                                     <div class="chip-text">Approved</div>
                                 </div>
                             </div>
-                        @endif</td>
+                        @elseif  ($whhistorytemp["status"] == 3)
+                            <div class="chip chip-danger">
+                                <div class="chip-body">
+                                    <div class="chip-text">Delete</div>
+                                </div>
+                            </div>
+                        @endif
+                      </td>
                       </tr>
                   <tr>
                     <td class="font-weight-bold">Tên chương trình</td>
@@ -173,6 +185,41 @@ function product_price($priceFloat) {
                     },
                     data: {
                       'id_order' : $('.btn-approved').attr('order_id')
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                      $.toast(data.msg);
+                      var delay = 1000;
+                      setTimeout(function(){ location.reload(); }, delay);
+                    }
+                  })
+                }
+            });
+  })
+
+
+  $('.btn-delete').click(function(){
+    Swal.fire({
+                title: 'Bạn muốn xóa đơn hàng này ?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Vâng, tôi xác nhận!',
+                cancelButtonText: 'Hủy',
+                confirmButtonClass: 'btn btn-primary',
+                cancelButtonClass: 'btn btn-danger ml-1',
+                buttonsStyling: false,
+            }).then(function(result) {
+                if (result.value) {
+                  $.ajax({
+                    type: "POST",
+                    url: "{{ url('/comfirm-delete')}}",
+                    headers: {
+                        'X-CSRF-TOKEN': '{!! csrf_token() !!}'
+                    },
+                    data: {
+                      'id_order' : $('.btn-delete').attr('order_id')
                     },
                     dataType: 'json',
                     success: function(data) {
