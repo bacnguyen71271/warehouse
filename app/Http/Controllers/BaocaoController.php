@@ -55,9 +55,6 @@ class BaocaoController extends Controller
             if($loaibaocao == 'nhapkho'){
                 $query->where('warehouse_histories.type',0);
             }
-            if($loaibaocao == 'xuatkho'){
-                $query->where('warehouse_histories.type',1);
-            }
             $result = $query->get();
         }
 
@@ -76,19 +73,17 @@ class BaocaoController extends Controller
             $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','donxuats.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia');
 
             if($from){
-                $query->where('warehouse_histories.thoigian','>=', $from );
+                $query->where('warehouse_histories.thoigian','>=', $from.' 00:00:00' );
             }
 
             if($to){
-                $query->where('warehouse_histories.thoigian','<=', $to );
+                $query->where('warehouse_histories.thoigian','<=', $to.' 23:59:59' );
             }
 
-            if($loaibaocao == 'nhapkho'){
-                $query->where('warehouse_histories.type',0);
-            }
             if($loaibaocao == 'xuatkho'){
                 $query->where('warehouse_histories.type',1);
             }
+
             $result = $query->get();
         }
 //        var_dump($result);die;
@@ -135,6 +130,7 @@ class BaocaoController extends Controller
 
             $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','donxuats.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia');
 
+
             //Xuat dau ky
             $query_xdk = clone $query;
             $query_xdk->where('warehouse_histories.thoigian','<=', $from );
@@ -152,12 +148,63 @@ class BaocaoController extends Controller
             $xuatcuoiky = json_decode($xuatcuoiky,true);
 
 
+            // Tính nhập trong kỳ
+            $query = DB::table('warehouse_histories')
+                ->join('danhmucs','warehouse_histories.danhmucId','danhmucs.id');
+            if($title){
+                $query->where('warehouse_histories.tenchuongtrinh','like','%'.$title.'%');
+            }
+            if($tenhang){
+                $query->whereIn('danhmucs.mahang',$tenhang);
+            }
+            $query->where('warehouse_histories.warehouseId',$kho);
+
+            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','warehouse_histories.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia');
+
+            if($from){
+                $query->where('warehouse_histories.created_at','>=', $from.' 00:00:00' );
+            }
+            if($to){
+                $query->where('warehouse_histories.created_at','<=', $to.' 23:59:59' );
+            }
+            $query->where('warehouse_histories.type',0);
+            $nhaptrongky = $query->get();
+            $nhaptrongky = json_decode($nhaptrongky, true);
+
+            //Tính xuất trong kỳ
+
+            $query = DB::table('warehouse_histories')
+                ->join('donxuats','donxuats.id_history','warehouse_histories.id')
+                ->join('danhmucs','donxuats.danhmucId','danhmucs.id');
+            if($title){
+                $query->where('warehouse_histories.tenchuongtrinh','like','%'.$title.'%');
+            }
+            if($tenhang){
+                $query->whereIn('danhmucs.mahang',$tenhang);
+            }
+            $query->where('warehouse_histories.warehouseId',$kho);
+
+            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','donxuats.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia');
+
+            if($from){
+                $query->where('warehouse_histories.thoigian','>=', $from.' 00:00:00' );
+            }
+
+            if($to){
+                $query->where('warehouse_histories.thoigian','<=', $to.' 23:59:59' );
+            }
+            $query->where('warehouse_histories.type',1);
+            $xuattrongky = $query->get();
+            $xuattrongky = json_decode($xuattrongky, true);
+
             $tongMahang = [];
             //Tong hop mang
             $tongMahang = $this->gopmang($tongMahang,$nhapdauky);
             $tongMahang = $this->gopmang($tongMahang,$xuatdauky);
             $tongMahang = $this->gopmang($tongMahang,$nhapcuoiky);
             $tongMahang = $this->gopmang($tongMahang,$xuatcuoiky);
+            $tongMahang = $this->gopmang($tongMahang,$nhaptrongky);
+            $tongMahang = $this->gopmang($tongMahang,$xuattrongky);
 
             $result = [
 
@@ -169,6 +216,8 @@ class BaocaoController extends Controller
                     'dongia' => 0,
                     'tondauky' => 0,
                     'toncuoiky' => 0,
+                    'nhaptrongky' => 0,
+                    'xuattrongky' => 0,
                     'biendong' => 0
                 ];
                 //Xu ly du lieu dau ky
@@ -180,6 +229,7 @@ class BaocaoController extends Controller
                         $dulieu['tondauky'] += $ndk['soluong'];
                     }
                 }
+
 
                 foreach ($xuatdauky as $xdk){
                     if($xdk['mahang'] == $mahang){
@@ -209,8 +259,29 @@ class BaocaoController extends Controller
                     }
                 }
 
-                array_push($result, $dulieu);
+                //Xu ly du lieu trong ky
+                foreach ($nhaptrongky as $ntk){
+                    if($ntk['mahang'] == $mahang){
+                        $dulieu['tenhang'] = $ntk['tenhang'];
+                        $dulieu['mahang'] = $ntk['mahang'];
+                        $dulieu['dongia'] = $ntk['dongia'];
+                        $dulieu['nhaptrongky'] += (int)$ntk['soluong'];
+//                        var_dump($ntk['soluong']);die;
+                    }
+                }
 
+                foreach ($xuattrongky as $xtk){
+                    if($xtk['mahang'] == $mahang){
+                        $dulieu['tenhang'] = $xtk['tenhang'];
+                        $dulieu['mahang'] = $xtk['mahang'];
+                        $dulieu['dongia'] = $xtk['dongia'];
+                        $dulieu['xuattrongky'] += (int)$xtk['soluong'];
+//                        var_dump($dulieu['xuattrongky']);die;
+                    }
+                }
+//                var_dump($dulieu['xuattrongky']);die;
+                array_push($result, $dulieu);
+//                var_dump($result); die;
             }
 
             for ($i = 0; $i < count($result); $i++){

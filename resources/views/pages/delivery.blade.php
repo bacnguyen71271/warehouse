@@ -92,6 +92,8 @@ use App\Http\Controllers\StaticController;
                         <div class="form-group mb-0 col-2">
                             <label for="first-name-vertical">Trạng thái</label>
                             <select class="form-control" name="status">
+                                <option @if(array_key_exists('status',$query) && $query['status'] == -1) selected @endif value="-1">-- Trạng thái --
+                                </option>
                                 <option @if(array_key_exists('status',$query) && $query['status'] == 0) selected @endif value="0">Chưa nhận
                                 </option>
                                 <option @if(array_key_exists('status',$query) && $query['status'] == 1) selected @endif value="1">On-going
@@ -114,7 +116,18 @@ use App\Http\Controllers\StaticController;
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group mb-0 col-12">
+                        <div class="form-group mb-0 col-2">
+                            <label for="first-name-vertical">Kho</label>
+                            <select class="form-control" name="kho">
+                                <option @if(array_key_exists('kho',$query) && $query['kho'] == "") selected @endif value="">-- Chọn kho --
+                                </option>
+                                @foreach($danhsachkho as $kho)
+                                    <option @if(array_key_exists('kho',$query) && $query['kho'] == $kho['id']) selected @endif value="{{ $kho['id'] }}">{{ $kho['tenkho'] }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group mb-0 col-10">
                             <label for="first-name-vertical"></label>
                             <button type="submit" class="btn bg-gradient-primary mr-1 mb-1 mt-2 waves-effect waves-light float-right">Tìm</button>
                         </div>
@@ -142,6 +155,7 @@ use App\Http\Controllers\StaticController;
                     <th>GIÁ TRỊ</th>
                     <th>TRẠNG THÁI</th>
                     <th>KHO</th>
+                    <th>NGƯỜI TẠO ĐƠN</th>
                     <th>NGƯỜI GIAO</th>
                     <th>HÀNH ĐỘNG</th>
                     <th>CHI TIẾT</th>
@@ -171,6 +185,8 @@ use App\Http\Controllers\StaticController;
                             @endif
                         </td>
                         <td>{{ \App\Http\Controllers\StaticController::getWHById($delivery['warehouseId'])->tenkho }}</td>
+                        @php $userCreated = \App\Http\Controllers\StaticController::getUserInfo($delivery['nguoitaodon']); @endphp
+                        <td>{{ $userCreated['user']->name }}</td>
                         @php $user = \App\Http\Controllers\StaticController::getUserInfoByIdOrder($delivery['id']); @endphp
                         <td>@if ($user == null)
                                 Chưa nhận
@@ -241,6 +257,14 @@ use App\Http\Controllers\StaticController;
                             </div>
                             <div class="col-9">
                                 <p class="ngayxuat"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <p>File đính kèm: </p>
+                            </div>
+                            <div class="col-9 filedinhkem">
+
                             </div>
                         </div>
                         <div class="row">
@@ -318,6 +342,17 @@ use App\Http\Controllers\StaticController;
                             data.data.danhsach.forEach(function (el) {
                                 $('.table-nhaphang tbody').append('<tr><td>' +el.tenhang+ '</td><td>' + el.mahang + '</td><td>' + el.soluong + '</td><td>'+ number_format(el.soluong*el.dongia, 0, ',', ',')+'</td></tr>')
                             })
+
+                            data.data.files.forEach(function (el) {
+                                $('.filedinhkem').append(`
+                                <a target="_blank" class="attackfile" href="{{ url('uploads')}}/` + el.filename + `"><div class="badge badge-success mr-1 mb-1">
+                                        <i class="feather icon-file"></i>
+                                    <span>` + el.name_old + `</span>
+                                </div>
+                                </a>`)
+                            })
+
+
                         }
                     }
                 })

@@ -30,12 +30,15 @@ class WarehouseController extends Controller
             ->where('warehouse_histories.id', $id)
             ->first();
 
+        $attachFile = DB::table('files')->where('id_order', $id)->get();
+
         return [
             'status' => true,
             'msg' => '',
             'data' => [
                 'tenchuongtrinh' => $xuatkho->tenchuongtrinh,
                 'tenkho' => $xuatkho->tenkho,
+                'files' => json_decode(json_encode($attachFile), true),
                 'ngayxuat' => $xuatkho->thoigian,
                 'ghichu' => $xuatkho->ghichu,
                 'danhsach' => $data
@@ -62,7 +65,7 @@ class WarehouseController extends Controller
             ->leftJoin('users', 'users.id', 'delivery_history.userid')
             ->where('warehouse_histories.type', 1)
             ->where('warehouse_histories.status', 1)
-            ->select(DB::raw('sum(`donxuats`.`soluong`) as `soluong`'), DB::raw('sum(`donxuats`.`soluong` * `danhmucs`.`dongia`) as `dongia`'), 'warehouse_histories.id', 'warehouse_histories.warehouseId', 'warehouse_histories.tenchuongtrinh', 'delivery_history.status', 'warehouse_histories.id', 'warehouse_histories.hansudung', 'warehouse_histories.ghichu', 'warehouse_histories.created_at')
+            ->select(DB::raw('sum(`donxuats`.`soluong`) as `soluong`'), DB::raw('sum(`donxuats`.`soluong` * `danhmucs`.`dongia`) as `dongia`'), DB::raw('warehouse_histories.userid as `nguoitaodon`'), 'warehouse_histories.id', 'warehouse_histories.warehouseId', 'warehouse_histories.tenchuongtrinh', 'delivery_history.status', 'warehouse_histories.id', 'warehouse_histories.hansudung', 'warehouse_histories.ghichu', 'warehouse_histories.created_at')
             ->groupBy('warehouse_histories.id', 'delivery_history.orderid');
 
         if (array_key_exists('id', $query)  && $query['id'] != '' ) {
@@ -81,16 +84,22 @@ class WarehouseController extends Controller
             $wh_history->where('warehouse_histories.tenchuongtrinh', "LIKE", "%{$query['title']}%");
         }
 
-        if (array_key_exists('status', $query) && $query['status'] != '') {
+        if (array_key_exists('status', $query) && $query['status'] != '' && $query['status'] != -1) {
             $wh_history->where('delivery_history.status', $query['status']);
         }
 
+        if (array_key_exists('kho', $query) && $query['kho'] != '') {
+            $wh_history->where('warehouse_histories.warehouseId', $query['kho']);
+        }
+
+        $danhsachkho = DB::table('warehouses')->get();
 //        echo $wh_history->toSql();die;
         $wh_history = $wh_history->get();
 
         return view('/pages/delivery', [
             'pageConfigs' => $pageConfigs,
             'deliverys' => json_decode(json_encode($wh_history), true),
+            'danhsachkho' => json_decode(json_encode($danhsachkho), true),
             'query' => $query
         ]);
     }
@@ -152,10 +161,11 @@ class WarehouseController extends Controller
         //type = 1 - Xuất
         $wh_history = DB::table('warehouse_histories')
             ->join('donxuats', 'warehouse_histories.id', '=', 'donxuats.id_history')
+            ->join('users', 'warehouse_histories.userid', '=', 'users.id')
             ->join('danhmucs', 'donxuats.danhmucId', '=', 'danhmucs.id')
             ->join('warehouses', 'warehouse_histories.warehouseId', '=', 'warehouses.id')
             ->where('warehouse_histories.type', 1)
-            ->select(DB::raw('sum(`donxuats`.`soluong`) as `soluong`'), DB::raw('sum(`donxuats`.`soluong` * `danhmucs`.`dongia`) as `dongia`'), 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'warehouse_histories.id', 'warehouse_histories.hansudung', 'warehouse_histories.ghichu', 'warehouse_histories.created_at')
+            ->select(DB::raw('users.name as `nguoixuat`') ,DB::raw('sum(`donxuats`.`soluong`) as `soluong`'), DB::raw('sum(`donxuats`.`soluong` * `danhmucs`.`dongia`) as `dongia`'), 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'warehouse_histories.id', 'warehouse_histories.hansudung', 'warehouse_histories.ghichu', 'warehouse_histories.created_at')
             ->groupBy('warehouse_histories.id');
 
         $warehouses = DB::table('warehouses');
@@ -461,7 +471,7 @@ class WarehouseController extends Controller
             ->join('danhmucs', 'warehouse_histories.danhmucId', 'danhmucs.id')
             ->join('users', 'warehouse_histories.userid', 'users.id')
             ->where('warehouse_histories.id', $id)
-            ->select('warehouse_histories.tenchuongtrinh', 'warehouse_histories.warehouseId', 'warehouse_histories.thoigian', 'warehouse_histories.ghichu', 'danhmucs.tenhang', 'danhmucs.mahang', 'danhmucs.dongia', 'warehouse_histories.soluong', 'warehouse_histories.hansudung', 'warehouse_histories.created_at', 'warehouse_histories.id', 'users.email', 'users.name')
+            ->select('warehouse_histories.tenchuongtrinh', 'users.id as userid', 'warehouse_histories.warehouseId', 'warehouse_histories.thoigian', 'warehouse_histories.ghichu', 'danhmucs.tenhang', 'danhmucs.mahang', 'danhmucs.dongia', 'warehouse_histories.soluong', 'warehouse_histories.hansudung', 'warehouse_histories.created_at', 'warehouse_histories.id', 'users.email', 'users.name')
             ->first();
 
         $pageConfigs = [
@@ -482,6 +492,7 @@ class WarehouseController extends Controller
         $tenchuongtrinh = $request->input('tenchuongtrinh');
         $data = $request->input('data');
         $ngayxuat = $request->input('ngayxuat');
+        $ghichu = $request->input('ghichu');
 
         //check trang thai
         $phieuxuat = DB::table('warehouse_histories')
@@ -509,6 +520,7 @@ class WarehouseController extends Controller
         DB::table('warehouse_histories')
             ->where('id', $id)
             ->update([
+                'ghichu' => $ghichu,
                 'tenchuongtrinh' => $tenchuongtrinh,
                 'warehouseId' => $kho,
                 'thoigian' => $ngayxuat
@@ -658,17 +670,25 @@ class WarehouseController extends Controller
 
     public function hangtrongkho(Request $request)
     {
-        $danhmuchang = DB::table('danhmucs')->get();
+        $query = $request->all();
+
+        $danhmuchang = DB::table('danhmucs');
+        if( isset($query['loaihang']) ) {
+            $danhmuchang->where('loaihang', $query['loaihang'] );
+        }
+
         $danhsachkho = DB::table('warehouses')->get();
         $pageConfigs = [
             // 'pageHeader' => false,
             'navbarType' => 'sticky',
         ];
 
+        $danhmuchang = $danhmuchang->get();
         return view('/pages/hangtrongkho', [
             'pageConfigs' => $pageConfigs,
             'danhsachkho' => json_decode(json_encode($danhsachkho), true),
-            'danhmuchang' => json_decode(json_encode($danhmuchang), true)
+            'danhmuchang' => json_decode(json_encode($danhmuchang), true),
+            'query'     => $query
         ]);
     }
 

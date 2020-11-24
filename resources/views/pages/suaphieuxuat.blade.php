@@ -5,6 +5,7 @@
 @section('vendor-style')
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/select/select2.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/ui/prism.min.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/file-uploaders/dropzone.min.css')) }}">
 @endsection
 
 @section('page-style')
@@ -32,7 +33,47 @@
             padding: 5px;
             border: 1px solid #bfbfbf;
         }
+
+        .dz-preview.dz-file-preview {
+            margin: 0px !important;
+        }
+
+        .error{
+            border: 1px solid red;
+        }
+
+        .dz-message {
+            height: 100px !important;
+        }
+
+        .dropzone {
+            width: 100%;
+            min-height: 130px !important;
+            padding: 10px !important;
+        }
+
+        .dropzone .dz-preview {
+            margin: 0px !important;
+        }
+
+        .dropzone .dz-details {
+            height: unset !important;
+            width: unset !important;
+        }
+
+        .dropzone .dz-message {
+            font-size: 1rem !important;
+            top: 57px !important;
+        }
+
+        .dropzone .dz-message:before {
+            font-size: 40px !important;
+            top: 32px !important;
+        }
+
     </style>
+
+    <link rel="stylesheet" href="{{ asset(mix('css/plugins/file-uploaders/dropzone.css')) }}">
 @endsection
 
 @section('content')
@@ -181,11 +222,16 @@
                                             </div>
                                         </a>
                                     @endforeach
+                                    <div action="#" class="dropzone dropzone-area" id="dp-accept-files">
+                                        <div class="dz-message">Drop Files Here To Upload</div>
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="font-weight-bold">Ghi chú</td>
-                                <td>{{ $whhistorytemp['ghichu'] }}</td>
+                                <td>
+                                    <textarea style="width: 100%; margin-top: 0px; margin-bottom: 0px; height: 125px;" class="nhapnhieu-ghichu">{{ $whhistorytemp['ghichu'] }}</textarea>
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -196,6 +242,7 @@
 @endsection
 
 @section('vendor-script')
+    <script src="{{ asset(mix('vendors/js/extensions/dropzone.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/pickers/pickadate/picker.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/pickers/pickadate/picker.date.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/pickers/pickadate/picker.time.js')) }}"></script>
@@ -204,7 +251,167 @@
     <script src="{{ asset(mix('vendors/js/ui/prism.min.js')) }}"></script>
 
     <script>
+        Dropzone.autoDiscover = false;
+        $(document).ready(function () {
+            let formResponse;
+            $('#dp-accept-files').dropzone({
+                paramName: "file",
+                maxFilesize: 10, // MB
+                acceptedFiles: ".xls,.xlsx",
+                addRemoveLinks: true,
+                dictRemoveFile: "Loại bỏ",
+                autoDiscover: false,
+                parallelUploads: 100,
+                autoProcessQueue: false,
+                headers: {
+                    'X-CSRF-TOKEN': '{!! csrf_token() !!}'
+                },
+                init: function () {
+                    var myDropzone = this;
+                    $("#btn-xacnhan-nhapnhieu").click(function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        let check = true;
+                        if ($('.tenchuongtrinh').val() == '') {
+                            check = false;
+                            $('.tenchuongtrinh').addClass('error');
+                        } else {
+                            $('.tenchuongtrinh').removeClass('error');
+                        }
 
+                        if ($('.nhapnhieu-kho').val() == -1) {
+                            check = false;
+                            $('.nhapnhieu-kho').addClass('error');
+                        } else {
+                            $('.nhapnhieu-kho').removeClass('error');
+                        }
+
+                        if ($('.nhapnhieu-ngayxuat').val() == '') {
+                            check = false;
+                            $('.nhapnhieu-ngayxuat').addClass('error');
+                        } else {
+                            $('.nhapnhieu-ngayxuat').removeClass('error');
+                        }
+
+                        $('.nhapkho-data').each(function(row){
+                            if ($(this).find('.nhapnhieu-tenhanghoa').val() == -1) {
+                                check = false;
+                                $(this).find('.nhapnhieu-tenhanghoa').addClass('error');
+                            } else {
+                                $(this).find('.nhapnhieu-tenhanghoa').removeClass('error');
+                            }
+
+                            if ($(this).find('.nhapnhieu-soluong').val() == '' || $(this).find('.nhapnhieu-soluong').val() == 0) {
+                                check = false;
+                                $(this).find('.nhapnhieu-soluong').addClass('error');
+                            } else {
+                                $(this).find('.nhapnhieu-soluong').removeClass('error');
+                            }
+                        })
+
+
+                        if (check) {
+                            Swal.fire({
+                                title: 'Bạn có chắc chắn xuất kho với thông tin đã cung cấp ?',
+                                type: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Vâng, xuất kho!',
+                                cancelButtonText: 'Hủy',
+                                confirmButtonClass: 'btn btn-primary',
+                                cancelButtonClass: 'btn btn-danger ml-1',
+                                buttonsStyling: false,
+                            }).then(function (result) {
+
+                                var data = [];
+                                $('.nhapkho-data').each(function(row){
+                                    data.push({
+                                        tenhang: $(this).find('.nhapnhieu-tenhanghoa').val(),
+                                        soluong: $(this).find('.nhapnhieu-soluong').val()
+                                    })
+                                })
+
+                                if (result.value) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '{{ url('xuatkho') }}',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{!! csrf_token() !!}'
+                                        },
+                                        data: {
+                                            'kho': $('.nhapnhieu-kho').val(),
+                                            'tenchuongtrinh': $('.tenchuongtrinh').val(),
+                                            'ngayxuat': $('.nhapnhieu-ngayxuat').val(),
+                                            'ghichu': $('.nhapnhieu-ghichu').val(),
+                                            'data' : data
+                                        },
+                                        dataType: 'json',
+                                        success: function (data) {
+                                            if (data.status) {
+                                                formResponse = data.data;
+                                                myDropzone.processQueue();
+                                                if (myDropzone.getQueuedFiles().length <= 0) {
+                                                    //
+                                                    location.reload();
+                                                    commitFinish(data.data, myDropzone);
+                                                }
+                                            } else {
+                                                Swal.fire({
+                                                    title: 'Opps!!!',
+                                                    type: 'warning',
+                                                    text: data.msg,
+                                                    confirmButtonColor: '#3085d6',
+                                                    cancelButtonColor: '#d33',
+                                                    confirmButtonText: 'Okey!',
+                                                    confirmButtonClass: 'btn btn-primary',
+                                                    cancelButtonClass: 'btn btn-danger ml-1',
+                                                    buttonsStyling: false,
+                                                })
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+                    $('button[data-dismiss="modal"]').click(function (e) {
+                        myDropzone.removeAllFiles();
+                    });
+                    this.on("processing", function (file) {
+                        this.options.url = "/file-upload";
+                    });
+
+                    this.on("queuecomplete", function (files, response) {
+                        //4321
+                        commitFinish(formResponse, myDropzone);
+                    });
+
+                    this.on("success", function (files, response) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '{{ url('createfiledata') }}',
+                            headers: {
+                                'X-CSRF-TOKEN': '{!! csrf_token() !!}'
+                            },
+                            data: {
+                                'nameold': files.name,
+                                'filename': response.data,
+                                'idorder': formResponse.id,
+                            },
+                            dataType: 'json',
+                            success: function (data) {
+                            }
+                        });
+                        console.log(files);
+                        console.log(response);
+                        console.log('-----------------');
+                    });
+
+                },
+            });
+        })
 
         checkhangton();
         $('#kho').change(function () {
@@ -308,7 +515,7 @@
                                 'kho' : $('#kho').val(),
                                 'tenchuongtrinh': $('fieldset.tenchuongtrinh>input').val(),
                                 'ngayxuat': $('fieldset.ngaynhapkho>input').val(),
-                                'ghichu': $('#basicTextarea').val()
+                                'ghichu': $('.nhapnhieu-ghichu').val()
                             },
                             dataType: 'json',
                             success: function (data) {

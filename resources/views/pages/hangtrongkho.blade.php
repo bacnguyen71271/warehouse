@@ -18,7 +18,42 @@
 
 {{-- Data list view starts --}}
 <section id="data-list-view" class="data-list-view-header">
-
+    <div class="card">
+        <div class="card-body">
+            <form method="GET">
+                <div class="row">
+                    <div class="form-group mb-0 col-2">
+                        <label for="first-name-vertical">Kho</label>
+                        <select class="form-control" name="kho">
+                            <option @if(array_key_exists('kho',$query) && $query['kho'] == "") selected @endif value="">-- Chọn kho --
+                            </option>
+                            @foreach($danhsachkho as $kho)
+                                <option @if(array_key_exists('kho',$query) && $query['kho'] == $kho['id']) selected @endif value="{{ $kho['id'] }}">{{ $kho['tenkho'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group mb-0 col-2">
+                        <label for="first-name-vertical">Loại hàng</label>
+                        <select class="form-control" name="loaihang">
+                            <option @if(array_key_exists('loaihang',$query) && $query['loaihang'] == "") selected @endif value="">-- Chọn loại hàng --
+                            </option>
+                            <option @if(array_key_exists('loaihang',$query) && $query['loaihang'] == "Giấy tờ có giá") selected @endif value="Giấy tờ có giá">Giấy tờ có giá
+                            </option>
+                            <option @if(array_key_exists('loaihang',$query) && $query['loaihang'] == "Vàng") selected @endif value="Vàng">Vàng
+                            </option>
+                            <option @if(array_key_exists('loaihang',$query) && $query['loaihang'] == "Hàng hóa thông thường") selected @endif value="Hàng hóa thông thường">Hàng hóa thông thường
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-0 col-2">
+                        <label for="first-name-vertical"></label>
+                        <button type="submit" class="btn bg-gradient-primary mr-1 mb-1 mt-2 waves-effect waves-light float-right">Tìm</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
     {{-- DataTable starts --}}
     <div class="table-responsive">
         <table class="table data-list-view">
@@ -30,11 +65,12 @@
                     {{-- <th>MÃ HÀNG HÓA</th> --}}
                     <th>KHO</th>
                     <th>SỐ LƯỢNG</th>
-                    <th>HÀNH ĐỘNG</th>
+{{--                    <th>HÀNH ĐỘNG</th>--}}
                 </tr>
             </thead>
             <tbody>
             @foreach($danhsachkho as $kho)
+                @if( (!isset($query['kho']))  || ($query['kho'] == $kho['id']))
                 @foreach($danhmuchang as $hang)
                     @php $soluong = \App\Http\Controllers\StaticController::hangTon( $kho['id'],$hang["id"]) @endphp
                     @if($soluong > 0)
@@ -67,12 +103,13 @@
                                     </div>
                                 @endif
                             </td>
-                            <td class="product-action">
-                                {{-- <a href="">Chi tiết</a> --}}
-                            </td>
+{{--                            <td class="product-action">--}}
+{{--                                --}}{{-- <a href="">Chi tiết</a> --}}
+{{--                            </td>--}}
                         </tr>
                     @endif
                 @endforeach
+                @endif
             @endforeach
             </tbody>
         </table>
