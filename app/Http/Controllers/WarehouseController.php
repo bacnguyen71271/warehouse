@@ -165,6 +165,7 @@ class WarehouseController extends Controller
             ->join('danhmucs', 'donxuats.danhmucId', '=', 'danhmucs.id')
             ->join('warehouses', 'warehouse_histories.warehouseId', '=', 'warehouses.id')
             ->where('warehouse_histories.type', 1)
+            ->where('warehouse_histories.status', '!=', 3)
             ->select(DB::raw('users.name as `nguoixuat`') ,DB::raw('sum(`donxuats`.`soluong`) as `soluong`'), DB::raw('sum(`donxuats`.`soluong` * `danhmucs`.`dongia`) as `dongia`'), 'warehouse_histories.tenchuongtrinh', 'warehouse_histories.status', 'warehouse_histories.id', 'warehouse_histories.hansudung', 'warehouse_histories.ghichu', 'warehouse_histories.created_at')
             ->groupBy('warehouse_histories.id');
 
@@ -418,6 +419,20 @@ class WarehouseController extends Controller
 
         StaticController::LogHistory('Xuất kho', Auth::id(), $wh_history_temp->id);
 
+        //Send Notification
+        try {
+            $title = 'Có 1 đơn hàng mới cần phê duyệt';
+            $content = 'Bấm vào đây và phê duyệt đơn hàng này nào !';
+            $link = url('xuatkho') . '/' . $wh_history_temp->id;
+            $type = 'warning';
+            $listUser = StaticController::findUserPer($kho, 'Approved');
+            foreach ($listUser as $key => $user) {
+                StaticController::sendNotification($user->id, $title, $content, $link, $type);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
         return [
             'status' => true,
             'msg' => 'Tạo phiếu order thành công',
@@ -425,6 +440,30 @@ class WarehouseController extends Controller
         ];
     }
 
+    public function comfirmDelete(Request $request)
+    {
+        $idorder = $request->input('id_order');
+        // echo $idorder;die;
+        if (Auth::user()->permission == 0) {
+            DB::table('warehouse_histories')
+                ->where('id', $idorder)->update([
+                    'status' => 3
+            ]);
+
+            return [
+                'status' => true,
+                'msg' => 'Xác nhận thành công',
+                'data' => ''
+            ];
+        } else {
+            return [
+                'status' => false,
+                'msg' => 'Không có quyền',
+                'data' => ''
+            ];
+        }
+    }
+    
     public function comfirmXuatKho(Request $request)
     {
         $idorder = $request->input('id_order');
@@ -447,9 +486,20 @@ class WarehouseController extends Controller
                 'status' => 0
             ]);
 
-
             StaticController::LogHistory('Xác nhận đơn hàng', Auth::id(), $idorder);
 
+            //Send Notification
+            try {
+                $title = 'Đơn hàng [' .$idorder. '] đã được phê duyệt';
+                $content = 'Xem chi tiết đơn hàng';
+                $link = url('xuatkho') . '/' . $idorder;
+                $type = 'success';
+                
+                StaticController::sendNotification($order->userid, $title, $content, $link, $type);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            
             return [
                 'status' => true,
                 'msg' => 'Xác nhận thành công',

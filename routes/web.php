@@ -36,6 +36,7 @@ Route::get('/xuatkho/suaphieu/{id}', 'WarehouseController@suaphieuxuat');
 Route::post('/xuatkho/suaphieu/{id}', 'WarehouseController@luuphieuxuat');
 Route::post('/createfiledata', 'WarehouseController@createFileData');
 Route::post('/comfirm-xuatkho', 'WarehouseController@comfirmXuatKho');
+Route::post('/comfirm-delete', 'WarehouseController@comfirmDelete');
 Route::get('/hangton', 'WarehouseController@gethangton');
 
 
@@ -66,6 +67,8 @@ Route::post('/categoryinfo','DanhmucController@categoryInfo');
 Route::post('/addcategory','DanhmucController@addCategory');
 Route::post('/editcategory','DanhmucController@editCategory');
 Route::post('/deletecategory','DanhmucController@deleteCategory');
+
+Route::post('/notifistt','HomeController@updateStatusNtf');
 
 //File upload
 Route::post('file-upload', 'FileUploadController@fileUploadPost')->name('file.upload.post');
@@ -111,20 +114,20 @@ Auth::routes(['verify' => true]);
 //   'uses' => 'Auth\ForgotPasswordController@sendResetLinkEmail'
 // ]);
 
-// Route::get('forgot-password', [
-//   'as' => 'password.request',
-//   'uses' => 'Auth\ForgotPasswordController@showLinkRequestForm'
-// ]);
+Route::get('forgot-password', [
+  'as' => 'password.request',
+  'uses' => 'Auth\ForgotPasswordController@showLinkRequestForm'
+]);
 
-// Route::post('forgot-password', [
-//   'as' => 'password.update',
-//   'uses' => 'Auth\ResetPasswordController@reset'
-// ]);
+Route::post('forgot-password', [
+  'as' => 'password.update',
+  'uses' => 'Auth\ResetPasswordController@reset'
+]);
 
-// Route::get('forgot-password/{token}', [
-//   'as' => 'password.reset',
-//   'uses' => 'Auth\ResetPasswordController@showResetForm'
-// ]);
+Route::get('forgot-password/{token}', [
+  'as' => 'password.reset',
+  'uses' => 'Auth\ResetPasswordController@showResetForm'
+]);
 
 
 

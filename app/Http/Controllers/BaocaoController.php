@@ -44,7 +44,7 @@ class BaocaoController extends Controller
             }
             $query->where('warehouse_histories.warehouseId',$kho);
 
-            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','warehouse_histories.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia');
+            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','warehouse_histories.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.loaihang','danhmucs.dongia');
 
             if($from){
                 $query->where('warehouse_histories.created_at','>=', $from.' 00:00:00' );
@@ -69,8 +69,9 @@ class BaocaoController extends Controller
                 $query->whereIn('danhmucs.mahang',$tenhang);
             }
             $query->where('warehouse_histories.warehouseId',$kho);
+            $query->where('warehouse_histories.status', 1);
 
-            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','donxuats.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia');
+            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','donxuats.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.loaihang','danhmucs.dongia');
 
             if($from){
                 $query->where('warehouse_histories.thoigian','>=', $from.' 00:00:00' );
@@ -98,7 +99,7 @@ class BaocaoController extends Controller
             }
             $query->where('warehouse_histories.warehouseId',$kho);
 
-            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','warehouse_histories.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia');
+            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','warehouse_histories.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.loaihang','danhmucs.dongia');
 
 
             //Nhap dau ky
@@ -128,7 +129,7 @@ class BaocaoController extends Controller
             }
             $query->where('warehouse_histories.warehouseId',$kho);
 
-            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','donxuats.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia');
+            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','donxuats.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.loaihang','danhmucs.dongia');
 
 
             //Xuat dau ky
@@ -159,7 +160,7 @@ class BaocaoController extends Controller
             }
             $query->where('warehouse_histories.warehouseId',$kho);
 
-            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','warehouse_histories.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia');
+            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','warehouse_histories.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.loaihang','danhmucs.dongia');
 
             if($from){
                 $query->where('warehouse_histories.created_at','>=', $from.' 00:00:00' );
@@ -184,7 +185,7 @@ class BaocaoController extends Controller
             }
             $query->where('warehouse_histories.warehouseId',$kho);
 
-            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','donxuats.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.dongia');
+            $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','donxuats.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.loaihang','danhmucs.dongia');
 
             if($from){
                 $query->where('warehouse_histories.thoigian','>=', $from.' 00:00:00' );
