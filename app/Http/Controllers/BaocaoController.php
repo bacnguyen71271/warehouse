@@ -132,6 +132,7 @@ class BaocaoController extends Controller
             $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','donxuats.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.loaihang','danhmucs.dongia');
 
 
+
             //Xuat dau ky
             $query_xdk = clone $query;
             $query_xdk->where('warehouse_histories.thoigian','<=', $from );
@@ -184,7 +185,6 @@ class BaocaoController extends Controller
                 $query->whereIn('danhmucs.mahang',$tenhang);
             }
             $query->where('warehouse_histories.warehouseId',$kho);
-
             $query->select('warehouse_histories.created_at','warehouse_histories.tenchuongtrinh','donxuats.soluong','warehouse_histories.ghichu','warehouse_histories.hansudung','danhmucs.tenhang','danhmucs.mahang','danhmucs.loaihang','danhmucs.dongia');
 
             if($from){
