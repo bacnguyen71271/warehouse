@@ -210,7 +210,7 @@ class StaticController extends Controller
                 $q +=1;
             }
 
-            echo $value->permission;
+            //echo $value->permission;
         }
     //    echo $q; die;
         if($q > 0) return true; else return false;
